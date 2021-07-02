@@ -49,6 +49,15 @@ export default class Game {
     });
   }
 
+  assignToken(color, player) {
+    const tokens = this.ownerTracker.tokens[color].filter(
+      (token) => token === null
+    );
+    if (tokens.length) {
+      tokens[0] = player;
+    }
+  }
+
   getState() {
     return {
       players: this.players,
@@ -73,23 +82,52 @@ export default class Game {
   }
 
   processDecision(decision) {
-    // TODO
-    /*
-    decision: {
-      type: '', // 3diff, 2same, reserve, or recruit
-      (3diff, 2same) tokens: ['red','blue','purple']
-      (reserve, recruit) level: 2 (1 - 3 or reserves)
-      (reserve, recruit) index: 1 (0 - 3, or 0 - 2 for reserves)
-      (if they need to remove tokens to reach limit of 10) tokensToRemove: ['yellow','orange']
+    switch (decision.type) {
+      case "3diff":
+      case "2same":
+        decision.tokens.forEach((color) => {
+          this.assignToken(color, decision.player);
+        });
+        this.removeTokens(decision.tokensToRemove, decision.player);
+        break;
+      case "reserve":
+        const freeAgentRow = this.freeAgents[decision.level - 1];
+        const characterCard = freeAgentRow[decision.index];
+        decision.player.assignReserve(characterCard);
+        this.assignToken("gray", decision.player);
+        this.removeTokens(decision.tokensToRemove, decision.player);
+        break;
+      case "recruit":
+        let characterCard;
+        if (decision.level === "reserves") {
+          characterCard = decision.player.getReserve(decision.index);
+        } else {
+          characterCard = this.freeAgents[decision.level - 1][decision.index];
+        }
+        decision.player.assignRecruit(characterCard);
+        // TODO: any necessary follow-up logic (acquiring tiles, endgame trigger, etc.)
+        // return false if game should be over now
+        break;
     }
-    */
-    return false;
+    return true;
   }
 
   processEndGame() {
     // TODO
     this.postGameCallback(this);
     return false;
+  }
+
+  removeTokens(tokensToRemove, player) {
+    if (!tokensToRemove.length) {
+      return;
+    }
+    tokensToRemove.forEach((color) => {
+      const tokens = this.ownerTracker.tokens[color].filter(
+        (token) => token === player
+      );
+      tokens[0] = null;
+    });
   }
 
   start() {

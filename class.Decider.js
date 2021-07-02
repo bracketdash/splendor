@@ -1,8 +1,9 @@
 export default class Decider {
-  constructor(getDecision) {
-    this.getDecision = getDecision;
+  constructor(getDecisionCallback) {
+    this.getDecisionCallback = getDecisionCallback;
   }
+
   getDecision(game) {
-    return this.getDecision(game);
+    return this.getDecisionCallback(game);
   }
 }
