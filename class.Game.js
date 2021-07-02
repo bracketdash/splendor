@@ -6,22 +6,13 @@ function getNullArray(n) {
 }
 
 function getShuffled(items) {
-  // TODO: shuffle
-  return items;
+  return items.sort(() => (Math.random() > 0.5 ? 1 : -1));
 }
 
 export default class Game {
   constructor(players) {
     this.players = players;
-    this.numPlayers = players.length;
-
-    this.ownerTracker = {
-      avengersAssembleTile: null,
-      infinityGauntletTile: null,
-      tokens: {
-        gray: getNullArray(5),
-      },
-    };
+    this.numPlayers = players.length + 1;
 
     const allLocationTiles = getShuffled(getAllLocationTiles());
     this.locationTiles = getNullArray(4).map(() => allLocationTiles.pop());
@@ -38,29 +29,20 @@ export default class Game {
       getNullArray(4).map(() => this.decks[2].pop()),
     ];
 
-    switch (this.numPlayers) {
-      case 2:
-        this.ownerTracker.tokens.blue = getNullArray(4);
-        this.ownerTracker.tokens.orange = getNullArray(4);
-        this.ownerTracker.tokens.purple = getNullArray(4);
-        this.ownerTracker.tokens.red = getNullArray(4);
-        this.ownerTracker.tokens.yellow = getNullArray(4);
-        break;
-      case 3:
-        this.ownerTracker.tokens.blue = getNullArray(5);
-        this.ownerTracker.tokens.orange = getNullArray(5);
-        this.ownerTracker.tokens.purple = getNullArray(5);
-        this.ownerTracker.tokens.red = getNullArray(5);
-        this.ownerTracker.tokens.yellow = getNullArray(5);
-        break;
-      case 4:
-        this.ownerTracker.tokens.blue = getNullArray(7);
-        this.ownerTracker.tokens.orange = getNullArray(7);
-        this.ownerTracker.tokens.purple = getNullArray(7);
-        this.ownerTracker.tokens.red = getNullArray(7);
-        this.ownerTracker.tokens.yellow = getNullArray(7);
-        break;
-    }
+    this.ownerTracker = {
+      avengersAssembleTile: null,
+      infinityGauntletTile: null,
+      tokens: {
+        gray: getNullArray(5),
+      },
+    };
+
+    const numPlayersToTokenMap = [null, null, 4, 5, 7];
+    const colors = ["blue", "orange", "purple", "red", "yellow"];
+    colors.forEach((color) => {
+      const numTokens = numPlayersToTokenMap[this.numPlayers];
+      this.ownerTracker.tokens[color] = getNullArray(numTokens);
+    });
   }
 
   debug() {
