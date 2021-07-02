@@ -9,4 +9,8 @@ export default class CharacterCard {
       name,
     });
   }
+
+  getLevel() {
+    return this.level;
+  }
 }
