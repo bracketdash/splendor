@@ -1,8 +1,13 @@
-import getCharacterCards from "./function.getCharacterCards.js";
-import getShuffledCards from "./function.getShuffledCards.js";
+import getAllCharacterCards from "./function.getAllCharacterCards.js";
+import getAllLocationTiles from "./function.getAllLocationTiles.js";
 
 function getNullArray(n) {
   return Array(4).fill(null);
+}
+
+function getShuffled(items) {
+  // TODO: shuffle
+  return items;
 }
 
 export default class Game {
@@ -13,17 +18,19 @@ export default class Game {
     this.ownerTracker = {
       avengersAssembleTile: null,
       infinityGauntletTile: null,
-      locationTiles: [],
       tokens: {
         gray: getNullArray(5),
       },
     };
 
-    const characterCards = getCharacterCards();
+    const allLocationTiles = getShuffled(getAllLocationTiles());
+    this.locationTiles = getNullArray(4).map(() => allLocationTiles.pop());
+
+    const characterCards = getAllCharacterCards();
     this.decks = [
-      getShuffledCards(characterCards.filter((cc) => cc.getLevel() === 1)),
-      getShuffledCards(characterCards.filter((cc) => cc.getLevel() === 2)),
-      getShuffledCards(characterCards.filter((cc) => cc.getLevel() === 3)),
+      getShuffled(characterCards.filter((cc) => cc.getLevel() === 1)),
+      getShuffled(characterCards.filter((cc) => cc.getLevel() === 2)),
+      getShuffled(characterCards.filter((cc) => cc.getLevel() === 3)),
     ];
     this.freeAgents = [
       getNullArray(4).map(() => this.decks[0].pop()),
@@ -38,7 +45,6 @@ export default class Game {
         this.ownerTracker.tokens.purple = getNullArray(4);
         this.ownerTracker.tokens.red = getNullArray(4);
         this.ownerTracker.tokens.yellow = getNullArray(4);
-        // TODO: add 2 locationTiles to this.ownerTracker.locationTiles at random
         break;
       case 3:
         this.ownerTracker.tokens.blue = getNullArray(5);
@@ -46,7 +52,6 @@ export default class Game {
         this.ownerTracker.tokens.purple = getNullArray(5);
         this.ownerTracker.tokens.red = getNullArray(5);
         this.ownerTracker.tokens.yellow = getNullArray(5);
-        // TODO: add 3 locationTiles to this.ownerTracker.locationTiles at random
         break;
       case 4:
         this.ownerTracker.tokens.blue = getNullArray(7);
@@ -54,7 +59,6 @@ export default class Game {
         this.ownerTracker.tokens.purple = getNullArray(7);
         this.ownerTracker.tokens.red = getNullArray(7);
         this.ownerTracker.tokens.yellow = getNullArray(7);
-        // TODO: add 4 locationTiles to this.ownerTracker.locationTiles at random
         break;
     }
   }
