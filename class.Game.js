@@ -16,7 +16,6 @@ export default class Game {
     this.whoseTurn = 0;
     this.round = 1;
 
-
     const allLocationTiles = getShuffled(getAllLocationTiles());
     this.locationTiles = getNullArray(4).map(() => allLocationTiles.pop());
 
