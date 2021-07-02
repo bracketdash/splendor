@@ -6,11 +6,17 @@ import omar from "./decider.omar.js";
 // import laurie from "./decider.laurie.js";
 // import steve from "./decider.steve.js";
 
-const game = new Game([
+const players = [
   new Player("Bob", bob),
   new Player("Omar", omar),
   //   new Player("Laurie", laurie),
   //   new Player("Steve", steve),
-]);
+];
 
-console.log(game.debug());
+const endGameCallback = function (finishedGame) {
+  console.log(finishedGame.getState());
+};
+
+const game = new Game(players, endGameCallback);
+
+game.start();

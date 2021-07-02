@@ -10,7 +10,9 @@ function getShuffled(items) {
 }
 
 export default class Game {
-  constructor(players) {
+  constructor(players, postGameCallback) {
+    this.postGameCallback = postGameCallback;
+
     this.players = players;
     this.numPlayers = players.length + 1;
     this.whoseTurn = 0;
@@ -47,17 +49,50 @@ export default class Game {
     });
   }
 
-  debug() {
-    return this;
+  getState() {
+    return {
+      players: this.players,
+      numPlayers: this.numPlayers,
+      locationTiles: this.locationTiles,
+      freeAgents: this.freeAgents,
+      ownerTracker: this.ownerTracker,
+    };
   }
 
   nextTurn() {
-    processDecision(this.players[this.whoseTurn].getDecision(this));
-    // TODO: increment this.whoseTurn, but loop back to 0 if over this.numPlayers
-    // TODO: nextTurn();
+    if (!this.processDecision(this.players[this.whoseTurn].getDecision(this))) {
+      this.processEndGame();
+      return;
+    }
+    this.whoseTurn++;
+    if (this.whoseTurn > this.numPlayers - 1) {
+      this.whoseTurn = 0;
+      this.round++;
+    }
+    this.nextTurn();
+  }
+
+  processDecision(decision) {
+    // TODO
+    /*
+    decision: {
+      type: '', // 3diff, 2same, reserve, or recruit
+      (3diff, 2same) tokens: ['red','blue','purple']
+      (reserve, recruit) level: 2 (1 - 3 or reserves)
+      (reserve, recruit) index: 1 (0 - 3, or 0 - 2 for reserves)
+      (if they need to remove tokens to reach limit of 10) tokensToRemove: ['yellow','orange']
+    }
+    */
+    return false;
+  }
+
+  processEndGame() {
+    // TODO
+    this.postGameCallback(this);
+    return false;
   }
 
   start() {
-    nextTurn();
+    this.nextTurn();
   }
 }
