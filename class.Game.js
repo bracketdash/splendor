@@ -13,6 +13,9 @@ export default class Game {
   constructor(players) {
     this.players = players;
     this.numPlayers = players.length + 1;
+    this.whoseTurn = 0;
+    this.round = 1;
+
 
     const allLocationTiles = getShuffled(getAllLocationTiles());
     this.locationTiles = getNullArray(4).map(() => allLocationTiles.pop());
@@ -47,5 +50,15 @@ export default class Game {
 
   debug() {
     return this;
+  }
+
+  nextTurn() {
+    processDecision(this.players[this.whoseTurn].getDecision(this));
+    // TODO: increment this.whoseTurn, but loop back to 0 if over this.numPlayers
+    // TODO: nextTurn();
+  }
+
+  start() {
+    nextTurn();
   }
 }

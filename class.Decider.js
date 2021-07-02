@@ -2,7 +2,7 @@ export default class Decider {
   constructor(getDecision) {
     this.getDecision = getDecision;
   }
-  getDecision() {
-    return this.getDecision();
+  getDecision(game) {
+    return this.getDecision(game);
   }
 }
