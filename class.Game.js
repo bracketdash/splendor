@@ -58,9 +58,35 @@ export default class Game {
     }
   }
 
-  avengersAssembleTileCheck(player) {
-    // TODO
-    return false;
+  avengersAssembleTileCheck(thisPlayer) {
+    if (this.getPlayerAvengersTags(thisPlayer) < 3) {
+      return;
+    }
+    let assignAssembleTile = true;
+    const thisPlayerNumTags = this.getPlayerAvengersTags(thisPlayer);
+    this.players.forEach((player) => {
+      if (player === thisPlayer) {
+        return;
+      }
+      if (this.getPlayerAvengersTags(player) >= thisPlayerNumTags) {
+        assignAssembleTile = false;
+      }
+    });
+    if (assignAssembleTile) {
+      this.ownerTracker.avengersAssembleTile = thisPlayer;
+    }
+  }
+
+  getPlayerAvengersTags(player) {
+    let numAvengersTags = 0;
+    player.getRecruits().forEach((recruit) => {
+      numAvengersTags += recruit.getNumAvengersTags();
+    });
+    return numAvengersTags;
+  }
+
+  getPlayerBonus(player, color) {
+    return player.getRecruits().filter((cc) => cc.getBonus() === color).length;
   }
 
   getState() {
@@ -73,9 +99,19 @@ export default class Game {
     };
   }
 
-  locationTileCheck(player) {
-    // TODO
-    return false;
+  locationTileCheck(player, location) {
+    this.locationTiles.forEach((locationTile) => {
+      if (locationTile.getOwner() === null) {
+        if (
+          Object.keys(locationTile.cost).all(
+            (color) =>
+              this.getPlayerBonus(player, color) >= locationTile.cost[color]
+          )
+        ) {
+          locationTile.setOwner(player);
+        }
+      }
+    });
   }
 
   nextTurn() {
@@ -114,10 +150,11 @@ export default class Game {
         } else {
           characterCard = this.freeAgents[decision.level - 1][decision.index];
         }
+        this.removeTokens(decision.tokensToRemove, decision.player);
         decision.player.assignRecruit(characterCard);
-        this.locationTileCheck(player);
-        this.avengersAssembleTileCheck(player);
-        this.infinityGauntletTileCheck(player);
+        this.locationTileCheck(decision.player, decision.location);
+        this.avengersAssembleTileCheck(decision.player);
+        this.infinityGauntletTileCheck(decision.player);
         break;
     }
     return true;
