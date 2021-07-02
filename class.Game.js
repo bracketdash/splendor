@@ -58,6 +58,11 @@ export default class Game {
     }
   }
 
+  avengersAssembleTileCheck(player) {
+    // TODO
+    return false;
+  }
+
   getState() {
     return {
       players: this.players,
@@ -66,6 +71,11 @@ export default class Game {
       freeAgents: this.freeAgents,
       ownerTracker: this.ownerTracker,
     };
+  }
+
+  locationTileCheck(player) {
+    // TODO
+    return false;
   }
 
   nextTurn() {
@@ -105,16 +115,19 @@ export default class Game {
           characterCard = this.freeAgents[decision.level - 1][decision.index];
         }
         decision.player.assignRecruit(characterCard);
-        // TODO: any necessary follow-up logic (acquiring tiles, endgame trigger, etc.)
-        // return false if game should be over now
+        this.locationTileCheck(player);
+        this.avengersAssembleTileCheck(player);
+        this.infinityGauntletTileCheck(player);
         break;
     }
     return true;
   }
 
-  processEndGame() {
-    // TODO
-    this.postGameCallback(this);
+  infinityGauntletTileCheck(player) {
+    // TODO: handle if a player qualified for the infinity gauntlet this round...
+    // TODO: ..but the round is not complete
+    // TODO: ..and the round is complete
+    // this.postGameCallback(this)
     return false;
   }
 
