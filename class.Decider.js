@@ -7,13 +7,16 @@ export default class Decider {
     const allOptions = [];
 
     const unownedTokens = {};
-    Object.keys(ownerTracker.tokens).forEach((color) => {
-      const unowned = ownerTracker.tokens[color].filter(
+    Object.keys(gameState.ownerTracker.tokens).forEach((color) => {
+      if (color === "gray") {
+        return;
+      }
+      const unowned = gameState.ownerTracker.tokens[color].filter(
         (owner) => owner === null
       ).length;
-      if (unowned.length) {
-        unownedTokens[color] = unowned.length;
-        if (unowned.length > 3) {
+      if (unowned) {
+        unownedTokens[color] = unowned;
+        if (unowned > 3) {
           allOptions.push({ type: "2same", tokens: [color, color] });
         }
       }
@@ -49,14 +52,16 @@ export default class Decider {
       allOptions.push({ type: "recruit", level: "reserves", index });
     });
 
-    // testing
-    console.log(allOptions);
+    const scoredOptions = allOptions.map((option) => ({
+      option,
+      score: this.getOptionScore(player, gameState, option),
+    }));
+    scoredOptions.sort((a, b) => (a.score > b.score ? 1 : -1));
 
-    // const scoredOptions = allOptions.map((option) => ({
-    //   option,
-    //   score: this.getOptionScore(player, gameState, option),
-    // }));
-    // scoredOptions.sort((a, b) => (a.score > b.score ? 1 : -1));
-    // return scoredOptions[0];
+    // TESTING
+    console.log(scoredOptions);
+    throw new Error("Done testing.");
+
+    return scoredOptions[0];
   }
 }

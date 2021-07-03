@@ -208,21 +208,19 @@ export default class Game {
   }
 
   nextTurn() {
-    // testing
     const decision = this.players[this.whoseTurn].getDecision(
       this.players[this.whoseTurn],
       this.getState()
     );
-
-    // if (!this.processDecision(decision)) {
-    //   return;
-    // }
-    // this.whoseTurn++;
-    // if (this.whoseTurn > this.numPlayers - 1) {
-    //   this.whoseTurn = 0;
-    //   this.round++;
-    // }
-    // this.nextTurn();
+    if (!this.processDecision(decision)) {
+      return;
+    }
+    this.whoseTurn++;
+    if (this.whoseTurn > this.numPlayers - 1) {
+      this.whoseTurn = 0;
+      this.round++;
+    }
+    this.nextTurn();
   }
 
   processDecision(decision) {
@@ -236,22 +234,22 @@ export default class Game {
         break;
       case "reserve":
         const freeAgentRow = this.freeAgents[decision.level - 1];
-        const characterCard = freeAgentRow[decision.index];
-        decision.player.assignReserve(characterCard);
+        const cardToReserve = freeAgentRow[decision.index];
+        decision.player.assignReserve(cardToReserve);
         this.assignToken("gray", decision.player);
         this.removeTokens(decision.tokensToRemove, decision.player);
         this.replaceCard(decision.level - 1, decision.index);
         break;
       case "recruit":
-        let characterCard;
+        let cardToRecruit;
         if (decision.level === "reserves") {
-          characterCard = decision.player.getReserve(decision.index);
+          cardToRecruit = decision.player.getReserve(decision.index);
         } else {
-          characterCard = this.freeAgents[decision.level - 1][decision.index];
+          cardToRecruit = this.freeAgents[decision.level - 1][decision.index];
           this.replaceCard(decision.level - 1, decision.index);
         }
         this.removeTokens(decision.tokensToRemove, decision.player);
-        decision.player.assignRecruit(characterCard);
+        decision.player.assignRecruit(cardToRecruit);
         decision.player.removeReserve(decision.index);
         this.locationTileCheck(decision.player, decision.location);
         this.avengersAssembleTileCheck(decision.player);
