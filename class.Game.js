@@ -82,7 +82,7 @@ export default class Game {
 
   doesPlayerQualifyForGauntlet(player) {
     const hasEnoughPoints = this.getPlayerScore(player) > 15;
-    const hasAllColors = colors.all((c) => !!this.getPlayerBonus(player, c));
+    const hasAllColors = colors.every((c) => !!this.getPlayerBonus(player, c));
     const hasTimeStone = player.hasTimeStone();
     return hasEnoughPoints && hasAllColors && hasTimeStone;
   }
@@ -196,7 +196,7 @@ export default class Game {
     this.locationTiles.forEach((locationTile) => {
       if (locationTile.getOwner() === null) {
         if (
-          Object.keys(locationTile.cost).all(
+          Object.keys(locationTile.cost).every(
             (color) =>
               this.getPlayerBonus(player, color) >= locationTile.cost[color]
           )
@@ -208,6 +208,9 @@ export default class Game {
   }
 
   nextTurn() {
+    // TESTING
+    console.log(this.round, this.whoseTurn);
+
     const decision = this.players[this.whoseTurn].getDecision(
       this.players[this.whoseTurn],
       this.getState()
@@ -222,8 +225,9 @@ export default class Game {
     }
 
     // TESTING
-    console.log(this.round, this.whoseTurn);
-    // BUG: the game goes on forever
+    if (this.round > 100) {
+      return;
+    }
 
     setTimeout(() => {
       this.nextTurn();
@@ -231,6 +235,9 @@ export default class Game {
   }
 
   processDecision(decision) {
+    // TESTING
+    console.log(decision);
+
     switch (decision.type) {
       case "3diff":
       case "2same":
@@ -269,7 +276,7 @@ export default class Game {
   }
 
   removeTokens(tokensToRemove, player) {
-    if (!tokensToRemove.length) {
+    if (!tokensToRemove || !tokensToRemove.length) {
       return;
     }
     tokensToRemove.forEach((color) => {

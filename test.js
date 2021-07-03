@@ -1,10 +1,12 @@
 import Game from "./class.Game.js";
 import Player from "./class.Player.js";
-import splendorbot from "./splendorbot.js";
+
+import bob from "./splendorbot.js";
+import laurie from "./splendorbot.js";
 
 const players = [
-  new Player("Bob", splendorbot),
-  new Player("Laurie", splendorbot),
+  new Player("Bob", bob),
+  new Player("Laurie", laurie),
   // new Player("Omar", splendorbot),
   // new Player("Steve", splendorbot),
 ];

@@ -57,11 +57,12 @@ export default class Decider {
       score: this.getOptionScore(player, gameState, option),
     }));
     scoredOptions.sort((a, b) => (a.score > b.score ? -1 : 1));
+    scoredOptions[0].option.player = player;
 
     // TESTING
     // console.log(scoredOptions);
     // throw new Error("Done testing.");
 
-    return scoredOptions[0];
+    return scoredOptions[0].option;
   }
 }

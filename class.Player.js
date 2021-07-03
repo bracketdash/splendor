@@ -6,6 +6,10 @@ export default class Player {
     this.reserves = [];
   }
 
+  assignRecruit(characterCard) {
+    this.recruits.push(characterCard);
+  }
+
   assignReserve(characterCard) {
     this.reserves.push(characterCard);
   }
