@@ -1,6 +1,8 @@
 import getAllCharacterCards from "./function.getAllCharacterCards.js";
 import getAllLocationTiles from "./function.getAllLocationTiles.js";
 
+const colors = ["blue", "orange", "purple", "red", "yellow"];
+
 function getNullArray(n) {
   return Array(4).fill(null);
 }
@@ -19,7 +21,9 @@ export default class Game {
     this.round = 1;
 
     const allLocationTiles = getShuffled(getAllLocationTiles());
-    this.locationTiles = getNullArray(4).map(() => allLocationTiles.pop());
+    this.locationTiles = getNullArray(this.numPlayers).map(() =>
+      allLocationTiles.pop()
+    );
 
     const characterCards = getAllCharacterCards();
     this.decks = [
@@ -42,7 +46,6 @@ export default class Game {
     };
 
     const numPlayersToTokenMap = [null, null, 4, 5, 7];
-    const colors = ["blue", "orange", "purple", "red", "yellow"];
     colors.forEach((color) => {
       const numTokens = numPlayersToTokenMap[this.numPlayers];
       this.ownerTracker.tokens[color] = getNullArray(numTokens);
@@ -77,6 +80,13 @@ export default class Game {
     }
   }
 
+  doesPlayerQualifyForGauntlet(player) {
+    const hasEnoughPoints = this.getPlayerScore(player) > 15;
+    const hasAllColors = colors.all((c) => !!this.getPlayerBonus(player, c));
+    const hasTimeStone = player.hasTimeStone();
+    return hasEnoughPoints && hasAllColors && hasTimeStone;
+  }
+
   getPlayerAvengersTags(player) {
     let numAvengersTags = 0;
     player.getRecruits().forEach((recruit) => {
@@ -90,8 +100,19 @@ export default class Game {
   }
 
   getPlayerScore(player) {
-    // TODO
-    return 0;
+    let score = 0;
+    player.getRecruits().forEach((recruit) => {
+      score += recruit.getInfinityPoints();
+    });
+    if (this.ownerTracker.avengersAssembleTile === player) {
+      score += 3;
+    }
+    this.locationTiles.forEach((locationTile) => {
+      if (locationTile.getOwner() === player) {
+        score += locationTile.getInfinityPoints();
+      }
+    });
+    return score;
   }
 
   getState() {
@@ -105,23 +126,21 @@ export default class Game {
   }
 
   infinityGauntletTileCheck(player) {
-    const playerScore = this.getPlayerScore(player);
+    const isLastTurn = this.whoseTurn === this.numPlayers - 1;
+    const thisPlayerQualifies = this.doesPlayerQualifyForGauntlet(player);
+    let gauntletOwned = this.ownerTracker.infinityGauntletTile !== null;
 
-    if (playerScore < 16) {
-      return;
+    if (thisPlayerQualifies) {
+      if (!gauntletOwned) {
+        this.ownerTracker.infinityGauntletTile = player;
+        gauntletOwned = true;
+      }
+    } else if (!gauntletOwned) {
+      return false;
     }
 
-    // TODO
-    // handle if a player qualified for the infinity gauntlet this round...
-    // ..but the round is not complete
-    // ..and the round is complete
-    // this.postGameCallback(this)
-    // return true if game is over
-    if (
-      this.ownerTracker.infinityGauntletTile !== null &&
-      this.whoseTurn === this.numPlayers - 1
-    ) {
-      // TODO: end the game
+    if (gauntletOwned && isLastTurn) {
+      // TODO: follow endgame rules
       this.postGameCallback(this);
       return true;
     }

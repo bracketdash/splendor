@@ -7,4 +7,12 @@ export default class LocationTile {
       owner: null,
     });
   }
+
+  getInfinityPoints() {
+    return this.infinityPoints;
+  }
+
+  getOwner() {
+    return this.owner;
+  }
 }

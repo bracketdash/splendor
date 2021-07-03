@@ -10,6 +10,10 @@ export default class CharacterCard {
     });
   }
 
+  getInfinityPoints() {
+    return this.infinityPoints;
+  }
+
   getLevel() {
     return this.level;
   }
