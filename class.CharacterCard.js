@@ -10,11 +10,19 @@ export default class CharacterCard {
     });
   }
 
+  getBonus() {
+    return this.bonus;
+  }
+
   getInfinityPoints() {
     return this.infinityPoints;
   }
 
   getLevel() {
     return this.level;
+  }
+
+  getNumAvengersTags() {
+    return this.avengersTags;
   }
 }

@@ -15,4 +15,8 @@ export default class LocationTile {
   getOwner() {
     return this.owner;
   }
+
+  setOwner(player) {
+    this.owner = player;
+  }
 }

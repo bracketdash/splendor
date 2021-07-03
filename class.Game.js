@@ -152,7 +152,34 @@ export default class Game {
           winner: false,
         };
       });
-      // TODO: use playerStats to fogure out the winner, and set that player's winner stat to true
+      const qualifiedForGauntlet = playerStats.filter(
+        (p) => p.qualifiesForGauntlet
+      );
+      if (qualifiedForGauntlet.length === 1) {
+        qualifiedForGauntlet[0].winner = true;
+      } else {
+        const topPoints = Math.max(...playerStats.map((p) => p.infinityPoints));
+        const playersWithMaxPoints = playerStats.filter(
+          (p) => p.infinityPoints === topPoints
+        );
+        if (playersWithMaxPoints.length === 1) {
+          playersWithMaxPoints[0].winner = true;
+        } else {
+          const playersWithAvengersTile = playerStats.filter(
+            (p) => p.hasAvengersTile
+          );
+          if (playersWithAvengersTile.length) {
+            playersWithAvengersTile[0].winner = true;
+          } else {
+            const lowestCardCount = Math.min(...playerStats.map((p) => p.numCharacterCards);
+            playerStats.forEach((p) => {
+              if (p.numCharacterCards === lowestCardCount) {
+                p.winner = true;
+              }
+            });
+          }
+        }
+      }
       this.postGameCallback({
         gameState: this.getState(),
         playerStats,
@@ -218,6 +245,7 @@ export default class Game {
         }
         this.removeTokens(decision.tokensToRemove, decision.player);
         decision.player.assignRecruit(characterCard);
+        decision.player.removeReserve(decision.index);
         this.locationTileCheck(decision.player, decision.location);
         this.avengersAssembleTileCheck(decision.player);
         if (this.infinityGauntletTileCheck(decision.player)) {
