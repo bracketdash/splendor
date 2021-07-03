@@ -1,16 +1,12 @@
-import Player from "./class.Player.js";
 import Game from "./class.Game.js";
-
-import bob from "./ai.bob.js";
-// import laurie from "./ai.laurie.js";
-// import omar from "./ai.omar.js";
-// import steve from "./ai.steve.js";
+import Player from "./class.Player.js";
+import splendorbot from "./splendorbot.js";
 
 const players = [
-  new Player("Bob", bob),
-  new Player("Laurie", bob),
-  // new Player("Omar", omar),
-  // new Player("Steve", steve),
+  new Player("Bob", splendorbot),
+  new Player("Laurie", splendorbot),
+  // new Player("Omar", splendorbot),
+  // new Player("Steve", splendorbot),
 ];
 
 const endGameCallback = function (gameState, playerStats) {
@@ -21,3 +17,5 @@ const endGameCallback = function (gameState, playerStats) {
 const game = new Game(players, endGameCallback);
 
 game.start();
+
+// TODO: make a UI, and allow human players
