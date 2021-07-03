@@ -208,9 +208,6 @@ export default class Game {
   }
 
   nextTurn() {
-    // TESTING
-    console.log(this.round, this.whoseTurn);
-
     const decision = this.players[this.whoseTurn].getDecision(
       this.players[this.whoseTurn],
       this.getState()
@@ -224,20 +221,12 @@ export default class Game {
       this.round++;
     }
 
-    // TESTING
-    if (this.round > 100) {
-      return;
-    }
-
     setTimeout(() => {
       this.nextTurn();
     });
   }
 
   processDecision(decision) {
-    // TESTING
-    console.log(decision);
-
     switch (decision.type) {
       case "3diff":
       case "2same":
