@@ -16,7 +16,7 @@ export default class Game {
     this.postGameCallback = postGameCallback;
 
     this.players = players;
-    this.numPlayers = players.length + 1;
+    this.numPlayers = players.length;
     this.whoseTurn = 0;
     this.round = 1;
 
@@ -220,7 +220,14 @@ export default class Game {
       this.whoseTurn = 0;
       this.round++;
     }
-    this.nextTurn();
+
+    // TESTING
+    console.log(this.round, this.whoseTurn);
+    // BUG: the game goes on forever
+
+    setTimeout(() => {
+      this.nextTurn();
+    });
   }
 
   processDecision(decision) {
