@@ -208,19 +208,21 @@ export default class Game {
   }
 
   nextTurn() {
+    // testing
     const decision = this.players[this.whoseTurn].getDecision(
       this.players[this.whoseTurn],
       this.getState()
     );
-    if (!this.processDecision(decision)) {
-      return;
-    }
-    this.whoseTurn++;
-    if (this.whoseTurn > this.numPlayers - 1) {
-      this.whoseTurn = 0;
-      this.round++;
-    }
-    this.nextTurn();
+
+    // if (!this.processDecision(decision)) {
+    //   return;
+    // }
+    // this.whoseTurn++;
+    // if (this.whoseTurn > this.numPlayers - 1) {
+    //   this.whoseTurn = 0;
+    //   this.round++;
+    // }
+    // this.nextTurn();
   }
 
   processDecision(decision) {
@@ -276,6 +278,8 @@ export default class Game {
   replaceCard(row, index) {
     if (this.decks[row].length) {
       this.freeAgents[row][index] = this.decks[row].pop();
+    } else {
+      this.freeAgents[row][index] = null;
     }
   }
 
