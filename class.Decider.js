@@ -36,7 +36,15 @@ export default class Decider {
     const locationOptions = [];
     locationTiles.forEach((locationTile) => {
       if (locationTile.getOwner() === null) {
-        // TODO: if ( player qualifies ) { locationOptions.push(locationTile); }
+        if (
+          Object.keys(locationTile.cost).every(
+            (color) =>
+              playerBonuses[color] &&
+              playerBonuses[color] >= locationTile.cost[color]
+          )
+        ) {
+          locationOptions.push(locationTile);
+        }
       }
     });
 
@@ -149,10 +157,6 @@ export default class Decider {
         })
       );
     });
-
-    // TESTING
-    console.log(allOptions);
-    throw new Error("Done testing.");
 
     const scoredOptions = allOptions.map((option) => ({
       option,

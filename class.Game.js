@@ -4,7 +4,7 @@ import getAllLocationTiles from "./function.getAllLocationTiles.js";
 const colors = ["blue", "orange", "purple", "red", "yellow"];
 
 function getNullArray(n) {
-  return Array(4).fill(null);
+  return Array(n).fill(null);
 }
 
 function getShuffled(items) {
@@ -21,9 +21,10 @@ export default class Game {
     this.round = 1;
 
     const allLocationTiles = getShuffled(getAllLocationTiles());
-    this.locationTiles = getNullArray(this.numPlayers).map(() =>
-      allLocationTiles.pop()
-    );
+    this.locationTiles = getNullArray(this.numPlayers).map(() => {
+      const locationToAdd = allLocationTiles.pop();
+      return locationToAdd;
+    });
 
     const characterCards = getAllCharacterCards();
     this.decks = [
@@ -194,14 +195,13 @@ export default class Game {
 
   locationTileCheck(player, location) {
     this.locationTiles.forEach((locationTile) => {
-      if (locationTile.getOwner() === null) {
+      if (locationTile === location && locationTile.getOwner() === null) {
         if (
           Object.keys(locationTile.cost).every(
             (color) =>
               this.getPlayerBonus(player, color) >= locationTile.cost[color]
           )
         ) {
-          // TODO: only setOwner if this location matches location argument
           locationTile.setOwner(player);
         }
       }
@@ -216,6 +216,17 @@ export default class Game {
     if (!this.processDecision(decision)) {
       return;
     }
+
+    // TESTING
+    // seeing that players are never getting assigned recruits
+    // may be related to new logic in Decider class that doesn't add recruits the player can't afford
+    console.log(this.round, this.whoseTurn);
+    console.log(decision);
+
+    if (this.round > 20) {
+      throw new Error("Done testing!");
+    }
+
     this.whoseTurn++;
     if (this.whoseTurn > this.numPlayers - 1) {
       this.whoseTurn = 0;

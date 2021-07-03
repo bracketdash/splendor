@@ -12,7 +12,6 @@ const players = [
 ];
 
 const endGameCallback = function (gameState, playerStats) {
-  console.log(gameState);
   console.log(playerStats);
 };
 
