@@ -49,8 +49,14 @@ export default class Decider {
       });
     });
 
-    const playerBonuses = {};
-    // TODO: build playerBonuses
+    const playerBonuses = player.getRecruits().reduce((bonuses, cc) => {
+      const bonus = cc.getBonus();
+      if (!bonuses[bonus]) {
+        bonuses[bonus] = 1;
+      } else {
+        bonuses[bonus]++;
+      }
+    }, {});
 
     const numPlayerTokens = Object.values(playerTokens).reduce((a, b) => a + b);
     const atMaxReserves = player.getReserves().length === 3;
