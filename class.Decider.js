@@ -3,14 +3,15 @@ export default class Decider {
     this.getOptionScore = getOptionScore;
   }
 
-  addRecruitOptionIfApplicable(
+  addRecruitOptionIfApplicable({
     allOptions,
-    rowIndex,
-    index,
     characterCard,
+    index,
+    locationTiles,
+    playerBonuses,
     playerTokens,
-    playerBonuses
-  ) {
+    rowIndex,
+  }) {
     const level = rowIndex === "reserves" ? "reserves" : rowIndex + 1;
 
     let playerCanAffordCard = true;
@@ -32,10 +33,20 @@ export default class Decider {
       return;
     }
 
-    // TODO: include locationTile in option
-    // TODO: if option would qualify a player for multiple location tiles, make an option for each tile
+    const locationOptions = [];
+    locationTiles.forEach((locationTile) => {
+      if (locationTile.getOwner() === null) {
+        // TODO: if ( player qualifies ) { locationOptions.push(locationTile); }
+      }
+    });
 
-    allOptions.push({ type: "recruit", level, index });
+    if (locationOptions.length && locationOptions.length > 1) {
+      locationOptions.forEach((location) => {
+        allOptions.push({ type: "recruit", level, index, location });
+      });
+    } else {
+      allOptions.push({ type: "recruit", level, index });
+    }
   }
 
   getDecision(player, gameState) {
@@ -107,16 +118,21 @@ export default class Decider {
       threeDiffLoop(3, unownedColors, []);
     }
 
+    const recruitConfig = {
+      allOptions,
+      locationTiles: gameState.locationTiles,
+      playerBonuses,
+      playerTokens,
+    };
     gameState.freeAgents.forEach((row, rowIndex) => {
       row.forEach((characterCard, index) => {
         if (characterCard !== null) {
           this.addRecruitOptionIfApplicable(
-            allOptions,
-            rowIndex,
-            index,
-            characterCard,
-            playerTokens,
-            playerBonuses
+            Object.assign({}, recruitConfig, {
+              characterCard,
+              index,
+              rowIndex,
+            })
           );
           if (!atMaxReserves) {
             allOptions.push({ type: "reserve", level: rowIndex + 1, index });
@@ -126,12 +142,11 @@ export default class Decider {
     });
     player.getReserves().forEach((characterCard, index) => {
       this.addRecruitOptionIfApplicable(
-        allOptions,
-        "reserves",
-        index,
-        characterCard,
-        playerTokens,
-        playerBonuses
+        Object.assign({}, recruitConfig, {
+          characterCard,
+          index,
+          rowIndex: "reserves",
+        })
       );
     });
 

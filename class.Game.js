@@ -201,6 +201,7 @@ export default class Game {
               this.getPlayerBonus(player, color) >= locationTile.cost[color]
           )
         ) {
+          // TODO: only setOwner if this location matches location argument
           locationTile.setOwner(player);
         }
       }
