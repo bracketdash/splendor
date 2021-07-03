@@ -89,6 +89,11 @@ export default class Game {
     return player.getRecruits().filter((cc) => cc.getBonus() === color).length;
   }
 
+  getPlayerScore(player) {
+    // TODO
+    return 0;
+  }
+
   getState() {
     return {
       players: this.players,
@@ -100,11 +105,27 @@ export default class Game {
   }
 
   infinityGauntletTileCheck(player) {
+    const playerScore = this.getPlayerScore(player);
+
+    if (playerScore < 16) {
+      return;
+    }
+
     // TODO
     // handle if a player qualified for the infinity gauntlet this round...
     // ..but the round is not complete
     // ..and the round is complete
     // this.postGameCallback(this)
+    // return true if game is over
+    if (
+      this.ownerTracker.infinityGauntletTile !== null &&
+      this.whoseTurn === this.numPlayers - 1
+    ) {
+      // TODO: end the game
+      this.postGameCallback(this);
+      return true;
+    }
+
     return false;
   }
 
@@ -124,12 +145,8 @@ export default class Game {
   }
 
   nextTurn() {
-    if (
-      !this.processDecision(
-        this.players[this.whoseTurn].getDecision(this.getState())
-      )
-    ) {
-      this.processEndGame();
+    const decision = this.players[this.whoseTurn].getDecision(this.getState());
+    if (!this.processDecision(decision)) {
       return;
     }
     this.whoseTurn++;
@@ -169,7 +186,9 @@ export default class Game {
         decision.player.assignRecruit(characterCard);
         this.locationTileCheck(decision.player, decision.location);
         this.avengersAssembleTileCheck(decision.player);
-        this.infinityGauntletTileCheck(decision.player);
+        if (this.infinityGauntletTileCheck(decision.player)) {
+          return false;
+        }
         break;
     }
     return true;
