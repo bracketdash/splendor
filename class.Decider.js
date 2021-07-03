@@ -17,6 +17,7 @@ export default class Decider {
     let playerCanAffordCard = true;
     let grayTokensLeft = playerTokens.gray || 0;
     const cardCost = characterCard.getCost();
+
     Object.keys(cardCost).forEach((color) => {
       const tokensOfColor = playerTokens[color] || 0;
       const bonusesOfColor = playerBonuses[color] || 0;
@@ -29,6 +30,7 @@ export default class Decider {
         }
       }
     });
+
     if (!playerCanAffordCard) {
       return;
     }
@@ -80,6 +82,7 @@ export default class Decider {
       } else {
         bonuses[bonus]++;
       }
+      return bonuses;
     }, {});
 
     const numPlayerTokens = Object.values(playerTokens).reduce(
@@ -103,6 +106,9 @@ export default class Decider {
         }
       }
     });
+
+    console.log("allOptions.length: ", allOptions.length);
+
     const unownedColors = Object.keys(unownedTokens);
     if (
       unownedColors.length &&
@@ -125,6 +131,8 @@ export default class Decider {
       };
       threeDiffLoop(3, unownedColors, []);
     }
+
+    console.log("allOptions.length: ", allOptions.length);
 
     const recruitConfig = {
       allOptions,
@@ -157,6 +165,13 @@ export default class Decider {
         })
       );
     });
+
+    console.log("allOptions.length: ", allOptions.length);
+
+    // TESTING
+    if (!allOptions.length) {
+      throw new Error("Zero options...?");
+    }
 
     const scoredOptions = allOptions.map((option) => ({
       option,

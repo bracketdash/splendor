@@ -54,12 +54,12 @@ export default class Game {
   }
 
   assignToken(color, player) {
-    const tokens = this.ownerTracker.tokens[color].filter(
-      (token) => token === null
-    );
-    if (tokens.length) {
-      tokens[0] = player;
-    }
+    this.ownerTracker.tokens[color].some((token, index) => {
+      if (token === null) {
+        this.ownerTracker.tokens[color][index] = player;
+        return true;
+      }
+    });
   }
 
   avengersAssembleTileCheck(thisPlayer) {
@@ -218,12 +218,9 @@ export default class Game {
     }
 
     // TESTING
-    // seeing that players are never getting assigned recruits
-    // may be related to new logic in Decider class that doesn't add recruits the player can't afford
     console.log(this.round, this.whoseTurn);
     console.log(decision);
-
-    if (this.round > 20) {
+    if (this.round > 50) {
       throw new Error("Done testing!");
     }
 
