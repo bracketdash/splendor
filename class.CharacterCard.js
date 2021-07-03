@@ -14,6 +14,10 @@ export default class CharacterCard {
     return this.bonus;
   }
 
+  getCost() {
+    return this.cost;
+  }
+
   getInfinityPoints() {
     return this.infinityPoints;
   }

@@ -3,18 +3,55 @@ export default class Decider {
     this.getOptionScore = getOptionScore;
   }
 
-  addRecruitOptionIfApplicable(rowIndex, index) {
+  addRecruitOptionIfApplicable(
+    allOptions,
+    rowIndex,
+    index,
+    characterCard,
+    playerTokens,
+    playerBonuses
+  ) {
     const level = rowIndex === "reserves" ? "reserves" : rowIndex + 1;
-    // TODO: (don't add recruit options that player cannot buy) compare card cost to playerTokens
-    // TODO: (don't add recruit options that player cannot buy) special cases for gray tokens
+
+    let playerCanAffordCard = true;
+    let grayTokensLeft = playerTokens.gray;
+    const cardCost = characterCard.getCost();
+    Object.keys(cardCost).forEach((color) => {
+      const numOfColor = playerTokens[color] + playerBonuses[color];
+      const needed = cardCost[color] - numOfColor;
+      if (needed > 0 && grayTokensLeft < needed) {
+        playerCanAffordCard = false;
+      }
+    });
+    if (!playerCanAffordCard) {
+      return;
+    }
+
+    // TODO: include locationTile in option
     // TODO: if option would qualify a player for multiple location tiles, make an option for each tile
+
     allOptions.push({ type: "recruit", level, index });
   }
 
   getDecision(player, gameState) {
     const allOptions = [];
+
     const playerTokens = {};
-    // TODO: build a playerTokens object
+    Object.keys(this.ownerTracker.tokens).forEach((color) => {
+      this.ownerTracker.tokens[color].forEach((owner) => {
+        if (owner === player) {
+          if (!playerTokens[color]) {
+            playerTokens[color] = 1;
+          } else {
+            playerTokens[color]++;
+          }
+        }
+      });
+    });
+
+    const playerBonuses = {};
+    // TODO: build playerBonuses
+
     const numPlayerTokens = Object.values(playerTokens).reduce((a, b) => a + b);
     const atMaxReserves = player.getReserves().length === 3;
 
@@ -34,7 +71,11 @@ export default class Decider {
       }
     });
     const unownedColors = Object.keys(unownedTokens);
-    if (unownedColors.length && unownedColors.length < 4 && numPlayerTokens < (11 - unownedColors.length)) {
+    if (
+      unownedColors.length &&
+      unownedColors.length < 4 &&
+      numPlayerTokens < 11 - unownedColors.length
+    ) {
       allOptions.push({ type: "3diff", tokens: unownedColors });
     } else if (unownedColors.length > 3) {
       const threeDiffLoop = function (n, src, combo) {
@@ -55,15 +96,29 @@ export default class Decider {
     gameState.freeAgents.forEach((row, rowIndex) => {
       row.forEach((characterCard, index) => {
         if (characterCard !== null) {
-          this.addRecruitOptionIfApplicable(allOptions, rowIndex, index);
+          this.addRecruitOptionIfApplicable(
+            allOptions,
+            rowIndex,
+            index,
+            characterCard,
+            playerTokens,
+            playerBonuses
+          );
           if (!atMaxReserves) {
             allOptions.push({ type: "reserve", level: rowIndex + 1, index });
           }
         }
       });
     });
-    player.getReserves().forEach((_, index) => {
-      this.addRecruitOptionIfApplicable(allOptions, "reserves", index);
+    player.getReserves().forEach((characterCard, index) => {
+      this.addRecruitOptionIfApplicable(
+        allOptions,
+        "reserves",
+        index,
+        characterCard,
+        playerTokens,
+        playerBonuses
+      );
     });
 
     // TESTING
