@@ -99,6 +99,15 @@ export default class Game {
     };
   }
 
+  infinityGauntletTileCheck(player) {
+    // TODO
+    // handle if a player qualified for the infinity gauntlet this round...
+    // ..but the round is not complete
+    // ..and the round is complete
+    // this.postGameCallback(this)
+    return false;
+  }
+
   locationTileCheck(player, location) {
     this.locationTiles.forEach((locationTile) => {
       if (locationTile.getOwner() === null) {
@@ -115,7 +124,11 @@ export default class Game {
   }
 
   nextTurn() {
-    if (!this.processDecision(this.players[this.whoseTurn].getDecision(this.getState()))) {
+    if (
+      !this.processDecision(
+        this.players[this.whoseTurn].getDecision(this.getState())
+      )
+    ) {
       this.processEndGame();
       return;
     }
@@ -142,7 +155,7 @@ export default class Game {
         decision.player.assignReserve(characterCard);
         this.assignToken("gray", decision.player);
         this.removeTokens(decision.tokensToRemove, decision.player);
-        // TODO: replace taken card if there's at least one in the same-level deck
+        this.replaceCard(decision.level - 1, decision.index);
         break;
       case "recruit":
         let characterCard;
@@ -150,25 +163,16 @@ export default class Game {
           characterCard = decision.player.getReserve(decision.index);
         } else {
           characterCard = this.freeAgents[decision.level - 1][decision.index];
+          this.replaceCard(decision.level - 1, decision.index);
         }
         this.removeTokens(decision.tokensToRemove, decision.player);
         decision.player.assignRecruit(characterCard);
         this.locationTileCheck(decision.player, decision.location);
         this.avengersAssembleTileCheck(decision.player);
         this.infinityGauntletTileCheck(decision.player);
-        // TODO: replace taken card if applicable and there's at least one in the same-level deck
         break;
     }
     return true;
-  }
-
-  infinityGauntletTileCheck(player) {
-    // TODO
-    // handle if a player qualified for the infinity gauntlet this round...
-    // ..but the round is not complete
-    // ..and the round is complete
-    // this.postGameCallback(this)
-    return false;
   }
 
   removeTokens(tokensToRemove, player) {
@@ -181,6 +185,12 @@ export default class Game {
       );
       tokens[0] = null;
     });
+  }
+
+  replaceCard(row, index) {
+    if (this.decks[row].length) {
+      this.freeAgents[row][index] = this.decks[row].pop();
+    }
   }
 
   start() {
