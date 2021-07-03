@@ -208,7 +208,10 @@ export default class Game {
   }
 
   nextTurn() {
-    const decision = this.players[this.whoseTurn].getDecision(this.getState());
+    const decision = this.players[this.whoseTurn].getDecision(
+      this.players[this.whoseTurn],
+      this.getState()
+    );
     if (!this.processDecision(decision)) {
       return;
     }
