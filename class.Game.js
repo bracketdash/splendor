@@ -115,7 +115,7 @@ export default class Game {
   }
 
   nextTurn() {
-    if (!this.processDecision(this.players[this.whoseTurn].getDecision(this))) {
+    if (!this.processDecision(this.players[this.whoseTurn].getDecision(this.getState()))) {
       this.processEndGame();
       return;
     }
@@ -163,9 +163,10 @@ export default class Game {
   }
 
   infinityGauntletTileCheck(player) {
-    // TODO: handle if a player qualified for the infinity gauntlet this round...
-    // TODO: ..but the round is not complete
-    // TODO: ..and the round is complete
+    // TODO
+    // handle if a player qualified for the infinity gauntlet this round...
+    // ..but the round is not complete
+    // ..and the round is complete
     // this.postGameCallback(this)
     return false;
   }

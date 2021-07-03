@@ -1,9 +1,16 @@
 export default class Decider {
-  constructor(getDecisionCallback) {
-    this.getDecisionCallback = getDecisionCallback;
+  constructor(player, getOptionScore) {
+    this.player = player;
+    this.getOptionScore = getOptionScore;
   }
 
-  getDecision(game) {
-    return this.getDecisionCallback(game);
+  getDecision(gameState) {
+    // TODO: const allOptions (using gameState and this.player)
+    const scoredOptions = allOptions.map((option) => ({
+      option,
+      score: this.getOptionScore(gameState, option),
+    }));
+    scoredOptions.sort((a, b) => (a.score > b.score ? 1 : -1));
+    return scoredOptions[0];
   }
 }
