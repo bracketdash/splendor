@@ -171,7 +171,9 @@ export default class Game {
           if (playersWithAvengersTile.length) {
             playersWithAvengersTile[0].winner = true;
           } else {
-            const lowestCardCount = Math.min(...playerStats.map((p) => p.numCharacterCards);
+            const lowestCardCount = Math.min(
+              ...playerStats.map((p) => p.numCharacterCards)
+            );
             playerStats.forEach((p) => {
               if (p.numCharacterCards === lowestCardCount) {
                 p.winner = true;
