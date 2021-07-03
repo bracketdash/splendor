@@ -1,12 +1,17 @@
 export default class Player {
-  constructor(name) {
+  constructor(name, ai) {
     this.name = name;
+    this.ai = ai;
     this.recruits = [];
     this.reserves = [];
   }
 
   assignReserve(characterCard) {
     this.reserves.push(characterCard);
+  }
+
+  getDecision(player, gameState) {
+    return this.ai.getDecision(player, gameState);
   }
 
   getRecruits() {
