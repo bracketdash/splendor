@@ -108,6 +108,9 @@ export default class Decider {
     });
 
     console.log("allOptions.length: ", allOptions.length);
+    console.log('unownedTokens: ', unownedTokens);
+    console.log('numPlayerTokens: ', numPlayerTokens);
+    throw new Error("Stopping here for now.");
 
     const unownedColors = Object.keys(unownedTokens);
     if (
