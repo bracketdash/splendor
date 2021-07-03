@@ -142,6 +142,7 @@ export default class Game {
         decision.player.assignReserve(characterCard);
         this.assignToken("gray", decision.player);
         this.removeTokens(decision.tokensToRemove, decision.player);
+        // TODO: replace taken card if there's at least one in the same-level deck
         break;
       case "recruit":
         let characterCard;
@@ -155,6 +156,7 @@ export default class Game {
         this.locationTileCheck(decision.player, decision.location);
         this.avengersAssembleTileCheck(decision.player);
         this.infinityGauntletTileCheck(decision.player);
+        // TODO: replace taken card if applicable and there's at least one in the same-level deck
         break;
     }
     return true;
