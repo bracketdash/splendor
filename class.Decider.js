@@ -14,13 +14,18 @@ export default class Decider {
     const level = rowIndex === "reserves" ? "reserves" : rowIndex + 1;
 
     let playerCanAffordCard = true;
-    let grayTokensLeft = playerTokens.gray;
+    let grayTokensLeft = playerTokens.gray || 0;
     const cardCost = characterCard.getCost();
     Object.keys(cardCost).forEach((color) => {
-      const numOfColor = playerTokens[color] + playerBonuses[color];
-      const needed = cardCost[color] - numOfColor;
-      if (needed > 0 && grayTokensLeft < needed) {
-        playerCanAffordCard = false;
+      const tokensOfColor = playerTokens[color] || 0;
+      const bonusesOfColor = playerBonuses[color] || 0;
+      const needed = cardCost[color] - tokensOfColor + bonusesOfColor;
+      if (needed > 0) {
+        if (grayTokensLeft < needed) {
+          playerCanAffordCard = false;
+        } else {
+          grayTokensLeft -= needed;
+        }
       }
     });
     if (!playerCanAffordCard) {
@@ -37,8 +42,8 @@ export default class Decider {
     const allOptions = [];
 
     const playerTokens = {};
-    Object.keys(this.ownerTracker.tokens).forEach((color) => {
-      this.ownerTracker.tokens[color].forEach((owner) => {
+    Object.keys(gameState.ownerTracker.tokens).forEach((color) => {
+      gameState.ownerTracker.tokens[color].forEach((owner) => {
         if (owner === player) {
           if (!playerTokens[color]) {
             playerTokens[color] = 1;
@@ -58,7 +63,10 @@ export default class Decider {
       }
     }, {});
 
-    const numPlayerTokens = Object.values(playerTokens).reduce((a, b) => a + b);
+    const numPlayerTokens = Object.values(playerTokens).reduce(
+      (a, b) => a + b,
+      0
+    );
     const atMaxReserves = player.getReserves().length === 3;
 
     const unownedTokens = {};
