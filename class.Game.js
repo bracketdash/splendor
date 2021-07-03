@@ -125,14 +125,14 @@ export default class Game {
     };
   }
 
-  infinityGauntletTileCheck(player) {
+  infinityGauntletTileCheck(thisPlayer) {
     const isLastTurn = this.whoseTurn === this.numPlayers - 1;
-    const thisPlayerQualifies = this.doesPlayerQualifyForGauntlet(player);
+    const thisPlayerQualifies = this.doesPlayerQualifyForGauntlet(thisPlayer);
     let gauntletOwned = this.ownerTracker.infinityGauntletTile !== null;
 
     if (thisPlayerQualifies) {
       if (!gauntletOwned) {
-        this.ownerTracker.infinityGauntletTile = player;
+        this.ownerTracker.infinityGauntletTile = thisPlayer;
         gauntletOwned = true;
       }
     } else if (!gauntletOwned) {
@@ -140,8 +140,23 @@ export default class Game {
     }
 
     if (gauntletOwned && isLastTurn) {
-      // TODO: follow endgame rules
-      this.postGameCallback(this);
+      const playerStats = this.players.map((player) => {
+        const numRecruits = player.getRecruits().length;
+        const numReserves = player.getReserves().length;
+        const numCharacterCards = numRecruits + numReserves;
+        return {
+          qualifiesForGauntlet: this.doesPlayerQualifyForGauntlet(player),
+          infinityPoints: this.getPlayerScore(player),
+          hasAvengersTile: this.ownerTracker.avengersAssembleTile === player,
+          numCharacterCards,
+          winner: false,
+        };
+      });
+      // TODO: use playerStats to fogure out the winner, and set that player's winner stat to true
+      this.postGameCallback({
+        gameState: this.getState(),
+        playerStats,
+      });
       return true;
     }
 

@@ -13,8 +13,9 @@ const players = [
   //   new Player("Steve", steve),
 ];
 
-const endGameCallback = function (finishedGame) {
-  console.log(finishedGame.getState());
+const endGameCallback = function (gameState, playerStats) {
+  console.log(gameState);
+  console.log(playerStats);
 };
 
 const game = new Game(players, endGameCallback);
