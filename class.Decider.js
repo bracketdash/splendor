@@ -161,8 +161,9 @@ export default class Decider {
 
     // DEBUGGING
     if (!allOptions.length) {
-      // this seems to only happen with more than 2 players
-      throw new Error("No options available?");
+      throw new Error(
+        "No options available! This is likely a bug that needs to be looked at."
+      );
     }
 
     const scoredOptions = allOptions.map((option) => ({

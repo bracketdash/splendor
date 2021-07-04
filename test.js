@@ -1,15 +1,17 @@
 import Game from "./class.Game.js";
 import Player from "./class.Player.js";
 
-import splendorbot from "./splendorbot.js";
+import splendorbotStable from "./splendorbot.stable.js";
+import splendorbotBeta from "./splendorbot.beta.js";
+import splendorbotCanary from "./splendorbot.canary.js";
 import splendorbotRandom from "./splendorbot.random.js";
-import splendorbotRandomB from "./splendorbot.random.js";
-import splendorbotRandomC from "./splendorbot.random.js";
 
 // up to 4 players
 const players = [
-  new Player("Splendorbot", splendorbot),
-  new Player("Random Choice", splendorbotRandom),
+  new Player("Stable", splendorbotStable),
+  new Player("Beta", splendorbotBeta),
+  new Player("Canary", splendorbotCanary),
+  new Player("Random", splendorbotRandom),
 ];
 const winTally = Array(players.length).fill(0);
 
@@ -29,12 +31,14 @@ const endGameCallback = function (gameState, playerStats) {
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
     console.log(`Test complete. ${singleTestNumGames} games played.`);
+    console.timeEnd("Test duration");
+
+    // TODO: replace with percentage of games won by each player, with names
     console.log(
       `AI won ${winTally[0]} out of ${singleTestNumGames} games (${Math.round(
         (winTally[0] / singleTestNumGames) * 100
       )}%) vs Random Choice`
     );
-    console.timeEnd("Test duration");
     return;
   }
   players.forEach((player) => {
