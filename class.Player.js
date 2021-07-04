@@ -18,6 +18,10 @@ export default class Player {
     return this.ai.getDecision(player, gameState);
   }
 
+  getName() {
+    return this.name;
+  }
+
   getRecruits() {
     return this.recruits;
   }
@@ -36,5 +40,10 @@ export default class Player {
 
   removeReserve(index) {
     this.reserves.splice(index, 1);
+  }
+
+  reset() {
+    this.recruits = [];
+    this.reserves = [];
   }
 }

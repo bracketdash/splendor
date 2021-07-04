@@ -118,11 +118,12 @@ export default class Game {
 
   getState() {
     return {
-      players: this.players,
-      numPlayers: this.numPlayers,
-      locationTiles: this.locationTiles,
       freeAgents: this.freeAgents,
+      locationTiles: this.locationTiles,
+      numPlayers: this.numPlayers,
       ownerTracker: this.ownerTracker,
+      players: this.players,
+      round: this.round,
     };
   }
 
@@ -148,6 +149,7 @@ export default class Game {
         return {
           qualifiesForGauntlet: this.doesPlayerQualifyForGauntlet(player),
           infinityPoints: this.getPlayerScore(player),
+          name: player.getName(),
           hasAvengersTile: this.ownerTracker.avengersAssembleTile === player,
           numCharacterCards,
           winner: false,
@@ -183,10 +185,7 @@ export default class Game {
           }
         }
       }
-      this.postGameCallback({
-        gameState: this.getState(),
-        playerStats,
-      });
+      this.postGameCallback(this.getState(), playerStats);
       return true;
     }
 
@@ -215,13 +214,6 @@ export default class Game {
     );
     if (!this.processDecision(decision)) {
       return;
-    }
-
-    // TESTING
-    console.log(this.round, this.whoseTurn);
-    console.log(decision);
-    if (this.round > 50) {
-      throw new Error("Done testing!");
     }
 
     this.whoseTurn++;

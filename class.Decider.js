@@ -21,7 +21,7 @@ export default class Decider {
     Object.keys(cardCost).forEach((color) => {
       const tokensOfColor = playerTokens[color] || 0;
       const bonusesOfColor = playerBonuses[color] || 0;
-      const needed = cardCost[color] - tokensOfColor + bonusesOfColor;
+      const needed = cardCost[color] - (tokensOfColor + bonusesOfColor);
       if (needed > 0) {
         if (grayTokensLeft < needed) {
           playerCanAffordCard = false;
@@ -33,6 +33,7 @@ export default class Decider {
 
     if (!playerCanAffordCard) {
       return;
+    } else {
     }
 
     const locationOptions = [];
@@ -107,22 +108,11 @@ export default class Decider {
       }
     });
 
-    console.log("allOptions.length: ", allOptions.length);
-    console.log('unownedTokens: ', unownedTokens);
-    console.log('numPlayerTokens: ', numPlayerTokens);
-    throw new Error("Stopping here for now.");
-
     const unownedColors = Object.keys(unownedTokens);
-    if (
-      unownedColors.length &&
-      unownedColors.length < 4 &&
-      numPlayerTokens < 11 - unownedColors.length
-    ) {
-      allOptions.push({ type: "3diff", tokens: unownedColors });
-    } else if (unownedColors.length > 3) {
+    if (unownedColors.length && numPlayerTokens < 10) {
       const threeDiffLoop = function (n, src, combo) {
         if (n === 0) {
-          if (combo.length && numPlayerTokens < 8) {
+          if (combo.length && numPlayerTokens < 11 - combo.length) {
             allOptions.push({ type: "3diff", tokens: combo });
           }
           return;
@@ -133,9 +123,9 @@ export default class Decider {
         return;
       };
       threeDiffLoop(3, unownedColors, []);
+      threeDiffLoop(2, unownedColors, []);
+      threeDiffLoop(1, unownedColors, []);
     }
-
-    console.log("allOptions.length: ", allOptions.length);
 
     const recruitConfig = {
       allOptions,
@@ -169,11 +159,10 @@ export default class Decider {
       );
     });
 
-    console.log("allOptions.length: ", allOptions.length);
-
-    // TESTING
+    // DEBUGGING
     if (!allOptions.length) {
-      throw new Error("Zero options...?");
+      // this seems to only happen with more than 2 players
+      throw new Error("No options available?");
     }
 
     const scoredOptions = allOptions.map((option) => ({
