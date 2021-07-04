@@ -13,6 +13,11 @@ const players = [
   new Player("Canary", splendorbotCanary),
   new Player("Random", splendorbotRandom),
 ];
+
+// TODO: there is a bug that happens much more often with all 4 players, related to lack of options
+// This may be character cards actually running out, but we should check to see if they are maxed on tokens, etc., too
+// Also check that location tiles are being assigned as players qualify
+
 const winTally = Array(players.length).fill(0);
 
 const singleTestNumGames = 20;
