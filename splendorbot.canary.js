@@ -1,5 +1,16 @@
 import Decider from "./class.Decider.js";
 
+function canAfford(card, tokens) {
+  const cost = card.getCost();
+  let affordable = true;
+  Object.keys(cost).forEach((color) => {
+    if (!tokens[color] || cost[color] > tokens[color]) {
+      affordable = false;
+    }
+  });
+  return affordable;
+}
+
 function getCardScore(card) {
   let cardScore = card.getInfinityPoints() + card.getNumAvengersTags();
   // TODO: add a couple points if the card would give us a bonus color we need
@@ -43,7 +54,14 @@ export default new Decider(function (player, gameState, option) {
           }
         });
       });
-      // TODO: figure out the combined score of all the cards we can currently afford
+      const allCards = gameState.freeAgents[0]
+        .concat(gameState.freeAgents[1])
+        .concat(gameState.freeAgents[2])
+        .concat(player.getReserves());
+      const affordapointsBefore = allCards
+        .filter((c) => canAfford(c, proposedTokens))
+        .map((c) => getCardScore(c))
+        .reduce((a, c) => a + c);
       option.tokens.forEach((color) => {
         if (!proposedTokens[color]) {
           proposedTokens[color] = 1;
@@ -51,9 +69,11 @@ export default new Decider(function (player, gameState, option) {
           proposedTokens[color] += 1;
         }
       });
-      // TODO: figure out the combined score of all the cards we can afford after adding the option.tokens
-      // TODO: get the difference between the two combined scores
-      // TODO: score += (the difference) / 2;
+      const affordapointsAfter = allCards
+        .filter((c) => canAfford(c, proposedTokens))
+        .map((c) => getCardScore(c))
+        .reduce((a, c) => a + c);
+      score += (affordapointsAfter - affordapointsBefore) / 2;
       break;
   }
 
