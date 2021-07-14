@@ -8,10 +8,10 @@ import splendorbotRandom from "./splendorbot.random.js";
 
 // up to 4 players
 const players = [
-  new Player("Stable", splendorbotStable),
+  // new Player("Stable", splendorbotStable),
   new Player("Beta", splendorbotBeta),
   new Player("Canary", splendorbotCanary),
-  new Player("Random", splendorbotRandom),
+  // new Player("Random", splendorbotRandom),
 ];
 
 // TODO: there is a bug that happens much more often with all 4 players, related to lack of options
@@ -37,13 +37,13 @@ const endGameCallback = function (gameState, playerStats) {
     process.stdout.cursorTo(0);
     console.log(`Test complete. ${singleTestNumGames} games played.`);
     console.timeEnd("Test duration");
-
-    // TODO: replace with percentage of games won by each player, with names
-    console.log(
-      `AI won ${winTally[0]} out of ${singleTestNumGames} games (${Math.round(
-        (winTally[0] / singleTestNumGames) * 100
-      )}%) vs Random Choice`
-    );
+    winTally.forEach((wins, playerIndex) => {
+      console.log(
+        `${playerStats[playerIndex].name} won ${wins} games (${Math.round(
+          (wins / singleTestNumGames) * 100
+        )}%).`
+      );
+    });
     return;
   }
   players.forEach((player) => {
