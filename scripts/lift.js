@@ -18,10 +18,10 @@ const players = [
 const singleTestNumGames = 10;
 const minScore = 9;
 
-global.weights = [0.2, 0.2, 0.2, 0.8, 0.4, 2.4, 1.4, 1.8, 1.8];
+global.weights = [0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4];
 
 const incrementIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-const increments = [0.4, 0.8, 1.4, 1.8, 2.4];
+const increments = [0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8];
 
 function tryIncrementWeights() {
   const looper = function (place) {
