@@ -27,6 +27,7 @@ export default class Game {
     });
 
     const characterCards = getAllCharacterCards();
+    this.allCharacterCards = characterCards;
     this.decks = [
       getShuffled(characterCards.filter((cc) => cc.getLevel() === 1)),
       getShuffled(characterCards.filter((cc) => cc.getLevel() === 2)),
@@ -297,12 +298,42 @@ export default class Game {
   setState({ freeAgents, recruits, reserves, tokens }) {
     freeAgents.forEach((row, rowIndex) => {
       row.forEach((name, index) => {
-        // TODO: this.freeAgents[rowIndex][index] = (character card from name);
+        this.freeAgents[rowIndex][index] = this.allCharacterCards.filter(
+          (card) => card.getName() === name
+        )[0];
       });
     });
-    // TODO: recruits
-    // TODO: reserves
-    // TODO: tokens
+    recruits.forEach((name) => {
+      this.players[0].assignRecruit(
+        this.allCharacterCards.filter((card) => card.getName() === name)[0]
+      );
+    });
+    reserves.forEach((name) => {
+      this.players[0].assignReserve(
+        this.allCharacterCards.filter((card) => card.getName() === name)[0]
+      );
+    });
+    const tokenColorIndex = {
+      blue: 0,
+      gray: 0,
+      orange: 0,
+      purple: 0,
+      red: 0,
+      yellow: 0,
+    };
+    tokens.forEach((tokenSet, index) => {
+      let owner = null;
+      if (index) {
+        owner = this.players[index - 1];
+      }
+      Object.keys(tokenSet).forEach((color) => {
+        Array(tokenSet[color])
+          .fill(1)
+          .forEach(() => {
+            this.ownerTracker.tokens[color][tokenColorIndex[color]++] = owner;
+          });
+      });
+    });
     return this;
   }
 

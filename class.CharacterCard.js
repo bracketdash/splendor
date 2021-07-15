@@ -26,6 +26,10 @@ export default class CharacterCard {
     return this.level;
   }
 
+  getName() {
+    return this.name;
+  }
+
   getNumAvengersTags() {
     return this.avengersTags;
   }

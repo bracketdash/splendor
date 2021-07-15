@@ -18,7 +18,11 @@ const players = [
 
 new Game(players, function () {})
   .setState({
-    freeAgents: [[], [], ["Green Goblin", "Hulk"]],
+    freeAgents: [
+      [null, null, null, null],
+      [null, null, null, null],
+      ["Green Goblin", "Hulk", null, null],
+    ],
     recruits: [],
     reserves: [],
     tokens: [
