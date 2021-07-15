@@ -1,6 +1,5 @@
-import Head from "next/head";
 import { useState } from "react";
-
+import Head from "next/head";
 import GameArea from "../components/GameArea.js";
 import PlayerConfig from "../components/PlayerConfig.js";
 
