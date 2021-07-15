@@ -300,7 +300,7 @@ export default class Game {
       row.forEach((name, index) => {
         this.freeAgents[rowIndex][index] = this.allCharacterCards.filter(
           (card) => card.getName() === name
-        )[0];
+        )[0] || null;
       });
     });
     recruits.forEach((name) => {

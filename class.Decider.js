@@ -16,6 +16,7 @@ export default class Decider {
 
     let playerCanAffordCard = true;
     let grayTokensLeft = playerTokens.gray || 0;
+
     const cardCost = characterCard.getCost();
 
     Object.keys(cardCost).forEach((color) => {
