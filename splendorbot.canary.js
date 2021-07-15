@@ -1,6 +1,9 @@
 import Decider from "./class.Decider.js";
 
 function canAfford(card, tokens) {
+  if (!card) {
+    return false;
+  }
   const cost = card.getCost();
   let affordable = true;
   Object.keys(cost).forEach((color) => {
@@ -18,13 +21,17 @@ function getCardScore(card) {
   return cardScore;
 }
 
+// TODO: test every combination of weighting values
+// 
+
 export default new Decider(function (player, gameState, option) {
   let card;
   let score = 0;
   switch (option.type) {
     case "recruit":
-      score += 5;
+      score += global.weights[0]; // WEIGHTING VALUE 1
     case "reserve":
+      score += global.weights[1]; // WEIGHTING VALUE 2
       if (option.level === "reserves") {
         card = player.getReserves()[option.index];
       } else {
@@ -61,7 +68,7 @@ export default new Decider(function (player, gameState, option) {
       const affordapointsBefore = allCards
         .filter((c) => canAfford(c, proposedTokens))
         .map((c) => getCardScore(c))
-        .reduce((a, c) => a + c);
+        .reduce((a, c) => a + c, 0);
       option.tokens.forEach((color) => {
         if (!proposedTokens[color]) {
           proposedTokens[color] = 1;
@@ -72,8 +79,8 @@ export default new Decider(function (player, gameState, option) {
       const affordapointsAfter = allCards
         .filter((c) => canAfford(c, proposedTokens))
         .map((c) => getCardScore(c))
-        .reduce((a, c) => a + c);
-      score += (affordapointsAfter - affordapointsBefore) / 2;
+        .reduce((a, c) => a + c, 0);
+      score += ((affordapointsAfter - affordapointsBefore) / 2) + global.weights[2]; // WEIGHTING VALUE 3
       break;
   }
 
