@@ -1,5 +1,7 @@
 import Decider from "./class.Decider.js";
 
+const weights = [6, 7, 1];
+
 function canAfford(card, tokens) {
   if (!card) {
     return false;
@@ -26,9 +28,9 @@ export default new Decider(function (player, gameState, option) {
   let score = 0;
   switch (option.type) {
     case "recruit":
-      score += global.weights[0];
+      score += weights[0];
     case "reserve":
-      score += global.weights[1];
+      score += weights[1];
       if (option.level === "reserves") {
         card = player.getReserves()[option.index];
       } else {
@@ -78,7 +80,7 @@ export default new Decider(function (player, gameState, option) {
         .map((c) => getCardScore(c))
         .reduce((a, c) => a + c, 0);
       score +=
-        (affordapointsAfter - affordapointsBefore) / 2 + global.weights[2];
+        (affordapointsAfter - affordapointsBefore) / 2 + weights[2];
       break;
   }
 
