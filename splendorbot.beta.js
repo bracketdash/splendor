@@ -1,7 +1,7 @@
 import Decider from "./class.Decider.js";
 
 if (!global.weights) {
-  global.weights = [0.9, 0.9, 1.5, 1.8, 1.5, 1.2, 0.3, 2.1, 1.2];
+  global.weights = [0.9, 0.9, 1.5, 1.8, 1.5, 1.2, 0.0, 2.1, 1.2];
 }
 
 function canAfford(card, tokens) {

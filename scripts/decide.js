@@ -23,9 +23,9 @@ new Game(players, function () {})
     recruits: ["Scorpion", "Lockjaw", "America Chavez", "Wasp"],
     reserves: ["Green Goblin", "Hulk", "Vision"],
     tokens: [
-      { blue: 2, gray: 3, orange: 2, purple: 4, red: 4, yellow: 4 },
-      { blue: 2, gray: 2, orange: 2, purple: 0, red: 0, yellow: 0 },
-      { blue: 0, gray: 0, orange: 0, purple: 0, red: 0, yellow: 0 },
+      { blue: 4, gray: 5, orange: 4, purple: 4, red: 4, yellow: 4 }, // bank
+      { blue: 0, gray: 0, orange: 0, purple: 0, red: 0, yellow: 0 }, // p1
+      { blue: 0, gray: 0, orange: 0, purple: 0, red: 0, yellow: 0 }, // p2
     ],
   })
   .getFirstPlayerMove(function (option) {
