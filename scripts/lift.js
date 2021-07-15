@@ -7,21 +7,21 @@ import splendorbotCanary from "../splendorbot.canary.js";
 import splendorbotRandom from "../splendorbot.random.js";
 
 // REMEMBER: update playerIndex for testing the right player!
-const playerIndex = 0;
+const playerIndex = 1;
 const players = [
-  new Player("Canary", splendorbotCanary),
   new Player("Beta", splendorbotBeta),
+  new Player("Canary", splendorbotCanary),
   // new Player("Stable", splendorbotStable),
   // new Player("Random", splendorbotRandom),
 ];
 
-const singleTestNumGames = 10;
-const minScore = 9;
+const singleTestNumGames = 4;
+const minScore = 3;
 
-global.weights = [0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4];
+global.weights = [0.3, 0.3, 0.3, 0.3, 0.6, 0.9, 1.2, 0.3, 0.6];
 
-const incrementIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-const increments = [0.4, 0.8, 1.2, 1.6, 2.0, 2.4, 2.8];
+const incrementIndex = [0, 0, 0, 0, 1, 2, 3, 0, 1];
+const increments = [0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1];
 
 function tryIncrementWeights() {
   const looper = function (place) {
@@ -61,10 +61,10 @@ const endGameCallback = function (_, playerStats) {
 
   if (currentGameNum === singleTestNumGames - 1) {
     currentGameNum = 0;
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
     if (winTally[playerIndex] > minScore) {
       weightComboWins[JSON.stringify(global.weights)] = winTally[playerIndex];
+      process.stdout.clearLine();
+      process.stdout.cursorTo(0);
       console.log(
         `${JSON.stringify(global.weights)} -- won ${
           winTally[playerIndex]

@@ -1,8 +1,6 @@
 import Decider from "./class.Decider.js";
 
-if (!global.weights) {
-  global.weights = [0.2, 0.2, 0.2, 0.8, 0.4, 2.4, 0.4, 1.8, 2.4];
-}
+const weights = [0.2, 0.2, 0.2, 0.8, 0.4, 2.4, 0.4, 1.8, 2.4];
 
 function canAfford(card, tokens) {
   if (!card) {
@@ -20,12 +18,12 @@ function canAfford(card, tokens) {
 }
 
 function getCardScore(card) {
-  const infinityScore = card.getInfinityPoints() * global.weights[0];
-  const avangersTagScore = card.getNumAvengersTags() * global.weights[1];
+  const infinityScore = card.getInfinityPoints() * weights[0];
+  const avangersTagScore = card.getNumAvengersTags() * weights[1];
   // TODO: add a couple points if the card would give us a bonus color we need
-  const bonusScore = 0 * global.weights[2];
+  const bonusScore = 0 * weights[2];
   // TODO: add a couple points if the card is level 3 and we don't yet have a level 3 card
-  const greenScore = 0 * global.weights[3];
+  const greenScore = 0 * weights[3];
   return infinityScore + avangersTagScore + bonusScore + greenScore;
 }
 
@@ -99,14 +97,14 @@ export default new Decider(function (player, gameState, option) {
       .filter((c) => canAfford(c, proposedTokens))
       .map((c) => getCardScore(c))
       .reduce((a, c) => a + c, 0);
-    score += (affordapointsAfter - affordapointsBefore) * global.weights[4];
+    score += (affordapointsAfter - affordapointsBefore) * weights[4];
   }
 
   const typeMultiplier = {
-    recruit: global.weights[5],
-    reserve: global.weights[6],
-    "3diff": global.weights[7],
-    "2same": global.weights[8],
+    recruit: weights[5],
+    reserve: weights[6],
+    "3diff": weights[7],
+    "2same": weights[8],
   };
 
   return score * typeMultiplier[option.type];
