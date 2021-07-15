@@ -1,5 +1,6 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Head from "next/head";
+import PlayerConfig from "../components/PlayerConfig.js";
+import styles from "../styles/Home.module.css";
 
 export default function Home() {
   return (
@@ -7,9 +8,14 @@ export default function Home() {
       <Head>
         <title>Splendor MARVEL</title>
       </Head>
-
       <main>
+        <section>
+          <PlayerConfig />
+        </section>
+        <section>
+          <GameArea />
+        </section>
       </main>
     </div>
-  )
+  );
 }
