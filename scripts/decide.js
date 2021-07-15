@@ -9,7 +9,7 @@ import splendorbotRandom from "../splendorbot.random.js";
 const players = [
   new Player("Canary", splendorbotCanary),
   new Player("Beta", splendorbotBeta),
-  new Player("Stable", splendorbotStable),
+  // new Player("Stable", splendorbotStable),
   // new Player("Random", splendorbotRandom),
 ];
 
