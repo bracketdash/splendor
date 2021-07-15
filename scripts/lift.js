@@ -6,6 +6,7 @@ import splendorbotBeta from "../splendorbot.beta.js";
 import splendorbotCanary from "../splendorbot.canary.js";
 import splendorbotRandom from "../splendorbot.random.js";
 
+// REMEMBER: update the playerIndex below for testing the right player!
 const players = [
   new Player("Canary", splendorbotCanary),
   new Player("Beta", splendorbotBeta),
@@ -14,6 +15,7 @@ const players = [
 ];
 
 const singleTestNumGames = 10;
+const minScore = 8;
 
 global.weights = [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2];
 
@@ -57,17 +59,16 @@ const endGameCallback = function (_, playerStats) {
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
 
-    console.log(
-      JSON.stringify(global.weights) +
-        "  --  " +
-        winTally
-          .map(
-            (wins, playerIndex) => `${playerStats[playerIndex].name}: ${wins}`
-          )
-          .join("   ")
-    );
-
-    weightComboWins[JSON.stringify(global.weights)] = winTally[0];
+    // REMEMBER: update the playerIndex for testing the right player!
+    const playerIndex = 0;
+    if (winTally[playerIndex] > minScore) {
+      weightComboWins[JSON.stringify(global.weights)] = winTally[playerIndex];
+      console.log(
+        `${JSON.stringify(global.weights)} -- ${
+          winTally[playerIndex]
+        } / ${singleTestNumGames}`
+      );
+    }
 
     winTally = Array(players.length).fill(0);
 
