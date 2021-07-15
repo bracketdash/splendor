@@ -9,7 +9,7 @@ import splendorbotRandom from "../splendorbot.random.js";
 const players = [
   new Player("Canary", splendorbotCanary),
   new Player("Beta", splendorbotBeta),
-  new Player("Stable", splendorbotStable),
+  // new Player("Stable", splendorbotStable),
   // new Player("Random", splendorbotRandom),
 ];
 
@@ -18,9 +18,7 @@ const singleTestNumGames = 10;
 global.weights = [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2];
 
 const incrementIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-const increments = [
-  0, 0.2, 0.4, 0.6, 0.8, 1.2, 1.4, 1.6, 1.8, 2.4, 2.8, 3.6, 4.4,
-];
+const increments = [0.2, 0.4, 0.6, 0.8, 1.2, 1.4, 1.6, 1.8, 2.4, 2.8, 3.6, 4.4];
 
 function tryIncrementWeights() {
   const looper = function (place) {
@@ -29,14 +27,18 @@ function tryIncrementWeights() {
     }
     if (incrementIndex[place] === increments.length - 1) {
       incrementIndex[place] = 0;
+      global.weights[place] = increments[0];
       return looper(place - 1);
     }
     incrementIndex[place] += 1;
+    global.weights[place] = increments[incrementIndex[place]];
     return true;
   };
 
   return looper(8);
 }
+
+const weightComboWins = {};
 
 let winTally = Array(players.length).fill(0);
 let currentGameNum = 1;
@@ -65,6 +67,10 @@ const endGameCallback = function (_, playerStats) {
           .join("   ")
     );
 
+    weightComboWins[JSON.stringify(global.weights)] = winTally[0];
+
+    winTally = Array(players.length).fill(0);
+
     if (tryIncrementWeights()) {
       players.forEach((player) => {
         player.reset();
@@ -74,6 +80,7 @@ const endGameCallback = function (_, playerStats) {
     }
 
     console.log("Weight-lifting complete.");
+    console.log(weightComboWins);
 
     return;
   }
