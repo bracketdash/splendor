@@ -1,6 +1,3 @@
-// node scripts/play n
-// n: number of games you would like to run
-
 import Game from "../class.Game.js";
 import Player from "../class.Player.js";
 
@@ -16,7 +13,30 @@ const players = [
   // new Player("Random", splendorbotRandom),
 ];
 
-const singleTestNumGames = process.argv[2];
+const singleTestNumGames = 10;
+
+global.weights = [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2];
+
+const incrementIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+const increments = [
+  0, 0.2, 0.4, 0.6, 0.8, 1.2, 1.4, 1.6, 1.8, 2.4, 2.8, 3.6, 4.4,
+];
+
+function tryIncrementWeights() {
+  const looper = function (place) {
+    if (place < 0) {
+      return false;
+    }
+    if (incrementIndex[place] === increments.length - 1) {
+      incrementIndex[place] = 0;
+      return looper(place - 1);
+    }
+    incrementIndex[place] += 1;
+    return true;
+  };
+
+  return looper(8);
+}
 
 let winTally = Array(players.length).fill(0);
 let currentGameNum = 1;
@@ -31,18 +51,29 @@ const endGameCallback = function (_, playerStats) {
   process.stdout.write(`Game ${currentGameNum} in progress...`);
 
   if (currentGameNum === singleTestNumGames - 1) {
+    currentGameNum = 0;
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
 
     console.log(
-      "\nResults -- " +
+      JSON.stringify(global.weights) +
+        "  --  " +
         winTally
           .map(
             (wins, playerIndex) => `${playerStats[playerIndex].name}: ${wins}`
           )
-          .join("   ") +
-        "\n"
+          .join("   ")
     );
+
+    if (tryIncrementWeights()) {
+      players.forEach((player) => {
+        player.reset();
+      });
+      new Game(players, endGameCallback).start();
+      return;
+    }
+
+    console.log("Weight-lifting complete.");
 
     return;
   }
