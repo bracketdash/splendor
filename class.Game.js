@@ -295,7 +295,14 @@ export default class Game {
   }
 
   setState({ freeAgents, recruits, reserves, tokens }) {
-    // TODO
+    freeAgents.forEach((row, rowIndex) => {
+      row.forEach((name, index) => {
+        // TODO: this.freeAgents[rowIndex][index] = (character card from name);
+      });
+    });
+    // TODO: recruits
+    // TODO: reserves
+    // TODO: tokens
     return this;
   }
 
