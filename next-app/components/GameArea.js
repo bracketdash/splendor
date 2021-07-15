@@ -1,3 +1,8 @@
+import MiddleArea from "../components/MiddleArea.js";
+import PlayerArea from "../components/PlayerArea.js";
+
+const players = []; // TODO
+
 export default function GameArea() {
   return (
     <div>

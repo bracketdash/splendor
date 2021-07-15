@@ -1,18 +1,22 @@
 import Head from "next/head";
+import { useState } from "react";
+
+import GameArea from "../components/GameArea.js";
 import PlayerConfig from "../components/PlayerConfig.js";
-import styles from "../styles/Home.module.css";
 
 export default function Home() {
+  const [configuringPlayers, setConfiguringPlayers] = useState(true);
+
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Splendor MARVEL</title>
       </Head>
       <main>
-        <section>
+        <section className={configuringPlayers ? "" : "hide"}>
           <PlayerConfig />
         </section>
-        <section>
+        <section className={configuringPlayers ? "hide" : ""}>
           <GameArea />
         </section>
       </main>

@@ -1,4 +1,4 @@
-export default function GameArea() {
+export default function PlayerArea() {
   return (
     <div>
       <h2>Player Area</h2>
