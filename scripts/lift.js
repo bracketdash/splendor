@@ -15,12 +15,12 @@ const players = [
   // new Player("Random", splendorbotRandom),
 ];
 
-const singleTestNumGames = 4;
-const minScore = 3;
+const singleTestNumGames = 50;
+const minScore = 20;
 
-global.weights = [0.3, 0.3, 0.3, 0.3, 0.6, 0.9, 1.2, 0.3, 0.6];
+global.weights = [0.9, 0.9, 1.5, 1.8, 0.3, 1.2, 0.3, 2.1, 1.2]; // best last 4 locked in
 
-const incrementIndex = [0, 0, 0, 0, 1, 2, 3, 0, 1];
+const incrementIndex = [2, 2, 4, 5, 0];
 const increments = [0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1];
 
 function tryIncrementWeights() {
@@ -38,7 +38,7 @@ function tryIncrementWeights() {
     return true;
   };
 
-  return looper(8);
+  return looper(4);
 }
 
 const weightComboWins = {};

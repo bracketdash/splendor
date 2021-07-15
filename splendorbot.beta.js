@@ -1,29 +1,44 @@
 import Decider from "./class.Decider.js";
 
-const weights = [0.2, 0.2, 0.2, 0.8, 0.4, 2.4, 0.4, 1.8, 2.4];
+if (!global.weights) {
+  global.weights = [0.9, 0.9, 1.5, 1.8, 1.5, 1.2, 0.3, 2.1, 1.2];
+}
 
 function canAfford(card, tokens) {
   if (!card) {
     return false;
   }
-  // TODO: account for gray tokens
+  let grays = tokens.gray || 0;
   const cost = card.getCost();
   let affordable = true;
   Object.keys(cost).forEach((color) => {
     if (!tokens[color] || cost[color] > tokens[color]) {
-      affordable = false;
+      const needed = cost[color] - (tokens[color] || 0);
+      if (grays > needed) {
+        grays -= needed;
+      } else {
+        affordable = false;
+      }
     }
   });
   return affordable;
 }
 
-function getCardScore(card) {
-  const infinityScore = card.getInfinityPoints() * weights[0];
-  const avangersTagScore = card.getNumAvengersTags() * weights[1];
-  // TODO: add a couple points if the card would give us a bonus color we need
-  const bonusScore = 0 * weights[2];
-  // TODO: add a couple points if the card is level 3 and we don't yet have a level 3 card
-  const greenScore = 0 * weights[3];
+function getCardScore(card, player) {
+  const infinityScore = card.getInfinityPoints() * global.weights[0];
+  const avangersTagScore = card.getNumAvengersTags() * global.weights[1];
+  const recruits = player.getRecruits();
+  const cardBonus = card.getBonus();
+  let bonusScore = global.weights[2];
+  let greenScore = global.weights[3];
+  recruits.forEach((recruit) => {
+    if (cardBonus === recruit.getBonus()) {
+      bonusScore = 0;
+    }
+    if (recruit.getLevel() === 3) {
+      greenScore = 0;
+    }
+  });
   return infinityScore + avangersTagScore + bonusScore + greenScore;
 }
 
@@ -44,7 +59,7 @@ export default new Decider(function (player, gameState, option) {
     } else {
       card = gameState.freeAgents[option.level - 1][option.index];
     }
-    score += getCardScore(card);
+    score += getCardScore(card, player);
     tokensHaveChanged = gameState.ownerTracker.tokens.gray.some(
       (owner) => owner === null
     );
@@ -74,7 +89,7 @@ export default new Decider(function (player, gameState, option) {
     });
     const affordapointsBefore = allCards
       .filter((c) => canAfford(c, proposedTokens))
-      .map((c) => getCardScore(c))
+      .map((c) => getCardScore(c, player))
       .reduce((a, c) => a + c, 0);
 
     if (option.type === "reserve") {
@@ -95,16 +110,16 @@ export default new Decider(function (player, gameState, option) {
 
     const affordapointsAfter = allCards
       .filter((c) => canAfford(c, proposedTokens))
-      .map((c) => getCardScore(c))
+      .map((c) => getCardScore(c, player))
       .reduce((a, c) => a + c, 0);
-    score += (affordapointsAfter - affordapointsBefore) * weights[4];
+    score += (affordapointsAfter - affordapointsBefore) * global.weights[4];
   }
 
   const typeMultiplier = {
-    recruit: weights[5],
-    reserve: weights[6],
-    "3diff": weights[7],
-    "2same": weights[8],
+    recruit: global.weights[5],
+    reserve: global.weights[6],
+    "3diff": global.weights[7],
+    "2same": global.weights[8],
   };
 
   return score * typeMultiplier[option.type];
