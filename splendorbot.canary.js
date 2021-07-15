@@ -1,11 +1,13 @@
 import Decider from "./class.Decider.js";
 
 const weights = [6, 7, 1];
+// TODO: re-run weighting tests once gray token and other card score stuff is done
 
 function canAfford(card, tokens) {
   if (!card) {
     return false;
   }
+  // TODO: account for gray tokens
   const cost = card.getCost();
   let affordable = true;
   Object.keys(cost).forEach((color) => {
@@ -37,6 +39,7 @@ export default new Decider(function (player, gameState, option) {
         card = gameState.freeAgents[option.level - 1][option.index];
       }
       score += getCardScore(card);
+      // TODO: add token score for adding a gray token
       break;
     case "3diff":
     case "2same":

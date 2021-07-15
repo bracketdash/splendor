@@ -81,6 +81,15 @@ export default class Game {
     }
   }
 
+  getFirstPlayerMove(callback) {
+    callback(
+      this.players[this.whoseTurn].getDecision(
+        this.players[this.whoseTurn],
+        this.getState()
+      )
+    );
+  }
+
   doesPlayerQualifyForGauntlet(player) {
     const hasEnoughPoints = this.getPlayerScore(player) > 15;
     const hasAllColors = colors.every((c) => !!this.getPlayerBonus(player, c));
@@ -283,6 +292,11 @@ export default class Game {
     } else {
       this.freeAgents[row][index] = null;
     }
+  }
+
+  setState({ freeAgents, recruits, reserves, tokens }) {
+    // TODO
+    return this;
   }
 
   start() {

@@ -11,39 +11,54 @@ const singleTestNumGames = 100;
 // up to 4 players
 const players = [
   new Player("Canary", splendorbotCanary),
+  new Player("Stable", splendorbotStable),
   new Player("Beta", splendorbotBeta),
-  // new Player("Stable", splendorbotStable),
-  new Player("Random", splendorbotRandom),
+  // new Player("Random", splendorbotRandom),
 ];
 
-let winTally = Array(players.length).fill(0);
-
-let currentGameNum = 1;
-
-const endGameCallback = function (gameState, playerStats) {
-  winTally.forEach((_, index) => {
-    winTally[index] += playerStats[index].winner ? 1 : 0;
+new Game(players, function () {})
+  .setState({
+    freeAgents: [[], [], ["Green Goblin", "Hulk"]],
+    recruits: [],
+    reserves: [],
+    tokens: [
+      { blue: 4, gray: 5, orange: 4, purple: 4, red: 4, yellow: 4 },
+      { blue: 0, gray: 0, orange: 0, purple: 0, red: 0, yellow: 0 },
+      { blue: 0, gray: 0, orange: 0, purple: 0, red: 0, yellow: 0 },
+    ],
+  })
+  .getFirstPlayerMove(function (option) {
+    console.log(option);
   });
 
-  process.stdout.clearLine();
-  process.stdout.cursorTo(0);
-  process.stdout.write(`Game ${currentGameNum} in progress...`);
+// let winTally = Array(players.length).fill(0);
 
-  if (currentGameNum === singleTestNumGames - 1) {
-    process.stdout.clearLine();
-    process.stdout.cursorTo(0);
-    console.log(
-      winTally
-        .map((wins, playerIndex) => `${wins} ${playerStats[playerIndex].name}`)
-        .join(" | ")
-    );
-    return;
-  }
-  players.forEach((player) => {
-    player.reset();
-  });
-  new Game(players, endGameCallback).start();
-  currentGameNum++;
-};
+// let currentGameNum = 1;
 
-new Game(players, endGameCallback).start();
+// const endGameCallback = function (gameState, playerStats) {
+//   winTally.forEach((_, index) => {
+//     winTally[index] += playerStats[index].winner ? 1 : 0;
+//   });
+
+//   process.stdout.clearLine();
+//   process.stdout.cursorTo(0);
+//   process.stdout.write(`Game ${currentGameNum} in progress...`);
+
+//   if (currentGameNum === singleTestNumGames - 1) {
+//     process.stdout.clearLine();
+//     process.stdout.cursorTo(0);
+//     console.log(
+//       winTally
+//         .map((wins, playerIndex) => `${wins} ${playerStats[playerIndex].name}`)
+//         .join(" | ")
+//     );
+//     return;
+//   }
+//   players.forEach((player) => {
+//     player.reset();
+//   });
+//   new Game(players, endGameCallback).start();
+//   currentGameNum++;
+// };
+
+// new Game(players, endGameCallback).start();

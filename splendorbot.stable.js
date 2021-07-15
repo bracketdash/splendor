@@ -1,6 +1,6 @@
 import Decider from "./class.Decider.js";
 
-const weights = [8, 6, 0];
+const weights = [6, 7, 1];
 
 function canAfford(card, tokens) {
   if (!card) {
