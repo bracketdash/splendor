@@ -7,38 +7,52 @@ import splendorbotCanary from "../splendorbot.canary.js";
 import splendorbotRandom from "../splendorbot.random.js";
 
 // REMEMBER: update playerIndex for testing the right player!
-const playerIndex = 0;
+const playerIndex = 1;
 const players = [
-  new Player("Canary", splendorbotCanary),
   new Player("Beta", splendorbotBeta),
+  new Player("Canary", splendorbotCanary),
   // new Player("Stable", splendorbotStable),
   // new Player("Random", splendorbotRandom),
 ];
 
 const singleTestNumGames = 10;
-const minScore = 9;
+const minScore = 3;
 
-global.weights = [0.2, 0.2, 0.2, 0.8, 0.4, 2.4, 1.4, 1.8, 1.8];
+global.weights = [0.2, 0.2, 0.2, 0.2, 0.2, 1.4, 0.4, 0.4, 0.8];
 
-const incrementIndex = [0, 0, 0, 0, 0, 0, 0, 0, 0];
-const increments = [0.4, 0.8, 1.4, 1.8, 2.4];
+let incrementIndex = 0;
+const increments = [
+  [0.2, 0.2, 0.2, 0.2, 0.2, 1.4, 0.4, 0.4, 0.8],
+  [0.2, 0.2, 0.2, 0.2, 0.8, 1.8, 0.4, 2.4, 0.4],
+  [0.2, 0.2, 0.2, 0.2, 0.8, 1.8, 0.4, 2.4, 1.8],
+  [0.2, 0.2, 0.2, 0.2, 0.8, 2.4, 0.8, 0.4, 2.4],
+  [0.2, 0.2, 0.2, 0.2, 0.8, 2.4, 0.8, 0.8, 1.4],
+  [0.2, 0.2, 0.2, 0.2, 0.8, 1.8, 0.4, 0.8, 2.4],
+  [0.2, 0.2, 0.2, 0.2, 0.8, 2.4, 0.4, 0.4, 0.8],
+  [0.2, 0.2, 0.2, 0.2, 0.8, 2.4, 0.8, 2.4, 0.8],
+  [0.2, 0.2, 0.2, 0.2, 1.4, 1.8, 0.4, 2.4, 2.4],
+  [0.2, 0.2, 0.2, 0.2, 1.4, 2.4, 0.4, 1.4, 1.8],
+  [0.2, 0.2, 0.2, 0.2, 1.8, 1.8, 0.4, 1.8, 0.4],
+  [0.2, 0.2, 0.2, 0.2, 1.8, 2.4, 0.4, 1.8, 0.4],
+  [0.2, 0.2, 0.2, 0.2, 2.4, 1.4, 0.4, 1.8, 0.8],
+  [0.2, 0.2, 0.2, 0.2, 2.4, 2.4, 0.4, 0.4, 1.8],
+  [0.2, 0.2, 0.2, 0.2, 2.4, 2.4, 0.4, 1.8, 1.8],
+  [0.2, 0.2, 0.2, 0.8, 0.4, 2.4, 0.8, 2.4, 2.4],
+  [0.2, 0.2, 0.2, 0.8, 0.4, 1.4, 0.4, 0.4, 0.8],
+  [0.2, 0.2, 0.2, 0.8, 0.4, 1.8, 0.4, 1.8, 1.4],
+  [0.2, 0.2, 0.2, 0.8, 0.4, 2.4, 0.4, 1.8, 2.4],
+  [0.2, 0.2, 0.2, 0.8, 1.4, 1.8, 0.4, 1.4, 1.4],
+  [0.2, 0.2, 0.2, 0.8, 1.4, 2.4, 0.8, 0.8, 2.4],
+  [0.2, 0.2, 0.2, 0.8, 1.8, 1.8, 0.4, 0.8, 0.8],
+];
 
 function tryIncrementWeights() {
-  const looper = function (place) {
-    if (place < 0) {
-      return false;
-    }
-    if (incrementIndex[place] === increments.length - 1) {
-      incrementIndex[place] = 0;
-      global.weights[place] = increments[0];
-      return looper(place - 1);
-    }
-    incrementIndex[place] += 1;
-    global.weights[place] = increments[incrementIndex[place]];
-    return true;
-  };
-
-  return looper(8);
+  if (incrementIndex === increments.length - 1) {
+    return false;
+  }
+  incrementIndex += 1;
+  global.weights = increments[incrementIndex];
+  return true;
 }
 
 const weightComboWins = {};

@@ -1,7 +1,8 @@
 import Decider from "./class.Decider.js";
 
-const weights = [6, 7, 1];
-// TODO: redo weights so there is a multiplier for every base value [0.0x - 2.9x]
+if (!global.weights) {
+  global.weights = [0.2, 0.2, 0.2, 0.8, 0.4, 2.4, 0.4, 1.8, 2.4];
+}
 
 function canAfford(card, tokens) {
   if (!card) {
@@ -19,12 +20,12 @@ function canAfford(card, tokens) {
 }
 
 function getCardScore(card) {
-  const infinityScore = card.getInfinityPoints() * 1; // TODO: add multiplier
-  const avangersTagScore = card.getNumAvengersTags() * 1; // TODO: add multiplier
+  const infinityScore = card.getInfinityPoints() * global.weights[0];
+  const avangersTagScore = card.getNumAvengersTags() * global.weights[1];
   // TODO: add a couple points if the card would give us a bonus color we need
-  const bonusScore = 0 * 1; // TODO: add multiplier
+  const bonusScore = 0 * global.weights[2];
   // TODO: add a couple points if the card is level 3 and we don't yet have a level 3 card
-  const greenScore = 0 * 1; // TODO: add multiplier
+  const greenScore = 0 * global.weights[3];
   return infinityScore + avangersTagScore + bonusScore + greenScore;
 }
 
@@ -39,32 +40,16 @@ export default new Decider(function (player, gameState, option) {
   let score = 0;
   let tokensHaveChanged = false;
 
-  const typeMultiplier = {
-    recruit: 1,
-    reserve: 1,
-    "3diff": 1,
-    "2same": 1,
-  };
-
   if (option.type === "recruit" || option.type === "reserve") {
-    // TODO: remove this switch once the typeMultiplier is done
-    switch (option.type) {
-      case "recruit":
-        score += weights[0];
-      case "reserve":
-        score += weights[1];
-        break;
-    }
-
     if (option.level === "reserves") {
       card = player.getReserves()[option.index];
     } else {
       card = gameState.freeAgents[option.level - 1][option.index];
     }
     score += getCardScore(card);
-    if (true /* TODO: there are unassigned gray tokens */) {
-      tokensHaveChanged = true;
-    }
+    tokensHaveChanged = gameState.ownerTracker.tokens.gray.some(
+      (owner) => owner === null
+    );
   } else {
     tokensHaveChanged = true;
   }
@@ -114,8 +99,15 @@ export default new Decider(function (player, gameState, option) {
       .filter((c) => canAfford(c, proposedTokens))
       .map((c) => getCardScore(c))
       .reduce((a, c) => a + c, 0);
-    score += (affordapointsAfter - affordapointsBefore) / 2 + weights[2];
+    score += (affordapointsAfter - affordapointsBefore) * global.weights[4];
   }
+
+  const typeMultiplier = {
+    recruit: global.weights[5],
+    reserve: global.weights[6],
+    "3diff": global.weights[7],
+    "2same": global.weights[8],
+  };
 
   return score * typeMultiplier[option.type];
 });
