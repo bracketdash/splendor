@@ -15,15 +15,15 @@ export default function Home() {
 
   let game;
 
-  function handleStartGame(playerConfigData) {
-    const players = playerConfigData.reduce((config, arr) => {
-      if (!config.sittingOut) {
-        arr.push(createPlayer(config.name));
-      }
-      return arr;
-    }, []);
-    // TODO: game = new Game(players);
+  function handleStartGame() {
     setConfiguringPlayers(false);
+    // const players = playerConfigData.reduce((config, arr) => {
+    //   if (!config.sittingOut) {
+    //     arr.push(createPlayer(config.name));
+    //   }
+    //   return arr;
+    // }, []);
+    // game = new Game(players);
   }
 
   return (

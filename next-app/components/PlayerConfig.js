@@ -1,4 +1,7 @@
 export default function PlayerConfig(props) {
+  function startGame() {
+    props.onStartGame();
+  }
   function updatePlayerName(index, newName) {
     props.playerConfig[index].name = newName;
     props.setPlayerConfig(props.playerConfig);
@@ -14,27 +17,27 @@ export default function PlayerConfig(props) {
         <input
           type="text"
           defaultValue={props.playerConfig[0].name}
-          onChange={updatePlayerName(0, this.value)}
+          onChange={(e) => updatePlayerName(0, e.target.value)}
         />
       </div>
       <div className="player-config-row">
         <input
           type="text"
           defaultValue={props.playerConfig[1].name}
-          onChange={updatePlayerName(1, this.value)}
+          onChange={(e) => updatePlayerName(1, e.target.value)}
         />
       </div>
       <div className="player-config-row">
         <input
           type="text"
           defaultValue={props.playerConfig[2].name}
-          onChange={updatePlayerName(2, this.value)}
+          onChange={(e) => updatePlayerName(2, e.target.value)}
         />
         <label>
           <input
             type="checkbox"
-            defaultValue={props.playerConfig[2].sittingOut}
-            onChange={updatePlayerSittingOut(2, this.value)}
+            defaultChecked={props.playerConfig[2].sittingOut}
+            onChange={(e) => updatePlayerSittingOut(2, e.target.checked)}
           />
           <span>Sit out</span>
         </label>
@@ -43,18 +46,18 @@ export default function PlayerConfig(props) {
         <input
           type="text"
           defaultValue={props.playerConfig[3].name}
-          onChange={updatePlayerName(3, this.value)}
+          onChange={(e) => updatePlayerName(3, e.target.value)}
         />
         <label>
           <input
             type="checkbox"
-            defaultValue={props.playerConfig[2].sittingOut}
-            onChange={updatePlayerSittingOut(2, this.value)}
+            defaultChecked={props.playerConfig[3].sittingOut}
+            onChange={(e) => updatePlayerSittingOut(3, e.target.checked)}
           />
           <span>Sit out</span>
         </label>
       </div>
-      <button>Start Game</button>
+      <button onClick={startGame}>Start Game</button>
     </div>
   );
 }
