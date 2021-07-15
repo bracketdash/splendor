@@ -7,8 +7,9 @@ import splendorbotCanary from "./splendorbot.canary.js";
 import splendorbotRandom from "./splendorbot.random.js";
 
 global.weights = [0, 0, 0];
-const maxWeight = 1;
-const singleTestNumGames = 10;
+const maxWeight = 10;
+const singleTestNumGames = 100;
+const weightScores = {};
 
 // up to 4 players
 const players = [
@@ -17,10 +18,6 @@ const players = [
   // new Player("Stable", splendorbotStable),
   // new Player("Random", splendorbotRandom),
 ];
-
-// TODO: there is a bug that happens much more often with all 4 players, related to lack of options
-// This may be character cards actually running out, but we should check to see if they are maxed on tokens, etc., too
-// Also check that location tiles are being assigned as players qualify
 
 let winTally = Array(players.length).fill(0);
 
@@ -44,21 +41,21 @@ const endGameCallback = function (gameState, playerStats) {
         .map((wins, playerIndex) => `${wins} ${playerStats[playerIndex].name}`)
         .join(" | ")
     );
-    winTally = Array(players.length).fill(0);
     if (
       global.weights[0] >= maxWeight &&
       global.weights[1] >= maxWeight &&
       global.weights[2] >= maxWeight
     ) {
       console.timeEnd("Test duration");
+      console.log(JSON.stringify(weightScores));
       return;
     }
-    global.weights = (
-      parseInt(
-        global.weights.map((n) => n.toString(maxWeight + 1)).join(""),
-        maxWeight + 1
-      ) + 1
-    )
+    const weightString = global.weights
+      .map((n) => n.toString(maxWeight + 1))
+      .join("");
+    weightScores[weightString] = winTally[0];
+    winTally = Array(players.length).fill(0);
+    global.weights = (parseInt(weightString, maxWeight + 1) + 1)
       .toString(maxWeight + 1)
       .padStart(3, "0")
       .split("")

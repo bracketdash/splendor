@@ -2,7 +2,6 @@ import Decider from "./class.Decider.js";
 
 function getCardScore(card) {
   let cardScore = card.getInfinityPoints() + card.getNumAvengersTags();
-  // TODO: add a couple points if the card would give us a bonus color we need
   return cardScore;
 }
 
@@ -22,7 +21,6 @@ export default new Decider(function (player, gameState, option) {
       break;
     case "3diff":
     case "2same":
-      // TODO: score += (token score);
       break;
   }
 

@@ -21,17 +21,14 @@ function getCardScore(card) {
   return cardScore;
 }
 
-// TODO: test every combination of weighting values
-// 
-
 export default new Decider(function (player, gameState, option) {
   let card;
   let score = 0;
   switch (option.type) {
     case "recruit":
-      score += global.weights[0]; // WEIGHTING VALUE 1
+      score += global.weights[0];
     case "reserve":
-      score += global.weights[1]; // WEIGHTING VALUE 2
+      score += global.weights[1];
       if (option.level === "reserves") {
         card = player.getReserves()[option.index];
       } else {
@@ -80,7 +77,8 @@ export default new Decider(function (player, gameState, option) {
         .filter((c) => canAfford(c, proposedTokens))
         .map((c) => getCardScore(c))
         .reduce((a, c) => a + c, 0);
-      score += ((affordapointsAfter - affordapointsBefore) / 2) + global.weights[2]; // WEIGHTING VALUE 3
+      score +=
+        (affordapointsAfter - affordapointsBefore) / 2 + global.weights[2];
       break;
   }
 

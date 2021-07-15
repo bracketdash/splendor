@@ -159,13 +159,8 @@ export default class Decider {
       );
     });
 
-    // DEBUGGING
     if (!allOptions.length) {
-      console.log(gameState);
-      console.log(player);
-      throw new Error(
-        "No options available! This is likely a bug that needs to be looked at."
-      );
+      return { type: "skip" };
     }
 
     const scoredOptions = allOptions.map((option) => ({
