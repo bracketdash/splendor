@@ -13,7 +13,7 @@ const players = [
   new Player("Canary", splendorbotCanary),
   new Player("Beta", splendorbotBeta),
   // new Player("Stable", splendorbotStable),
-  // new Player("Random", splendorbotRandom),
+  new Player("Random", splendorbotRandom),
 ];
 
 let winTally = Array(players.length).fill(0);
