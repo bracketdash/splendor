@@ -90,15 +90,6 @@ class Game {
     }
   }
 
-  getFirstPlayerMove(callback) {
-    callback(
-      this.players[this.whoseTurn].getDecision(
-        this.players[this.whoseTurn],
-        this.getState()
-      )
-    );
-  }
-
   doesPlayerQualifyForGauntlet(player) {
     const hasEnoughPoints = this.getPlayerScore(player) > 15;
     const hasAllColors = colors.every((c) => !!this.getPlayerBonus(player, c));
@@ -135,7 +126,7 @@ class Game {
   }
 
   getState() {
-    return {
+    const state = {
       decks: this.decks,
       freeAgents: this.freeAgents,
       locationTiles: this.locationTiles,
@@ -145,6 +136,9 @@ class Game {
       round: this.round,
       whoseTurn: this.whoseTurn,
     };
+    const player = this.players[this.whoseTurn];
+    state.options = player.getOptions(player, state);
+    return state;
   }
 
   infinityGauntletTileCheck(thisPlayer) {
@@ -227,26 +221,6 @@ class Game {
     });
   }
 
-  nextTurn() {
-    const decision = this.players[this.whoseTurn].getDecision(
-      this.players[this.whoseTurn],
-      this.getState()
-    );
-    if (!this.processDecision(decision)) {
-      return;
-    }
-
-    this.whoseTurn++;
-    if (this.whoseTurn > this.numPlayers - 1) {
-      this.whoseTurn = 0;
-      this.round++;
-    }
-
-    setTimeout(() => {
-      this.nextTurn();
-    });
-  }
-
   processDecision(decision) {
     switch (decision.type) {
       case "3diff":
@@ -303,52 +277,6 @@ class Game {
     } else {
       this.freeAgents[row][index] = null;
     }
-  }
-
-  setState({ freeAgents, recruits, reserves, tokens }) {
-    freeAgents.forEach((row, rowIndex) => {
-      row.forEach((name, index) => {
-        this.freeAgents[rowIndex][index] =
-          this.allCharacterCards.filter((card) => card.getName() === name)[0] ||
-          null;
-      });
-    });
-    recruits.forEach((name) => {
-      this.players[0].assignRecruit(
-        this.allCharacterCards.filter((card) => card.getName() === name)[0]
-      );
-    });
-    reserves.forEach((name) => {
-      this.players[0].assignReserve(
-        this.allCharacterCards.filter((card) => card.getName() === name)[0]
-      );
-    });
-    const tokenColorIndex = {
-      blue: 0,
-      gray: 0,
-      orange: 0,
-      purple: 0,
-      red: 0,
-      yellow: 0,
-    };
-    tokens.forEach((tokenSet, index) => {
-      let owner = null;
-      if (index) {
-        owner = this.players[index - 1];
-      }
-      Object.keys(tokenSet).forEach((color) => {
-        Array(tokenSet[color])
-          .fill(1)
-          .forEach(() => {
-            this.ownerTracker.tokens[color][tokenColorIndex[color]++] = owner;
-          });
-      });
-    });
-    return this;
-  }
-
-  start() {
-    this.nextTurn();
   }
 }
 

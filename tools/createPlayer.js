@@ -16,12 +16,16 @@ class Player {
     this.reserves.push(characterCard);
   }
 
-  getDecision(player, gameState) {
-    return this.ai.getDecision(player, gameState);
+  getDecision(allOptions) {
+    return this.ai.getDecision(allOptions);
   }
 
   getName() {
     return this.name;
+  }
+
+  getOptions(player, gameState) {
+    return this.ai.getOptions(player, gameState);
   }
 
   getRecruits() {

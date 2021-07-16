@@ -79,9 +79,15 @@ export default function PlayerArea(props) {
         );
       })}
       {props.gameState.players[props.gameState.whoseTurn] === props.player ? (
-        <p>(TODO: options dropdown)</p>
+        props.gameState.options.map((option) => {
+          return (
+            <button>
+              {option.type}: {option.tokens ? option.tokens.join(", ") : `${option.level}, ${option.index}`}
+            </button>
+          );
+        })
       ) : (
-        ""
+        <p>&nbsp;</p>
       )}
     </div>
   );
