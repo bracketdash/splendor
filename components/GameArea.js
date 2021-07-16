@@ -7,7 +7,7 @@ export default function GameArea(props) {
     return <div></div>;
   }
 
-  const [gameState, setGameState] = setState(props.game.getState());
+  const [gameState, setGameState] = useState(props.game.getState());
 
   function makeMove(decision) {
     props.game.makeMove(decision).then((newGameState) => {
