@@ -12,6 +12,10 @@ class LocationTile {
     return this.infinityPoints;
   }
 
+  getName() {
+    return this.name;
+  }
+
   getOwner() {
     return this.owner;
   }

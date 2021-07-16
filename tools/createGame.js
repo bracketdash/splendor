@@ -136,6 +136,7 @@ class Game {
 
   getState() {
     return {
+      decks: this.decks,
       freeAgents: this.freeAgents,
       locationTiles: this.locationTiles,
       numPlayers: this.numPlayers,
