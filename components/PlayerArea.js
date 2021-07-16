@@ -1,10 +1,12 @@
 export default function PlayerArea(props) {
-  // TODO: display player tokens, recruits, reserves
-  // TODO: active player state, available options + scores, handle choosing option
-
   return (
     <div>
       <h2>{props.player.getName()}</h2>
+      <p>
+        {props.gameState.players[props.gameState.whoseTurn] === props.player
+          ? ">> It is this player's turn."
+          : ""}
+      </p>
       <h4>Tokens</h4>
       <p>
         Gray:{" "}
@@ -55,11 +57,32 @@ export default function PlayerArea(props) {
         }
       </p>
       <h4>Recruits</h4>
+      {props.player.getRecruits().map((card) => {
+        return (
+          <p>
+            {card.getName()} - Bonus: {card.getBonus()}
+            <br />
+            Points: {card.getInfinityPoints()} | A-Tags:{" "}
+            {card.getNumAvengersTags()} | Lvl {card.getLevel()}
+          </p>
+        );
+      })}
       <h4>Reserves</h4>
-      <p>
-        If it's this player's turn, this block should be highlighted and a list
-        of options should be shown
-      </p>
+      {props.player.getReserves().map((card) => {
+        return (
+          <p>
+            {card.getName()} - Bonus: {card.getBonus()}
+            <br />
+            Points: {card.getInfinityPoints()} | A-Tags:{" "}
+            {card.getNumAvengersTags()} | Lvl {card.getLevel()}
+          </p>
+        );
+      })}
+      {props.gameState.players[props.gameState.whoseTurn] === props.player ? (
+        <p>(TODO: options dropdown)</p>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

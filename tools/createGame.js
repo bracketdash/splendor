@@ -143,6 +143,7 @@ class Game {
       ownerTracker: this.ownerTracker,
       players: this.players,
       round: this.round,
+      whoseTurn: this.whoseTurn,
     };
   }
 

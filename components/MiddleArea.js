@@ -16,27 +16,42 @@ export default function MiddleArea(props) {
           </p>
         );
       })}
-      <p>Level 3s:</p>
-      <ul>
-        {props.gameState.freeAgents[2].map((card) => {
-          return <li>{card.getName()} (TODO: other card info)</li>;
-        })}
-        <li>{props.gameState.decks[2].length} left in deck.</li>
-      </ul>
-      <p>Level 2s:</p>
-      <ul>
-        {props.gameState.freeAgents[1].map((card) => {
-          return <li>{card.getName()} (TODO: other card info)</li>;
-        })}
-        <li>{props.gameState.decks[1].length} left in deck.</li>
-      </ul>
-      <p>Level 1s:</p>
-      <ul>
-        {props.gameState.freeAgents[0].map((card) => {
-          return <li>{card.getName()} (TODO: other card info)</li>;
-        })}
-        <li>{props.gameState.decks[0].length} left in deck.</li>
-      </ul>
+      <h4>Level 3s:</h4>
+      {props.gameState.freeAgents[2].map((card) => {
+        return (
+          <p>
+            {card.getName()} - Bonus: {card.getBonus()}
+            <br />
+            Points: {card.getInfinityPoints()} | A-Tags:{" "}
+            {card.getNumAvengersTags()} | Lvl {card.getLevel()}
+          </p>
+        );
+      })}
+      <p>{props.gameState.decks[2].length} left in deck.</p>
+      <h4>Level 2s:</h4>
+      {props.gameState.freeAgents[1].map((card) => {
+        return (
+          <p>
+            {card.getName()} - Bonus: {card.getBonus()}
+            <br />
+            Points: {card.getInfinityPoints()} | A-Tags:{" "}
+            {card.getNumAvengersTags()} | Lvl {card.getLevel()}
+          </p>
+        );
+      })}
+      <p>{props.gameState.decks[1].length} left in deck.</p>
+      <h4>Level 1s:</h4>
+      {props.gameState.freeAgents[0].map((card) => {
+        return (
+          <p>
+            {card.getName()} - Bonus: {card.getBonus()}
+            <br />
+            Points: {card.getInfinityPoints()} | A-Tags:{" "}
+            {card.getNumAvengersTags()} | Lvl {card.getLevel()}
+          </p>
+        );
+      })}
+      <p>{props.gameState.decks[0].length} left in deck.</p>
       <h3>The Bank</h3>
       <p>
         Gray:{" "}
