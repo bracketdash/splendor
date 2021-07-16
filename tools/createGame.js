@@ -221,42 +221,49 @@ class Game {
     });
   }
 
-  processDecision(decision) {
+  makeMove(decision, player) {
     switch (decision.type) {
       case "3diff":
       case "2same":
         decision.tokens.forEach((color) => {
-          this.assignToken(color, decision.player);
+          this.assignToken(color, player);
         });
-        this.removeTokens(decision.tokensToRemove, decision.player);
+        this.removeTokens(decision.tokensToRemove, player);
         break;
       case "reserve":
         const freeAgentRow = this.freeAgents[decision.level - 1];
         const cardToReserve = freeAgentRow[decision.index];
-        decision.player.assignReserve(cardToReserve);
-        this.assignToken("gray", decision.player);
-        this.removeTokens(decision.tokensToRemove, decision.player);
+        player.assignReserve(cardToReserve);
+        this.assignToken("gray", player);
+        this.removeTokens(decision.tokensToRemove, player);
         this.replaceCard(decision.level - 1, decision.index);
         break;
       case "recruit":
         let cardToRecruit;
         if (decision.level === "reserves") {
-          cardToRecruit = decision.player.getReserve(decision.index);
+          cardToRecruit = player.getReserve(decision.index);
         } else {
           cardToRecruit = this.freeAgents[decision.level - 1][decision.index];
           this.replaceCard(decision.level - 1, decision.index);
         }
-        this.removeTokens(decision.tokensToRemove, decision.player);
-        decision.player.assignRecruit(cardToRecruit);
-        decision.player.removeReserve(decision.index);
-        this.locationTileCheck(decision.player, decision.location);
-        this.avengersAssembleTileCheck(decision.player);
-        if (this.infinityGauntletTileCheck(decision.player)) {
+        this.removeTokens(decision.tokensToRemove, player);
+        player.assignRecruit(cardToRecruit);
+        player.removeReserve(decision.index);
+        this.locationTileCheck(player, decision.location);
+        this.avengersAssembleTileCheck(player);
+        if (this.infinityGauntletTileCheck(player)) {
           return false;
         }
         break;
     }
-    return true;
+    this.whoseTurn++;
+    if (this.whoseTurn > this.numPlayers - 1) {
+      this.whoseTurn = 0;
+      this.round++;
+    }
+    return new Promise((resolve) => {
+      resolve(this.getState());
+    });
   }
 
   removeTokens(tokensToRemove, player) {

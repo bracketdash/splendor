@@ -84,11 +84,13 @@ export default function PlayerArea(props) {
         props.gameState.options.map((option, i) => {
           return (
             <p key={i}>
-              > {option.type}:{" "}
-              {option.tokens
-                ? option.tokens.join(", ")
-                : `${option.level}, ${option.index}`}{" "}
-              ({option.score})
+              <button onClick={() => props.onMove(option, props.player)}>
+                {option.type}:{" "}
+                {option.tokens
+                  ? option.tokens.join(", ")
+                  : `${option.level}, ${option.index}`}{" "}
+                ({option.score})
+              </button>
             </p>
           );
         })

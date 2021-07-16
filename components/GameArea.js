@@ -9,10 +9,9 @@ export default function GameArea(props) {
 
   const [gameState, setGameState] = useState(props.game.getState());
 
-  function makeMove(decision) {
-    props.game.makeMove(decision).then((newGameState) => {
+  function makeMove(selectedOption, player) {
+    props.game.makeMove(selectedOption, player).then((newGameState) => {
       setGameState(newGameState);
-      // TODO: produce options for next player here?
     });
   }
 

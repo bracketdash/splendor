@@ -46,7 +46,7 @@ export default function getOptionScore(player, gameState, option) {
     .concat(player.getReserves());
 
   let card;
-  let score = 0;
+  let score = 1; // TODO: was 0, but trying out 1..will obvi need to rerun genetic algo
   let tokensHaveChanged = false;
 
   if (option.type === "recruit" || option.type === "reserve") {
