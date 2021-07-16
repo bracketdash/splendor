@@ -2,11 +2,6 @@ export default function PlayerArea(props) {
   return (
     <div>
       <h2>{props.player.getName()}</h2>
-      <p>
-        {props.gameState.players[props.gameState.whoseTurn] === props.player
-          ? ">> It is this player's turn."
-          : ""}
-      </p>
       <h4>Tokens</h4>
       <p>
         Gray:{" "}
@@ -57,9 +52,9 @@ export default function PlayerArea(props) {
         }
       </p>
       <h4>Recruits</h4>
-      {props.player.getRecruits().map((card) => {
+      {props.player.getRecruits().map((card, i) => {
         return (
-          <p>
+          <p key={i}>
             {card.getName()} - Bonus: {card.getBonus()}
             <br />
             Points: {card.getInfinityPoints()} | A-Tags:{" "}
@@ -68,9 +63,9 @@ export default function PlayerArea(props) {
         );
       })}
       <h4>Reserves</h4>
-      {props.player.getReserves().map((card) => {
+      {props.player.getReserves().map((card, i) => {
         return (
-          <p>
+          <p key={i}>
             {card.getName()} - Bonus: {card.getBonus()}
             <br />
             Points: {card.getInfinityPoints()} | A-Tags:{" "}
@@ -78,12 +73,23 @@ export default function PlayerArea(props) {
           </p>
         );
       })}
+      <p>
+        <strong>
+          {props.gameState.players[props.gameState.whoseTurn] === props.player
+            ? ">> It is this player's turn. Their choices are..."
+            : ""}
+        </strong>
+      </p>
       {props.gameState.players[props.gameState.whoseTurn] === props.player ? (
-        props.gameState.options.map((option) => {
+        props.gameState.options.map((option, i) => {
           return (
-            <button>
-              {option.type}: {option.tokens ? option.tokens.join(", ") : `${option.level}, ${option.index}`}
-            </button>
+            <p key={i}>
+              > {option.type}:{" "}
+              {option.tokens
+                ? option.tokens.join(", ")
+                : `${option.level}, ${option.index}`}{" "}
+              ({option.score})
+            </p>
           );
         })
       ) : (

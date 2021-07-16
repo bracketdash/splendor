@@ -8,18 +8,18 @@ export default function MiddleArea(props) {
           ? props.gameState.ownerTracker.avengersAssembleTile.getName()
           : "Unowned"}
       </p>
-      {props.gameState.locationTiles.map((locationTile) => {
+      {props.gameState.locationTiles.map((locationTile, i) => {
         const owner = locationTile.getOwner();
         return (
-          <p>
+          <p key={i}>
             {locationTile.getName()}: {owner ? owner.getName() : "Unowned"}
           </p>
         );
       })}
       <h4>Level 3s:</h4>
-      {props.gameState.freeAgents[2].map((card) => {
+      {props.gameState.freeAgents[2].map((card, i) => {
         return (
-          <p>
+          <p key={i}>
             {card.getName()} - Bonus: {card.getBonus()}
             <br />
             Points: {card.getInfinityPoints()} | A-Tags:{" "}
@@ -29,9 +29,9 @@ export default function MiddleArea(props) {
       })}
       <p>{props.gameState.decks[2].length} left in deck.</p>
       <h4>Level 2s:</h4>
-      {props.gameState.freeAgents[1].map((card) => {
+      {props.gameState.freeAgents[1].map((card, i) => {
         return (
-          <p>
+          <p key={i}>
             {card.getName()} - Bonus: {card.getBonus()}
             <br />
             Points: {card.getInfinityPoints()} | A-Tags:{" "}
@@ -41,9 +41,9 @@ export default function MiddleArea(props) {
       })}
       <p>{props.gameState.decks[1].length} left in deck.</p>
       <h4>Level 1s:</h4>
-      {props.gameState.freeAgents[0].map((card) => {
+      {props.gameState.freeAgents[0].map((card, i) => {
         return (
-          <p>
+          <p key={i}>
             {card.getName()} - Bonus: {card.getBonus()}
             <br />
             Points: {card.getInfinityPoints()} | A-Tags:{" "}

@@ -158,20 +158,12 @@ class Decider {
       );
     });
 
-    return allOptions;
-  }
-
-  getDecision(allOptions) {
-    if (!allOptions.length) {
-      return { type: "skip" };
-    }
-    const scoredOptions = allOptions.map((option) => ({
-      option,
-      score: getOptionScore(player, gameState, option),
-    }));
+    const scoredOptions = allOptions.map((option) => {
+      option.score = getOptionScore(player, gameState, option);
+      return option;
+    });
     scoredOptions.sort((a, b) => (a.score > b.score ? -1 : 1));
-    scoredOptions[0].option.player = player;
-    return scoredOptions[0].option;
+    return scoredOptions;
   }
 }
 

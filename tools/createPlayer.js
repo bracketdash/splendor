@@ -16,10 +16,6 @@ class Player {
     this.reserves.push(characterCard);
   }
 
-  getDecision(allOptions) {
-    return this.ai.getDecision(allOptions);
-  }
-
   getName() {
     return this.name;
   }

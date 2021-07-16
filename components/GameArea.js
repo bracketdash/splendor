@@ -19,8 +19,8 @@ export default function GameArea(props) {
   return (
     <div>
       <MiddleArea gameState={gameState} />
-      {gameState.players.map((player) => (
-        <PlayerArea gameState={gameState} player={player} onMove={makeMove} />
+      {gameState.players.map((player, i) => (
+        <PlayerArea key={i} gameState={gameState} player={player} onMove={makeMove} />
       ))}
     </div>
   );
