@@ -32,7 +32,7 @@ export default function Home() {
           <PlayerConfig onStartGame={startGame} />
         </section>
         <section className={configuringPlayers ? "hide" : ""}>
-          <GameArea />
+          <GameArea game={game} />
         </section>
       </main>
     </div>

@@ -1,13 +1,12 @@
 import MiddleArea from "../components/MiddleArea.js";
 import PlayerArea from "../components/PlayerArea.js";
 
-const players = []; // TODO
-
-export default function GameArea() {
+export default function GameArea(props) {
+  const gameState = props.game.getState();
   return (
     <div>
-      <MiddleArea />
-      {players.map((player) => (
+      <MiddleArea gameState={gameState} />
+      {gameState.players.map((player) => (
         <PlayerArea player={player} />
       ))}
     </div>
