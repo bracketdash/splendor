@@ -3,6 +3,8 @@ import createCard from "./createCard.js";
 import createLocation from "./createLocation.js";
 import locationTiles from "../data/locationTiles.js";
 
+const colors = ["blue", "orange", "purple", "red", "yellow"];
+
 function getAllCharacterCards() {
   return characterCards.map((data) => createCard(data));
 }

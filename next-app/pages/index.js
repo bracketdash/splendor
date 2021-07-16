@@ -8,17 +8,19 @@ import PlayerConfig from "../components/PlayerConfig.js";
 export default function Home() {
   const [configuringPlayers, setConfiguringPlayers] = useState(true);
 
-  let game;
+  const [game, setGame] = useState(null);
 
   function startGame(playerData) {
     setConfiguringPlayers(false);
-    game = createGame(
-      playerData.reduce((config, arr) => {
-        if (!config.sittingOut) {
-          arr.push(createPlayer(config.name));
-        }
-        return arr;
-      }, [])
+    setGame(
+      createGame(
+        playerData.reduce((arr, config) => {
+          if (!config.sittingOut) {
+            arr.push(createPlayer(config.name));
+          }
+          return arr;
+        }, [])
+      )
     );
   }
 
