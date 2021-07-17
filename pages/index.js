@@ -5,18 +5,6 @@ import createGame from "../tools/createGame.js";
 import createPlayer from "../tools/createPlayer.js";
 import PlayerConfig from "../components/PlayerConfig.js";
 
-// TODO: handle game over
-
-// REFACTOR
-// TODO: make the player config screen the home route and /game the game screen
-// TODO: move some css into index.module.css and game.module.css
-// TODO: /components - keep Card, PlayerArea, and Token, build the rest into pages/index.js and pages/game.js
-// TODO: /tools - createCard seems unnecessary
-// TODO: /tools - the Decider class is really just a couple of functions
-
-// AI IMPROVEMENTS
-// See getOptionScore.js
-
 export default function Home() {
   const [configuringPlayers, setConfiguringPlayers] = useState(true);
 

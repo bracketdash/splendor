@@ -46,7 +46,7 @@ export default function getOptionScore(player, gameState, option) {
     .concat(player.getReserves());
 
   let card;
-  let score = 0;
+  let score = 1;
   let tokensHaveChanged = false;
 
   if (option.type === "recruit" || option.type === "reserve") {

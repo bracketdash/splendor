@@ -27,6 +27,7 @@ class Game {
     this.numPlayers = players.length;
     this.whoseTurn = 0;
     this.round = 1;
+    this.lastRound = false;
 
     const allLocationTiles = getShuffled(getAllLocationTiles());
     this.locationTiles = getNullArray(this.numPlayers).map(() => {
@@ -202,7 +203,7 @@ class Game {
           }
         }
       }
-      return true;
+      return playerStats;
     }
 
     return false;
@@ -253,23 +254,23 @@ class Game {
         player.removeReserve(decision.index);
         this.locationTileCheck(player, decision.location);
         this.avengersAssembleTileCheck(player);
-        if (this.infinityGauntletTileCheck(player)) {
-          // TODO: this may not be the end of the game
-          // TODO: if this player isn't last, we need to go to the end of the round still
-          // TODO: provide player stats, or at least an array of winning player indexes
+        const playerStats = this.infinityGauntletTileCheck(player);
+        if (playerStats) {
           return new Promise((resolve) => {
             const results = this.getState(true);
-            results.gameOver = true;
-            resolve(this.getState());
+            results.winners = playerStats.filter((ps) => ps.winner);
+            resolve(results);
           });
         }
         break;
     }
+
     this.whoseTurn++;
     if (this.whoseTurn > this.numPlayers - 1) {
       this.whoseTurn = 0;
       this.round++;
     }
+
     return new Promise((resolve) => {
       resolve(this.getState());
     });

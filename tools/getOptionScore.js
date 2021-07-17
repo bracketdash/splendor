@@ -1,17 +1,19 @@
 // a.k.a. The Brains
 
-// TODO: improvement idea: for token score, take into account the tokenNeedScore (also need to make this)
-// tokenNeedScore would rank the need of token colors based on all current freeAgents
-// obvi, this will need a new weight and we'll need to run the genetic algo again
-// also use tokenNeedScore when evaluating bonusScore in getCardScore()
-// tokenNeedScore itself won't be weighted, but bonusScore in getCardScore() and if(tokensHaveChanged)
+// TODO: make colorScores{color: score} - scores the need for each color based on freeAgents (not weighted)
+// maybe integrate affordapointsBefore & affordapointsAfter logic, and then replace usage below
 
-// TODO: improvement idea: remove points, weighted, from recruitment option if tokens before vs after would give
-// them fewer options next turn (of vice versa is they can afford more with the added bonus)
-// will need to redo weights for this as well of course
+// TODO: add weighted points based on colorScores in getCardScore() based on card bonus
 
-// TODO: add a point to the score for options that include location (+weight)
+// TODO: add weighted points based on colorScores in "if (tokensHaveChanged)" block
 
+// TODO: remove points, weighted, from recruitment option if tokens before vs after would give
+// them fewer options next turn (or vice versa is they can afford more with the added bonus)
+// use affordapointsBefore & affordapointsAfter logic
+
+// TODO: add a weighted point to the score for options that include location
+
+// TODO: redo training
 // TODO: find a way to weight lift using next-app code instead of node-app code so we don't have to maintain both
 
 const weights = [0.9, 0.9, 1.5, 1.8, 1.5, 1.2, 0.0, 2.0, 1.2];
