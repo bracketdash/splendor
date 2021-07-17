@@ -32,7 +32,6 @@ class Decider {
 
     if (!playerCanAffordCard) {
       return;
-    } else {
     }
 
     const locationOptions = [];
@@ -55,7 +54,20 @@ class Decider {
         allOptions.push({ type: "recruit", level, index, location });
       });
     } else {
-      allOptions.push({ type: "recruit", level, index });
+      const tokensToRemove = [];
+      Object.keys(cardCost).forEach((color) => {
+        Array(cardCost[color])
+          .fill(1)
+          .forEach(() => {
+            tokensToRemove.push(color);
+          });
+      });
+      allOptions.push({
+        type: "recruit",
+        level,
+        index,
+        tokensToRemove,
+      });
     }
   }
 

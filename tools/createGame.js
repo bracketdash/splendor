@@ -270,10 +270,11 @@ class Game {
       return;
     }
     tokensToRemove.forEach((color) => {
-      const tokens = this.ownerTracker.tokens[color].filter(
-        (token) => token === player
-      );
-      tokens[0] = null;
+      const tokens = this.ownerTracker.tokens[color].some((token, index) => {
+        if (token === player) {
+          this.ownerTracker.tokens[color][index] = null;
+        }
+      });
     });
   }
 

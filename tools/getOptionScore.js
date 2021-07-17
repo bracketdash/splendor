@@ -10,9 +10,11 @@
 // them fewer options next turn (of vice versa is they can afford more with the added bonus)
 // will need to redo weights for this as well of course
 
+// TODO: add a point to the score for options that include location (+weight)
+
 // TODO: find a way to weight lift using next-app code instead of node-app code so we don't have to maintain both
 
-const weights = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+const weights = [0.9, 0.9, 1.5, 1.8, 1.5, 1.2, 0.0, 2.0, 1.2];
 
 function canAfford(card, tokens) {
   if (!card) {
