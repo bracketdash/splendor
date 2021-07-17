@@ -40,6 +40,8 @@ main h3 {
   padding: 10px 0;
 }
 
+/* TOKENS */
+
 .token {
   display: inline-block;
   margin: 5px;
@@ -82,6 +84,16 @@ main h3 {
   line-height: 15px;
 }
 
+/* CARDS */
+
+.card {
+  margin: 10px;
+  height: 180px;
+  width: 120px;
+  border: 1px solid #888;
+  border-radius: 3px;
+}
+
 .card.deck {
   display: flex;
   flex-direction: column;
@@ -118,12 +130,10 @@ main h3 {
   color: #fff;
 }
 
-.card {
-  margin: 10px;
-  height: 180px;
-  width: 120px;
-  border: 1px solid #888;
-  border-radius: 3px;
+.card:not(.deck) {
+  text-align: left;
+  font-size: 11px;
+  padding: 5px;
 }
 
 /* PLAYER CONFIG */
@@ -203,8 +213,9 @@ main h3 {
 
 .tile {
   flex-grow: 1;
+  padding: 0 10px;
   margin: 10px;
-  width: 200px;
+  width: 180px;
   height: 90px;
   border: 1px solid #888;
   border-radius: 3px;
@@ -216,6 +227,7 @@ main h3 {
   font-size: 12px;
   line-height: 40px;
   border-bottom: 1px solid #ddd;
+  white-space: nowrap;
 }
 
 .tile span {
@@ -237,22 +249,59 @@ main h3 {
   border-color: #369;
 }
 
+.player-area-container .card {
+  display: inline-block;
+}
+
 .player-area-container button {
   display: inline-block;
   margin: 7px 5px;
   height: 40px;
   line-height: 40px;
   padding: 0 20px;
-  border-radius: 20px;
-  border: 1px solid #036;
-  background: #369;
-  color: #fff;
+  border-radius: 10px;
+  border: 1px solid #bbb;
+  background: #eee;
   font-size: 16px;
   cursor: pointer;
 }
 
 .player-area-container button:hover,
 .player-area-container button:focus {
-  background: #47a;
-  border-color: #369;
+  background: #fff;
+  border-color: #999;
+}
+
+.player-area-container button.has-tokens {
+  padding: 0 10px;
+}
+
+.option-token {
+  margin: 0 5px;
+  color: #fff;
+  font-size: 12px;
+  line-height: 20px;
+  border-radius: 5px;
+  padding: 0 5px;
+  display: inline-block;
+  height: 20px;
+  position: relative;
+  top: -2px;
+}
+
+.option-token.yellow {
+  background: #ee0;
+  color: #555;
+}
+.option-token.red {
+  background: #d33;
+}
+.option-token.orange {
+  background: #f92;
+}
+.option-token.blue {
+  background: #16b;
+}
+.option-token.purple {
+  background: #909;
 }

@@ -1,3 +1,4 @@
+import Card from "./Card.js";
 import Token from "./Token.js";
 
 const colors = ["gray", "yellow", "red", "orange", "blue", "purple"];
@@ -41,19 +42,9 @@ export default function MiddleArea(props) {
                 <div className="level-stars">{" * ".repeat(level)}</div>
               </div>
             </div>
-            {props.gameState.freeAgents[level - 1].map((card, i) => {
-              // TODO: replace with .map((card, i) => <Card card={card} />)
-              return (
-                <div key={i}>
-                  <div className="card">
-                    {card.getName()} - Bonus: {card.getBonus()}
-                    <br />
-                    Points: {card.getInfinityPoints()} | A-Tags:{" "}
-                    {card.getNumAvengersTags()} | Lvl {card.getLevel()}
-                  </div>
-                </div>
-              );
-            })}
+            {props.gameState.freeAgents[level - 1].map((card, i) => (
+              <Card card={card} key={i} />
+            ))}
           </div>
         );
       })}
