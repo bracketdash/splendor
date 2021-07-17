@@ -4,7 +4,6 @@ import createPlayer from "../createPlayer.js";
 import getOptionScore from "../getOptionScore.development.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
-// starting weights - helpful if you need to pick up where you left off, otherwise should be 0
 global.WEIGHTS = {
   affordapointsDiff: 0.5,
   avengersTags: 0.5,
