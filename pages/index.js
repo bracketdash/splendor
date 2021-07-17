@@ -15,9 +15,12 @@ import PlayerConfig from "../components/PlayerConfig.js";
 // TODO: gray tokens not included in the option object for reserves? - fix option display logic once fixed
 // TODO: end-game scenario breaking the page?
 
-// infra TODOs
+// refactor TODOs
 // TODO: make the player config screen the home route and /game the game screen
-// TODO: refactor all the things
+// TODO: move some css into index.module.css and game.module.css
+// TODO: /components - keep Card, PlayerArea, and Token, build the rest into pages/index.js and pages/game.js
+// TODO: /tools - createCard seems unnecessary
+// TODO: /tools - the Decider class is really just a couple of functions
 
 // more TODOs (related to ai) in getOptionScore.js
 
