@@ -97,7 +97,7 @@ function handleEngGame(playerStats) {
       });
 
       game = createGame(players);
-      game.makeMove(game.getState().options[0], players[0]).then((state) => {
+      game.makeMove(game.getState().options[0]).then((state) => {
         continueGame(state.options[0]);
       });
 
@@ -116,14 +116,13 @@ function handleEngGame(playerStats) {
   });
 
   game = createGame(players);
-  game.makeMove(game.getState().options[0], players[0]).then((state) => {
+  game.makeMove(game.getState().options[0]).then((state) => {
     continueGame(state.options[0]);
   });
 }
 
 function continueGame(decision) {
-  // TODO: get current player - maybe pass it into continueGame()?
-  game.makeMove(decision, CURRENT_PLAYER_TODO).then((state) => {
+  game.makeMove(decision).then((state) => {
     if (state.playerStats) {
       handleEngGame(state.playerStats);
     } else {
@@ -133,6 +132,6 @@ function continueGame(decision) {
 }
 
 game = createGame(players);
-game.makeMove(game.getState().options[0], players[0]).then((state) => {
+game.makeMove(game.getState().options[0]).then((state) => {
   continueGame(state.options[0]);
 });
