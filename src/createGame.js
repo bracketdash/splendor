@@ -1,7 +1,8 @@
-import characterCards from "../data/characterCards.js";
+import characterCards from "./data/characterCards.js";
+import locationTiles from "./data/locationTiles.js";
+
 import createCard from "./createCard.js";
 import createLocation from "./createLocation.js";
-import locationTiles from "../data/locationTiles.js";
 
 const colors = ["blue", "orange", "purple", "red", "yellow"];
 

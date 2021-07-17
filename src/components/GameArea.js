@@ -1,6 +1,7 @@
 import { useState } from "react";
-import MiddleArea from "../components/MiddleArea.js";
-import PlayerArea from "../components/PlayerArea.js";
+
+import MiddleArea from "./MiddleArea.js";
+import PlayerArea from "./PlayerArea.js";
 
 export default function GameArea(props) {
   if (!props.game) {

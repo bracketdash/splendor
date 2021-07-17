@@ -1,9 +1,11 @@
 import { useState } from "react";
 import Head from "next/head";
-import GameArea from "../components/GameArea.js";
-import createGame from "../tools/createGame.js";
-import createPlayer from "../tools/createPlayer.js";
-import PlayerConfig from "../components/PlayerConfig.js";
+
+import GameArea from "../src/components/GameArea.js";
+import PlayerConfig from "../src/components/PlayerConfig.js";
+
+import createGame from "../src/createGame.js";
+import createPlayer from "../src/createPlayer.js";
 
 export default function Home() {
   const [configuringPlayers, setConfiguringPlayers] = useState(true);

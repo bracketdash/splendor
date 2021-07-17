@@ -134,8 +134,12 @@ export default function getOptionScore(player, gameState, option) {
       (affordapointsAfter - affordapointsBefore) * WEIGHTS.affordapointsDiff;
   }
 
-  return (
-    score *
-    WEIGHTS[`mult${option.type.substring(0, 1).toUpperCase()}${option.type}`]
-  );
+  score *=
+    WEIGHTS[
+      `mult${option.type.substring(0, 1).toUpperCase()}${option.type.substring(
+        1
+      )}`
+    ];
+
+  return score;
 }
