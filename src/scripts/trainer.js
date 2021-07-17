@@ -1,3 +1,5 @@
+import fs from "fs";
+
 import createGame from "../createGame.js";
 import createPlayer from "../createPlayer.js";
 
@@ -14,7 +16,7 @@ global.WEIGHTS = {
   multReserve: 0.5,
   wouldBeFirstOfColor: 0.5,
   wouldGetLocation: 0.5,
-  wouldGetTimeStone: 0,
+  wouldGetTimeStone: 0.5,
 };
 
 // 0 to have bot go first, 1 to have bot go second
@@ -24,14 +26,15 @@ const DEV_INDEX = 1;
 // how many games to run:
 // higher means more confidence in the weights you end up with, but takes longer to run
 // lower run quickly, but provides less confidence
-const GAMES_PER_WEIGHT_SET = 5;
+const GAMES_PER_WEIGHT_SET = 1;
 
 // if too many wins are being recorded, make this closer to GAMES_PER_WEIGHT_SET
-const MIN_RECORDING_SCORE = 4;
+const MIN_RECORDING_SCORE = 0;
 
 // if you are running this on a high-end rig, you can adjust these values to find potentially smarter bots
-const INCREMENT_AMOUNT = 0.5;
-const MAX_WEIGHT = 2;
+const INCREMENT_AMOUNT = 1;
+const MAX_WEIGHT = 1.5;
+const MIN_WEIGHT = 0.5;
 
 // create players
 
@@ -56,7 +59,7 @@ function tryIncrementWeights() {
       return false;
     }
     if (global.WEIGHTS[weightKeys[place]] === MAX_WEIGHT) {
-      global.WEIGHTS[weightKeys[place]] = 0;
+      global.WEIGHTS[weightKeys[place]] = MIN_WEIGHT;
       return looper(place - 1);
     }
     global.WEIGHTS[weightKeys[place]] += INCREMENT_AMOUNT;
@@ -113,8 +116,19 @@ function handleEngGame(playerStats) {
       return;
     }
 
-    console.log("Training complete. Winners below:");
-    console.log(JSON.stringify(weightComboWins));
+    fs.writeFile(
+      "src/data/winners.json",
+      JSON.stringify(weightComboWins),
+      (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log(
+          "Training complete. Winners saved to src/data/winners.json"
+        );
+      }
+    );
 
     return;
   }
