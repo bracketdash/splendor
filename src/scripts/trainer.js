@@ -5,13 +5,18 @@ import getOptionScore from "../getOptionScore.development.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
 // 0 to have bot go first, 1 to have bot go second
+// it is typically harder to win as the second player
 const DEV_INDEX = 1;
 
-// if too many wins are being recorded, make things tighter here
+// how many games to run:
+// higher means more confidence in the weights you end up with, but takes longer to run
+// lower run quickly, but provides less confidence
 const GAMES_PER_WEIGHT_SET = 10;
+
+// if too many wins are being recorded, make this closer to GAMES_PER_WEIGHT_SET
 const MIN_RECORDING_SCORE = 9;
 
-// when we run this on a nicer rig, we can adjust these values to produce a smarter final bot
+// if you are running this on a high-end rig, you can adjust these values to find potentially smarter bots
 const INCREMENT_AMOUNT = 0.5;
 const MAX_WEIGHT = 2;
 
