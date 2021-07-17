@@ -55,22 +55,15 @@ function tryIncrementWeights() {
   return looper(weightKeys.length - 1);
 }
 
-// game runner and weight set win tracker
+// game runner and weightset win tracker
 
-const game = createGame(players);
 const weightComboWins = {};
 
-let winTally = Array(players.length).fill(0);
 let currentGameNum = 1;
+let game;
+let winTally = Array(players.length).fill(0);
 
-// game.getState(); <-- get the initial state of the game
-// game.makeMove(selectedOption, player).then((state) => {
-//   data is the new game state with state.options, or the game over state with state.winners
-// });
-
-// TODO: continue refactor from here
-
-const endGameCallback = function (_, playerStats) {
+function handleEngGame(playerStats) {
   winTally.forEach((_, index) => {
     winTally[index] += playerStats[index].winner ? 1 : 0;
   });
@@ -78,21 +71,21 @@ const endGameCallback = function (_, playerStats) {
   process.stdout.clearLine();
   process.stdout.cursorTo(0);
   process.stdout.write(
-    `${JSON.stringify(global.weights)} -- ${
+    `${JSON.stringify(global.WEIGHTS)} -- ${
       winTally[playerIndex]
-    }/${currentGameNum}/${singleTestNumGames}`
+    }/${currentGameNum}/${GAMES_PER_WEIGHT_SET}`
   );
 
-  if (currentGameNum === singleTestNumGames - 1) {
+  if (currentGameNum === GAMES_PER_WEIGHT_SET - 1) {
     currentGameNum = 0;
-    if (winTally[playerIndex] > minScore) {
-      weightComboWins[JSON.stringify(global.weights)] = winTally[playerIndex];
+    if (winTally[playerIndex] > MIN_RECORDING_SCORE) {
+      weightComboWins[JSON.stringify(global.WEIGHTS)] = winTally[playerIndex];
       process.stdout.clearLine();
       process.stdout.cursorTo(0);
       console.log(
-        `${JSON.stringify(global.weights)} -- won ${
+        `${JSON.stringify(global.WEIGHTS)} -- won ${
           winTally[playerIndex]
-        } / ${singleTestNumGames}`
+        } / ${GAMES_PER_WEIGHT_SET}`
       );
     }
 
@@ -102,7 +95,12 @@ const endGameCallback = function (_, playerStats) {
       players.forEach((player) => {
         player.reset();
       });
-      new Game(players, endGameCallback).start();
+
+      game = createGame(players);
+      game.makeMove(game.getState().options[0], players[0]).then((state) => {
+        continueGame(state.options[0]);
+      });
+
       return;
     }
 
@@ -116,5 +114,24 @@ const endGameCallback = function (_, playerStats) {
   players.forEach((player) => {
     player.reset();
   });
-  new Game(players, endGameCallback).start();
-};
+
+  game = createGame(players);
+  game.makeMove(game.getState().options[0], players[0]).then((state) => {
+    continueGame(state.options[0]);
+  });
+}
+
+function continueGame(decision) {
+  game.makeMove(decision, CURRENT_PLAYER_TODO).then((state) => {
+    if (state.playerStats) {
+      handleEngGame(state.playerStats);
+    } else {
+      continueGame(state.options[0]);
+    }
+  });
+}
+
+game = createGame(players);
+game.makeMove(game.getState().options[0], players[0]).then((state) => {
+  continueGame(state.options[0]);
+});

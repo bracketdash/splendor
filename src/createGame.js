@@ -259,7 +259,7 @@ class Game {
         if (playerStats) {
           return new Promise((resolve) => {
             const results = this.getState(true);
-            results.winners = playerStats.filter((ps) => ps.winner);
+            results.playerStats = playerStats;
             resolve(results);
           });
         }
