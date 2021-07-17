@@ -5,14 +5,21 @@ import createGame from "../tools/createGame.js";
 import createPlayer from "../tools/createPlayer.js";
 import PlayerConfig from "../components/PlayerConfig.js";
 
+// ui TODOs
 // TODO: style cards
-// TODO: found a bug where recruiting does not deduct tokens
 // TODO: add win condition checklist to top right of player area
+
+// bug TODOs
+// TODO: recruiting not deducting tokens?
 // TODO: locations not being assigned?
 // TODO: gray tokens not included in the option object for reserves?
 // TODO: end-game scenario breaking the page?
-// TODO: more TODOs (related to ai) in getOptionScore.js
+
+// infra TODOs
 // TODO: make the player config screen the home route and /game the game screen
+// TODO: refactor all the things
+
+// more TODOs (related to ai) in getOptionScore.js
 
 export default function Home() {
   const [configuringPlayers, setConfiguringPlayers] = useState(true);
