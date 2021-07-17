@@ -6,20 +6,29 @@ export default function MiddleArea(props) {
   return (
     <div>
       <h2>Round {props.gameState.round}</h2>
-      <p>
-        Avengers Tile:{" "}
-        {props.gameState.ownerTracker.avengersAssembleTile
-          ? props.gameState.ownerTracker.avengersAssembleTile.getName()
-          : "Unowned"}
-      </p>
-      {props.gameState.locationTiles.map((locationTile, i) => {
-        const owner = locationTile.getOwner();
-        return (
-          <p key={i}>
-            {locationTile.getName()}: {owner ? owner.getName() : "Unowned"}
-          </p>
-        );
-      })}
+      <div className="tiles-container">
+        <div>
+          <div className="tile">
+            <label>Avengers Tile</label>
+            <span>
+              {props.gameState.ownerTracker.avengersAssembleTile
+                ? props.gameState.ownerTracker.avengersAssembleTile.getName()
+                : "Unowned"}
+            </span>
+          </div>
+        </div>
+        {props.gameState.locationTiles.map((locationTile, i) => {
+          const owner = locationTile.getOwner();
+          return (
+            <div key={i}>
+              <div className="tile">
+                <label>{locationTile.getName()}</label>
+                <span>{owner ? owner.getName() : "Unowned"}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
       {[3, 2, 1].map((level) => {
         return (
           <div className="level-row" key={level}>

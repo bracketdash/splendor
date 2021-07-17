@@ -195,9 +195,33 @@ main h3 {
 
 /* MIDDLE AREA */
 
+.tiles-container,
 .level-row {
   display: flex;
   justify-content: center;
+}
+
+.tile {
+  flex-grow: 1;
+  margin: 10px;
+  width: 200px;
+  height: 90px;
+  border: 1px solid #888;
+  border-radius: 3px;
+}
+
+.tile label {
+  display: block;
+  font-weight: bold;
+  font-size: 12px;
+  line-height: 40px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tile span {
+  display: block;
+  font-size: 14px;
+  line-height: 49px;
 }
 
 /* PLAYER AREA */
