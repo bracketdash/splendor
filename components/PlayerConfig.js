@@ -13,18 +13,22 @@ export default function PlayerConfig(props) {
   }
 
   function updatePlayerName(index, newName) {
-    players[index].name = newName;
-    setPlayers(players);
+    setPlayers((players) => {
+      players[index].name = newName;
+      return [...players];
+    });
   }
 
   function updatePlayerSittingOut(index, newSittingOut) {
-    players[index].sittingOut = newSittingOut;
-    setPlayers(players);
+    setPlayers((players) => {
+      players[index].sittingOut = newSittingOut;
+      return [...players];
+    });
   }
 
   return (
-    <div>
-      <h1>Players</h1>
+    <div className="player-config-container">
+      <h2>Configure Players</h2>
       {players.map((player, index) => {
         if (index < 2) {
           return (
@@ -38,7 +42,14 @@ export default function PlayerConfig(props) {
           );
         } else {
           return (
-            <div className="player-config-row" key={index}>
+            <div
+              className={
+                player.sittingOut
+                  ? "player-config-row sitting-out"
+                  : "player-config-row"
+              }
+              key={index}
+            >
               <input
                 type="text"
                 defaultValue={player.name}
@@ -52,7 +63,7 @@ export default function PlayerConfig(props) {
                     updatePlayerSittingOut(index, e.target.checked)
                   }
                 />
-                <span>Sit out</span>
+                <span>Sitting out</span>
               </label>
             </div>
           );

@@ -30,6 +30,7 @@ export default function Home() {
         <title>Splendor MARVEL</title>
       </Head>
       <main>
+        <h1>Splendor MARVEL</h1>
         <section className={configuringPlayers ? "" : "hide"}>
           <PlayerConfig onStartGame={startGame} />
         </section>

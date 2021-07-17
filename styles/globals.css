@@ -16,9 +16,86 @@ a {
 }
 
 main {
-  padding: 20px;
+  padding: 0 20px 50px 20px;
+}
+
+main > h1 {
+  margin: 0 -20px;
+  padding: 10px;
+  background: #900;
+  color: #fff;
+  text-align: center;
 }
 
 main section.hide {
   display: none;
+}
+
+.player-config-container h2 {
+  text-align: center;
+  padding:15px 0;
+}
+
+.player-config-row {
+  margin: 10px 0;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  padding: 10px;
+  background: #f5f5f5;
+}
+
+.player-config-row.sitting-out {
+  background: #f9f9f9;
+  border-color: #ddd;
+  color: #333;
+}
+
+.player-config-row input[type="text"] {
+  height: 40px;
+  line-height: 40px;
+  margin: 0;
+  padding: 0;
+  text-indent: 10px;
+  font-size: 20px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+}
+
+.player-config-row.sitting-out input[type="text"] {
+  border-color: #ddd;
+  color: #999;
+  background: #fcfcfc;
+}
+
+.player-config-row label {
+  float: right;
+  line-height: 38px;
+  padding-right: 10px;
+  cursor: pointer;
+}
+
+.player-config-row input[type="checkbox"] {
+  margin-right: 5px;
+  position: relative;
+  top: -2px;
+}
+
+.player-config-container button {
+  display: block;
+  margin: 50px auto;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 50px;
+  border-radius: 25px;
+  border: 1px solid #036;
+  background: #369;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.player-config-container button:hover,
+.player-config-container button:focus {
+  background: #47a;
+  border-color: #369;
 }
