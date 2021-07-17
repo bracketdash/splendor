@@ -7,16 +7,16 @@ import getOptionScore from "../getOptionScore.development.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
 global.WEIGHTS = {
-  affordapointsDiff: 0.5,
-  avengersTags: 0.5,
-  cardPoints: 0.5,
-  mult2same: 0.5,
-  mult3diff: 0.5,
-  multRecruit: 0.5,
-  multReserve: 0.5,
-  wouldBeFirstOfColor: 0.5,
-  wouldGetLocation: 0.5,
-  wouldGetTimeStone: 0.5,
+  affordapointsDiff: 1,
+  avengersTags: 1,
+  cardPoints: 1,
+  mult2same: 0,
+  mult3diff: 0,
+  multRecruit: 0,
+  multReserve: 0,
+  wouldBeFirstOfColor: 0,
+  wouldGetLocation: 0,
+  wouldGetTimeStone: 0,
 };
 
 // 0 to have bot go first, 1 to have bot go second
@@ -26,15 +26,18 @@ const DEV_INDEX = 1;
 // how many games to run:
 // higher means more confidence in the weights you end up with, but takes longer to run
 // lower run quickly, but provides less confidence
-const GAMES_PER_WEIGHT_SET = 2;
+const GAMES_PER_WEIGHT_SET = 3;
 
 // if too many wins are being recorded, make this closer to GAMES_PER_WEIGHT_SET
-const MIN_RECORDING_SCORE = 1;
+const MIN_RECORDING_SCORE = 2;
+
+// you can ignore the next 3 constants if you set this to true
+const ITERATE_OVER_INPUT_FILE = true;
 
 // if you are running this on a high-end rig, you can adjust these values to find potentially smarter bots
-const INCREMENT_AMOUNT = 0.5;
-const MAX_WEIGHT = 1.5;
-const MIN_WEIGHT = 0.5;
+const INCREMENT_AMOUNT = 1;
+const MAX_WEIGHT = 2;
+const MIN_WEIGHT = 1;
 
 // create players
 
@@ -53,7 +56,23 @@ if (DEV_INDEX) {
 
 const weightKeys = Object.keys(global.WEIGHTS);
 
+let winnerIndex = 0;
+let winners;
+
+if (ITERATE_OVER_INPUT_FILE) {
+  winners = Object.keys(
+    JSON.parse(fs.readFileSync("src/data/inputFile.json"))
+  ).map((str) => {
+    return str.split(",").map((n) => parseFloat(n));
+  });
+}
+
 function tryIncrementWeights() {
+  if (ITERATE_OVER_INPUT_FILE) {
+    global.WEIGHTS = winners[winnerIndex];
+    winnerIndex++;
+    return winnerIndex < winners.length - 1;
+  }
   const looper = function (place) {
     if (place < 0) {
       return false;
