@@ -65,7 +65,7 @@ export default function PlayerArea(props) {
                         ]
                     ).getName()}`}
               </div>
-              <div className="ai-score">{option.score}</div>
+              <div className="ai-score">{option.score.toFixed(0)}</div>
             </button>
           );
         })

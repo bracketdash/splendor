@@ -1,3 +1,15 @@
+// a.k.a. The Brains
+
+// TODO: improvement idea: for token score, take into account the tokenNeedScore (also need to make this)
+// tokenNeedScore would rank the need of token colors based on all current freeAgents
+// obvi, this will need a new weight and we'll need to run the genetic algo again
+
+// TODO: improvement idea: remove points, weighted, from recruitment option if tokens before vs after would give
+// them fewer options next turn (of vice versa is they can afford more with the added bonus)
+// will need to redo weights for this as well of course
+
+// TODO: find a way to weight lift using next-app code instead of node-app code so we don't have to maintain both
+
 const weights = [0.9, 0.9, 1.5, 1.8, 1.5, 1.2, 0.0, 2.0, 1.2];
 
 function canAfford(card, tokens) {

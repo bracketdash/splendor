@@ -264,16 +264,37 @@ main h3 {
   background: #eee;
   font-size: 16px;
   cursor: pointer;
+  position: relative;
 }
 
 .player-area-container button:hover,
 .player-area-container button:focus {
   background: #fff;
   border-color: #999;
+  color: #000;
+}
+.player-area-container button:active {
+  background: #444;
+  color: #fff;
 }
 
 .player-area-container button.has-tokens {
   padding: 0 10px;
+}
+
+.player-area-container button .ai-score {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  margin-left: -14px;
+  background: #900;
+  color: #fff;
+  font-size: 9px;
+  padding: 0 5px;
+  height: 14px;
+  min-width: 14px;
+  line-height: 14px;
+  border-radius: 7px;
 }
 
 .option-token {
