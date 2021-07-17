@@ -31,10 +31,56 @@ main section.hide {
   display: none;
 }
 
-.player-config-container h2 {
+main h2 {
   text-align: center;
-  padding:15px 0;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
 }
+
+.token {
+  display: inline-block;
+  margin: 5px;
+  height: 80px;
+  width: 80px;
+  border-radius: 40px;
+  text-align: center;
+  color: #fff;
+  border:1px solid #333;
+}
+
+.token.gray {
+  background: #888;
+}
+.token.yellow {
+  background: #ee0;
+  color: #555;
+}
+.token.red {
+  background: #d33;
+}
+.token.orange {
+  background: #f92;
+}
+.token.blue {
+  background: #16b;
+}
+.token.purple {
+  background: #909;
+}
+
+.token label {
+  display: block;
+  font-size: 10px;
+  line-height: 40px;
+}
+
+.token span {
+  display: block;
+  font-size: 36px;
+  line-height: 15px;
+}
+
+/* PLAYER CONFIG */
 
 .player-config-row {
   margin: 10px 0;
@@ -96,6 +142,39 @@ main section.hide {
 
 .player-config-container button:hover,
 .player-config-container button:focus {
+  background: #47a;
+  border-color: #369;
+}
+
+/* PLAYER AREA */
+
+.player-area-container {
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  padding: 0 10px 20px 10px;
+  margin-top: 20px;
+}
+
+.player-area-container.active-player {
+  border-color: #369;
+}
+
+.player-area-container button {
+  display: inline-block;
+  margin: 7px 5px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 20px;
+  border-radius: 20px;
+  border: 1px solid #036;
+  background: #369;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.player-area-container button:hover,
+.player-area-container button:focus {
   background: #47a;
   border-color: #369;
 }

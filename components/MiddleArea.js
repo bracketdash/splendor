@@ -1,7 +1,7 @@
 export default function MiddleArea(props) {
   return (
     <div>
-      <h1>Game Round {props.gameState.round}</h1>
+      <h2>Round {props.gameState.round}</h2>
       <p>
         Avengers Tile:{" "}
         {props.gameState.ownerTracker.avengersAssembleTile
@@ -53,54 +53,66 @@ export default function MiddleArea(props) {
       })}
       <p>{props.gameState.decks[0].length} left in deck.</p>
       <h3>The Bank</h3>
-      <p>
-        Gray:{" "}
-        {
-          props.gameState.ownerTracker.tokens.gray.filter(
-            (owner) => owner === null
-          ).length
-        }
-      </p>
-      <p>
-        Yellow:{" "}
-        {
-          props.gameState.ownerTracker.tokens.yellow.filter(
-            (owner) => owner === null
-          ).length
-        }
-      </p>
-      <p>
-        Red:{" "}
-        {
-          props.gameState.ownerTracker.tokens.red.filter(
-            (owner) => owner === null
-          ).length
-        }
-      </p>
-      <p>
-        Orange:{" "}
-        {
-          props.gameState.ownerTracker.tokens.orange.filter(
-            (owner) => owner === null
-          ).length
-        }
-      </p>
-      <p>
-        Blue:{" "}
-        {
-          props.gameState.ownerTracker.tokens.blue.filter(
-            (owner) => owner === null
-          ).length
-        }
-      </p>
-      <p>
-        Purple:{" "}
-        {
-          props.gameState.ownerTracker.tokens.purple.filter(
-            (owner) => owner === null
-          ).length
-        }
-      </p>
+      <div className="token gray">
+        <label>Gray</label>
+        <span>
+          {
+            props.gameState.ownerTracker.tokens.gray.filter(
+              (owner) => owner === null
+            ).length
+          }
+        </span>
+      </div>
+      <div className="token yellow">
+        <label>Yellow</label>
+        <span>
+          {
+            props.gameState.ownerTracker.tokens.yellow.filter(
+              (owner) => owner === null
+            ).length
+          }
+        </span>
+      </div>
+      <div className="token red">
+        <label>Red</label>
+        <span>
+          {
+            props.gameState.ownerTracker.tokens.red.filter(
+              (owner) => owner === null
+            ).length
+          }
+        </span>
+      </div>
+      <div className="token orange">
+        <label>Orange</label>
+        <span>
+          {
+            props.gameState.ownerTracker.tokens.orange.filter(
+              (owner) => owner === null
+            ).length
+          }
+        </span>
+      </div>
+      <div className="token blue">
+        <label>Blue</label>
+        <span>
+          {
+            props.gameState.ownerTracker.tokens.blue.filter(
+              (owner) => owner === null
+            ).length
+          }
+        </span>
+      </div>
+      <div className="token purple">
+        <label>Purple</label>
+        <span>
+          {
+            props.gameState.ownerTracker.tokens.purple.filter(
+              (owner) => owner === null
+            ).length
+          }
+        </span>
+      </div>
     </div>
   );
 }
