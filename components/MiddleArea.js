@@ -3,8 +3,6 @@ import Token from "./Token.js";
 
 const colors = ["gray", "yellow", "red", "orange", "blue", "purple"];
 
-// TODO: add cost to tiles
-
 export default function MiddleArea(props) {
   return (
     <div>

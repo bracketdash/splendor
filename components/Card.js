@@ -1,5 +1,4 @@
 export default function Card(props) {
-  // TODO: design
   return (
     <div className={`card ${props.card.getBonus()}`}>
       <div>{props.card.getName()}</div>

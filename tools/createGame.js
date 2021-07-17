@@ -199,7 +199,6 @@ class Game {
           }
         }
       }
-      // TODO: end game handler
       return true;
     }
 
