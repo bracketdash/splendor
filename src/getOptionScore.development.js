@@ -1,4 +1,15 @@
-const weights = [0.9, 0.9, 1.5, 1.8, 1.5, 1.2, 0.0, 2.0, 1.2];
+const WEIGHTS = {
+  affordapointsDiff: 1.5,
+  avengersTags: 0.9,
+  cardPoints: 0.9,
+  mult2same: 1.2,
+  mult3diff: 2,
+  multRecruit: 1.2,
+  multReserve: 0,
+  wouldBeFirstOfColor: 1.5,
+  wouldGetLocation: 3,
+  wouldGetTimeStone: 1.8,
+};
 
 function canAfford(card, tokens) {
   if (!card) {
@@ -21,12 +32,12 @@ function canAfford(card, tokens) {
 }
 
 function getCardScore(card, player) {
-  const infinityScore = card.getInfinityPoints() * weights[0];
-  const avangersTagScore = card.getNumAvengersTags() * weights[1];
+  const infinityScore = card.getInfinityPoints() * WEIGHTS.cardPoints;
+  const avangersTagScore = card.getNumAvengersTags() * WEIGHTS.avengersTags;
   const recruits = player.getRecruits();
   const cardBonus = card.getBonus();
-  let bonusScore = weights[2];
-  let greenScore = weights[3];
+  let bonusScore = WEIGHTS.wouldBeFirstOfColor;
+  let greenScore = WEIGHTS.wouldGetTimeStone;
   recruits.forEach((recruit) => {
     if (cardBonus === recruit.getBonus()) {
       bonusScore = 0;
@@ -38,7 +49,7 @@ function getCardScore(card, player) {
   return infinityScore + avangersTagScore + bonusScore + greenScore;
 }
 
-export default function getOptionScoreBaseline(player, gameState, option) {
+export default function getOptionScore(player, gameState, option) {
   const proposedTokens = {};
   const allCards = gameState.freeAgents[0]
     .concat(gameState.freeAgents[1])
@@ -47,7 +58,10 @@ export default function getOptionScoreBaseline(player, gameState, option) {
 
   let card;
   let score = 1;
-  let tokensHaveChanged = false;
+
+  if (option.location) {
+    score += WEIGHTS.wouldGetLocation;
+  }
 
   if (option.type === "recruit" || option.type === "reserve") {
     if (option.level === "reserves") {
@@ -56,14 +70,12 @@ export default function getOptionScoreBaseline(player, gameState, option) {
       card = gameState.freeAgents[option.level - 1][option.index];
     }
     score += getCardScore(card, player);
-    tokensHaveChanged = gameState.ownerTracker.tokens.gray.some(
-      (owner) => owner === null
-    );
-  } else {
-    tokensHaveChanged = true;
   }
 
-  if (tokensHaveChanged) {
+  if (
+    option.type !== "reserve" ||
+    !gameState.ownerTracker.tokens.gray.some((owner) => owner === null)
+  ) {
     player.getRecruits().forEach((recruit) => {
       const bonus = recruit.getBonus();
       if (!proposedTokens[bonus]) {
@@ -72,6 +84,7 @@ export default function getOptionScoreBaseline(player, gameState, option) {
         proposedTokens[bonus] += 1;
       }
     });
+
     Object.keys(gameState.ownerTracker.tokens).forEach((color) => {
       gameState.ownerTracker.tokens[color].forEach((owner) => {
         if (owner === player) {
@@ -83,6 +96,7 @@ export default function getOptionScoreBaseline(player, gameState, option) {
         }
       });
     });
+
     const affordapointsBefore = allCards
       .filter((c) => canAfford(c, proposedTokens))
       .map((c) => getCardScore(c, player))
@@ -93,6 +107,13 @@ export default function getOptionScoreBaseline(player, gameState, option) {
         proposedTokens.gray = 1;
       } else {
         proposedTokens.gray += 1;
+      }
+    } else if (option.type === "recruit") {
+      const cardBonus = card.getBonus();
+      if (!proposedTokens[cardBonus]) {
+        proposedTokens[cardBonus] = 1;
+      } else {
+        proposedTokens[cardBonus] += 1;
       }
     } else if (option.tokens) {
       option.tokens.forEach((color) => {
@@ -108,15 +129,17 @@ export default function getOptionScoreBaseline(player, gameState, option) {
       .filter((c) => canAfford(c, proposedTokens))
       .map((c) => getCardScore(c, player))
       .reduce((a, c) => a + c, 0);
-    score += (affordapointsAfter - affordapointsBefore) * weights[4];
+
+    score +=
+      (affordapointsAfter - affordapointsBefore) * WEIGHTS.affordapointsDiff;
   }
 
-  const typeMultiplier = {
-    recruit: weights[5],
-    reserve: weights[6],
-    "3diff": weights[7],
-    "2same": weights[8],
-  };
+  score *=
+    WEIGHTS[
+      `mult${option.type.substring(0, 1).toUpperCase()}${option.type.substring(
+        1
+      )}`
+    ];
 
-  return score * typeMultiplier[option.type];
+  return score;
 }

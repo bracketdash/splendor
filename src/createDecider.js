@@ -1,6 +1,9 @@
 import getOptionScore from "./getOptionScore.js";
 
 class Decider {
+  constructor(scorer) {
+    this.getOptionScore = scorer ? scorer : getOptionScore;
+  }
   addRecruitOptionIfApplicable({
     allOptions,
     characterCard,
@@ -210,7 +213,7 @@ class Decider {
     });
 
     const scoredOptions = allOptions.map((option) => {
-      option.score = getOptionScore(player, gameState, option);
+      option.score = this.getOptionScore(player, gameState, option);
       return option;
     });
     scoredOptions.sort((a, b) => (a.score > b.score ? -1 : 1));

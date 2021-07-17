@@ -50,6 +50,6 @@ class Player {
   }
 }
 
-export default function createPlayer(name) {
-  return new Player(name, createDecider());
+export default function createPlayer(name, getOptionScore) {
+  return new Player(name, createDecider(getOptionScore));
 }
