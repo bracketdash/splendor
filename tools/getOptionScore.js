@@ -1,22 +1,27 @@
-// a.k.a. The Brains
-
-// TODO: make colorScores{color: score} - scores the need for each color based on freeAgents (not weighted)
-// maybe integrate affordapointsBefore & affordapointsAfter logic, and then replace usage below
-
-// TODO: add weighted points based on colorScores in getCardScore() based on card bonus
-
-// TODO: add weighted points based on colorScores in "if (tokensHaveChanged)" block
-
 // TODO: remove points, weighted, from recruitment option if tokens before vs after would give
 // them fewer options next turn (or vice versa is they can afford more with the added bonus)
 // use affordapointsBefore & affordapointsAfter logic
 
-// TODO: add a weighted point to the score for options that include location
+// TODO: make colorScores{color: score} - scores the need for each color based on freeAgents (not weighted)
+// maybe integrate affordapointsBefore & affordapointsAfter logic?
+// TODO: add weighted points based on colorScores in getCardScore() based on card bonus
+// TODO: add weighted points based on colorScores in "if (tokensHaveChanged)" block
 
 // TODO: redo training
 // TODO: find a way to weight lift using next-app code instead of node-app code so we don't have to maintain both
 
-const weights = [0.9, 0.9, 1.5, 1.8, 1.5, 1.2, 0.0, 2.0, 1.2];
+const WEIGHTS = {
+  affordapointsDiff: 1.5,
+  avengersTags: 0.9,
+  cardPoints: 0.9,
+  mult2same: 1.2,
+  mult3diff: 2,
+  multRecruit: 1.2,
+  multReserve: 0,
+  wouldBeFirstOfColor: 1.5,
+  wouldGetLocation: 3,
+  wouldGetTimeStone: 1.8,
+};
 
 function canAfford(card, tokens) {
   if (!card) {
@@ -39,12 +44,12 @@ function canAfford(card, tokens) {
 }
 
 function getCardScore(card, player) {
-  const infinityScore = card.getInfinityPoints() * weights[0];
-  const avangersTagScore = card.getNumAvengersTags() * weights[1];
+  const infinityScore = card.getInfinityPoints() * WEIGHTS.cardPoints;
+  const avangersTagScore = card.getNumAvengersTags() * WEIGHTS.avengersTags;
   const recruits = player.getRecruits();
   const cardBonus = card.getBonus();
-  let bonusScore = weights[2];
-  let greenScore = weights[3];
+  let bonusScore = WEIGHTS.wouldBeFirstOfColor;
+  let greenScore = WEIGHTS.wouldGetTimeStone;
   recruits.forEach((recruit) => {
     if (cardBonus === recruit.getBonus()) {
       bonusScore = 0;
@@ -66,6 +71,10 @@ export default function getOptionScore(player, gameState, option) {
   let card;
   let score = 1;
   let tokensHaveChanged = false;
+
+  if (option.location) {
+    score += WEIGHTS.wouldGetLocation;
+  }
 
   if (option.type === "recruit" || option.type === "reserve") {
     if (option.level === "reserves") {
@@ -126,15 +135,12 @@ export default function getOptionScore(player, gameState, option) {
       .filter((c) => canAfford(c, proposedTokens))
       .map((c) => getCardScore(c, player))
       .reduce((a, c) => a + c, 0);
-    score += (affordapointsAfter - affordapointsBefore) * weights[4];
+    score +=
+      (affordapointsAfter - affordapointsBefore) * WEIGHTS.affordapointsDiff;
   }
 
-  const typeMultiplier = {
-    recruit: weights[5],
-    reserve: weights[6],
-    "3diff": weights[7],
-    "2same": weights[8],
-  };
-
-  return score * typeMultiplier[option.type];
+  return (
+    score *
+    WEIGHTS[`mult${option.type.substring(0, 1).toUpperCase()}${option.type}`]
+  );
 }
