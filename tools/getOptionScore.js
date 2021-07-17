@@ -1,15 +1,3 @@
-// TODO: remove points, weighted, from recruitment option if tokens before vs after would give
-// them fewer options next turn (or vice versa is they can afford more with the added bonus)
-// use affordapointsBefore & affordapointsAfter logic
-
-// TODO: make colorScores{color: score} - scores the need for each color based on freeAgents (not weighted)
-// maybe integrate affordapointsBefore & affordapointsAfter logic?
-// TODO: add weighted points based on colorScores in getCardScore() based on card bonus
-// TODO: add weighted points based on colorScores in "if (tokensHaveChanged)" block
-
-// TODO: redo training
-// TODO: find a way to weight lift using next-app code instead of node-app code so we don't have to maintain both
-
 const WEIGHTS = {
   affordapointsDiff: 1.5,
   avengersTags: 0.9,
@@ -70,7 +58,6 @@ export default function getOptionScore(player, gameState, option) {
 
   let card;
   let score = 1;
-  let tokensHaveChanged = false;
 
   if (option.location) {
     score += WEIGHTS.wouldGetLocation;
@@ -83,14 +70,12 @@ export default function getOptionScore(player, gameState, option) {
       card = gameState.freeAgents[option.level - 1][option.index];
     }
     score += getCardScore(card, player);
-    tokensHaveChanged = gameState.ownerTracker.tokens.gray.some(
-      (owner) => owner === null
-    );
-  } else {
-    tokensHaveChanged = true;
   }
 
-  if (tokensHaveChanged) {
+  if (
+    option.type !== "reserve" ||
+    !gameState.ownerTracker.tokens.gray.some((owner) => owner === null)
+  ) {
     player.getRecruits().forEach((recruit) => {
       const bonus = recruit.getBonus();
       if (!proposedTokens[bonus]) {
@@ -99,6 +84,7 @@ export default function getOptionScore(player, gameState, option) {
         proposedTokens[bonus] += 1;
       }
     });
+
     Object.keys(gameState.ownerTracker.tokens).forEach((color) => {
       gameState.ownerTracker.tokens[color].forEach((owner) => {
         if (owner === player) {
@@ -110,6 +96,7 @@ export default function getOptionScore(player, gameState, option) {
         }
       });
     });
+
     const affordapointsBefore = allCards
       .filter((c) => canAfford(c, proposedTokens))
       .map((c) => getCardScore(c, player))
@@ -120,6 +107,13 @@ export default function getOptionScore(player, gameState, option) {
         proposedTokens.gray = 1;
       } else {
         proposedTokens.gray += 1;
+      }
+    } else if (option.type === "recruit") {
+      const cardBonus = card.getBonus();
+      if (!proposedTokens[cardBonus]) {
+        proposedTokens[cardBonus] = 1;
+      } else {
+        proposedTokens[cardBonus] += 1;
       }
     } else if (option.tokens) {
       option.tokens.forEach((color) => {
@@ -135,6 +129,7 @@ export default function getOptionScore(player, gameState, option) {
       .filter((c) => canAfford(c, proposedTokens))
       .map((c) => getCardScore(c, player))
       .reduce((a, c) => a + c, 0);
+
     score +=
       (affordapointsAfter - affordapointsBefore) * WEIGHTS.affordapointsDiff;
   }
