@@ -4,6 +4,8 @@ import Token from "./Token.js";
 const colors = ["gray", "yellow", "red", "orange", "blue", "purple"];
 
 // TODO: add win condition checklist to top right
+// TODO: locations not being assigned?
+// TODO: end-game scenario breaking the page
 
 export default function PlayerArea(props) {
   return (
