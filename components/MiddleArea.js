@@ -1,3 +1,7 @@
+import Token from "./Token.js";
+
+const colors = ["gray", "yellow", "red", "orange", "blue", "purple"];
+
 export default function MiddleArea(props) {
   return (
     <div>
@@ -53,66 +57,16 @@ export default function MiddleArea(props) {
       })}
       <p>{props.gameState.decks[0].length} left in deck.</p>
       <h3>The Bank</h3>
-      <div className="token gray">
-        <label>Gray</label>
-        <span>
-          {
-            props.gameState.ownerTracker.tokens.gray.filter(
+      {colors.map((color) => (
+        <Token
+          color={color}
+          num={
+            props.gameState.ownerTracker.tokens[color].filter(
               (owner) => owner === null
             ).length
           }
-        </span>
-      </div>
-      <div className="token yellow">
-        <label>Yellow</label>
-        <span>
-          {
-            props.gameState.ownerTracker.tokens.yellow.filter(
-              (owner) => owner === null
-            ).length
-          }
-        </span>
-      </div>
-      <div className="token red">
-        <label>Red</label>
-        <span>
-          {
-            props.gameState.ownerTracker.tokens.red.filter(
-              (owner) => owner === null
-            ).length
-          }
-        </span>
-      </div>
-      <div className="token orange">
-        <label>Orange</label>
-        <span>
-          {
-            props.gameState.ownerTracker.tokens.orange.filter(
-              (owner) => owner === null
-            ).length
-          }
-        </span>
-      </div>
-      <div className="token blue">
-        <label>Blue</label>
-        <span>
-          {
-            props.gameState.ownerTracker.tokens.blue.filter(
-              (owner) => owner === null
-            ).length
-          }
-        </span>
-      </div>
-      <div className="token purple">
-        <label>Purple</label>
-        <span>
-          {
-            props.gameState.ownerTracker.tokens.purple.filter(
-              (owner) => owner === null
-            ).length
-          }
-        </span>
-      </div>
+        />
+      ))}
     </div>
   );
 }
