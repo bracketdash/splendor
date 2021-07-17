@@ -12,7 +12,7 @@ import PlayerConfig from "../components/PlayerConfig.js";
 // bug TODOs
 // TODO: recruiting not deducting tokens?
 // TODO: locations not being assigned?
-// TODO: gray tokens not included in the option object for reserves?
+// TODO: gray tokens not included in the option object for reserves? - fix option display logic once fixed
 // TODO: end-game scenario breaking the page?
 
 // infra TODOs
