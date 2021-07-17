@@ -4,11 +4,11 @@ import createPlayer from "../createPlayer.js";
 import getOptionScore from "../getOptionScore.development.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
-const DEV_INDEX = 1;
+const DEV_INDEX = 1; // 0 to have bot go first
 const GAMES_PER_WEIGHT_SET = 5;
 const INCREMENT_AMOUNT = 0.5;
 const MAX_WEIGHT = 2;
-const MIN_RECORDING_SCORE = 2;
+const MIN_RECORDING_SCORE = 4;
 
 // create players
 
@@ -71,7 +71,7 @@ function handleEngGame(playerStats) {
   process.stdout.clearLine();
   process.stdout.cursorTo(0);
   process.stdout.write(
-    `${JSON.stringify(global.WEIGHTS)} -- ${
+    `${Object.values(global.WEIGHTS).join(",")} -- ${
       winTally[DEV_INDEX]
     }/${currentGameNum}/${GAMES_PER_WEIGHT_SET}`
   );
@@ -83,9 +83,9 @@ function handleEngGame(playerStats) {
       process.stdout.clearLine();
       process.stdout.cursorTo(0);
       console.log(
-        `${JSON.stringify(global.WEIGHTS)} -- won ${
+        `${Object.values(global.WEIGHTS).join(",")} -- ${
           winTally[DEV_INDEX]
-        } / ${GAMES_PER_WEIGHT_SET}`
+        }/${GAMES_PER_WEIGHT_SET}`
       );
     }
 
@@ -104,7 +104,7 @@ function handleEngGame(playerStats) {
       return;
     }
 
-    console.log("Weight-lifting complete.");
+    console.log("Training complete. Winners below:");
     console.log(weightComboWins);
 
     return;
