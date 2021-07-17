@@ -3,6 +3,8 @@ import Token from "./Token.js";
 
 const colors = ["gray", "yellow", "red", "orange", "blue", "purple"];
 
+// TODO: add win condition checklist to top right
+
 export default function PlayerArea(props) {
   return (
     <div
@@ -49,17 +51,16 @@ export default function PlayerArea(props) {
                 {option.tokens
                   ? option.tokens.map((token) => (
                       // TODO: check that gray tokens are included in the option object for reserves
-                      <span className={`option-token ${token}`}>
-                        {token.substring(0, 1).toUpperCase()}
-                        {token.substring(1)}
-                      </span>
+                      <span className={`option-token ${token}`}></span>
                     ))
                   : `${option.type
                       .substring(0, 1)
                       .toUpperCase()}${option.type.substring(
                       1
                     )} ${(option.level === "reserves"
-                      ? props.gameState.players.getReserves()[option.index]
+                      ? props.gameState.players[
+                          props.gameState.whoseTurn
+                        ].getReserves()[option.index]
                       : props.gameState.freeAgents[option.level - 1][
                           option.index
                         ]

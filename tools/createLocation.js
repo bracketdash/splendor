@@ -8,6 +8,10 @@ class LocationTile {
     });
   }
 
+  getCost() {
+    return this.cost;
+  }
+
   getInfinityPoints() {
     return this.infinityPoints;
   }

@@ -12,12 +12,16 @@ export default function MiddleArea(props) {
       <div className="tiles-container">
         <div>
           <div className="tile">
-            <label>Avengers Tile</label>
-            <span>
+            <div className="tile-name">Avengers Tile</div>
+            <div className="tile-points">+3</div>
+            <div className="tile-cost">
+              <div className="tile-bonus-cost">3+</div>
+            </div>
+            <div className="tile-owner">
               {props.gameState.ownerTracker.avengersAssembleTile
                 ? props.gameState.ownerTracker.avengersAssembleTile.getName()
-                : "Unowned"}
-            </span>
+                : "Not Yet Owned"}
+            </div>
           </div>
         </div>
         {props.gameState.locationTiles.map((locationTile, i) => {
@@ -25,8 +29,18 @@ export default function MiddleArea(props) {
           return (
             <div key={i}>
               <div className="tile">
-                <label>{locationTile.getName()}</label>
-                <span>{owner ? owner.getName() : "Unowned"}</span>
+                <div className="tile-name">{locationTile.getName()}</div>
+                <div className="tile-points">+3</div>
+                <div className="tile-cost">
+                  {Object.keys(locationTile.getCost()).map((color) => (
+                    <div className={`tile-bonus-cost ${color}`}>
+                      {locationTile.getCost()[color]}
+                    </div>
+                  ))}
+                </div>
+                <div className="tile-owner">
+                  {owner ? owner.getName() : "Not Yet Owned"}
+                </div>
               </div>
             </div>
           );
