@@ -50,13 +50,31 @@ class Decider {
     });
 
     const tokensToRemove = [];
-    // TODO: if we have to use gray tokens for this, add them here
     Object.keys(cardCost).forEach((color) => {
-      Array(cardCost[color])
-        .fill(1)
-        .forEach(() => {
-          tokensToRemove.push(color);
-        });
+      if (playerBonuses[color] && playerBonuses[color] >= cardCost[color]) {
+        Array(cardCost[color])
+          .fill(1)
+          .forEach(() => {
+            tokensToRemove.push(color);
+          });
+      } else if (playerBonuses[color]) {
+        Array(playerBonuses[color])
+          .fill(1)
+          .forEach(() => {
+            tokensToRemove.push(color);
+          });
+        Array(cardCost[color] - playerBonuses[color])
+          .fill(1)
+          .forEach(() => {
+            tokensToRemove.push("gray");
+          });
+      } else {
+        Array(cardCost[color])
+          .fill(1)
+          .forEach(() => {
+            tokensToRemove.push("gray");
+          });
+      }
     });
 
     if (locationOptions.length) {

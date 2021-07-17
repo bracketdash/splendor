@@ -5,9 +5,11 @@ import createGame from "../tools/createGame.js";
 import createPlayer from "../tools/createPlayer.js";
 import PlayerConfig from "../components/PlayerConfig.js";
 
-// BUGS
-// TODO: option.tokens.gray not included for reserve options? - fix option display logic once fixed
+// LOGIC BUGS
 // TODO: end-game scenario breaking the page?
+
+// DISPLAY BUGS
+// TODO: alignment issues with cards with points vs no points in player area
 
 // REFACTOR
 // TODO: make the player config screen the home route and /game the game screen
