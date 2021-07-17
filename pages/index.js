@@ -6,7 +6,6 @@ import createPlayer from "../tools/createPlayer.js";
 import PlayerConfig from "../components/PlayerConfig.js";
 
 // TODO: handle game over
-// TODO: alignment issues with cards with points vs no points in player area
 
 // REFACTOR
 // TODO: make the player config screen the home route and /game the game screen

@@ -332,6 +332,11 @@ main h3 {
   margin-top: 20px;
 }
 
+.cards-container {
+  display: flex;
+  justify-content: center;
+}
+
 .player-area-container.active-player {
   border-color: #369;
 }

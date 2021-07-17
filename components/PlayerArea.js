@@ -27,13 +27,19 @@ export default function PlayerArea(props) {
         />
       ))}
       <h4>{props.player.getRecruits().length > 0 ? "Recruits" : ""}</h4>
-      {props.player.getRecruits().map((card, i) => (
-        <Card card={card} key={i} />
-      ))}
+      <div className="cards-container">
+        {props.player.getRecruits().map((card, i) => (
+          <Card card={card} key={i} />
+        ))}
+      </div>
       <h4>{props.player.getReserves().length > 0 ? "Reserves" : ""}</h4>
-      {props.player.getReserves().map((card, i) => (
-        <Card card={card} key={i} />
-      ))}
+      <div className="cards-container">
+        {props.player.getReserves().map((card, i) => (
+          <div>
+            <Card card={card} key={i} />
+          </div>
+        ))}
+      </div>
       <h4>
         {props.gameState.players[props.gameState.whoseTurn] === props.player
           ? "Select A Move"
