@@ -20,42 +20,34 @@ export default function MiddleArea(props) {
           </p>
         );
       })}
-      <h4>Level 3s:</h4>
-      {props.gameState.freeAgents[2].map((card, i) => {
+      {[3, 2, 1].map((level) => {
         return (
-          <p key={i}>
-            {card.getName()} - Bonus: {card.getBonus()}
-            <br />
-            Points: {card.getInfinityPoints()} | A-Tags:{" "}
-            {card.getNumAvengersTags()} | Lvl {card.getLevel()}
-          </p>
+          <div className="level-row" key={level}>
+            <div>
+              <div className={`card deck lvl-${level}`}>
+                <div className="remaining-num">
+                  {props.gameState.decks[level - 1].length}
+                </div>
+                <div className="remaining-label">remaining</div>
+                <div className="level-stars">{" * ".repeat(level)}</div>
+              </div>
+            </div>
+            {props.gameState.freeAgents[level - 1].map((card, i) => {
+              // TODO: replace with .map((card, i) => <Card card={card} />)
+              return (
+                <div key={i}>
+                  <div className="card">
+                    {card.getName()} - Bonus: {card.getBonus()}
+                    <br />
+                    Points: {card.getInfinityPoints()} | A-Tags:{" "}
+                    {card.getNumAvengersTags()} | Lvl {card.getLevel()}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         );
       })}
-      <p>{props.gameState.decks[2].length} left in deck.</p>
-      <h4>Level 2s:</h4>
-      {props.gameState.freeAgents[1].map((card, i) => {
-        return (
-          <p key={i}>
-            {card.getName()} - Bonus: {card.getBonus()}
-            <br />
-            Points: {card.getInfinityPoints()} | A-Tags:{" "}
-            {card.getNumAvengersTags()} | Lvl {card.getLevel()}
-          </p>
-        );
-      })}
-      <p>{props.gameState.decks[1].length} left in deck.</p>
-      <h4>Level 1s:</h4>
-      {props.gameState.freeAgents[0].map((card, i) => {
-        return (
-          <p key={i}>
-            {card.getName()} - Bonus: {card.getBonus()}
-            <br />
-            Points: {card.getInfinityPoints()} | A-Tags:{" "}
-            {card.getNumAvengersTags()} | Lvl {card.getLevel()}
-          </p>
-        );
-      })}
-      <p>{props.gameState.decks[0].length} left in deck.</p>
       <h3>The Bank</h3>
       {colors.map((color) => (
         <Token

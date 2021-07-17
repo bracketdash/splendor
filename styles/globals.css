@@ -82,6 +82,50 @@ main h3 {
   line-height: 15px;
 }
 
+.card.deck {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.card.deck.lvl-3 {
+  background: #03c;
+}
+.card.deck.lvl-2 {
+  background: #f60;
+}
+.card.deck.lvl-1 {
+  background: #090;
+}
+
+.card.deck .remaining-num {
+  font-size: 50px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.card.deck .remaining-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.card.deck .level-stars {
+  width: 100%;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  color: #fff;
+}
+
+.card {
+  margin: 10px;
+  height: 180px;
+  width: 120px;
+  border: 1px solid #888;
+  border-radius: 3px;
+}
+
 /* PLAYER CONFIG */
 
 .player-config-row {
@@ -147,6 +191,13 @@ main h3 {
 .player-config-container button:focus {
   background: #47a;
   border-color: #369;
+}
+
+/* MIDDLE AREA */
+
+.level-row {
+  display: flex;
+  justify-content: center;
 }
 
 /* PLAYER AREA */
