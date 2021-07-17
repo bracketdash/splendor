@@ -1,15 +1,4 @@
-const WEIGHTS = {
-  affordapointsDiff: 1.5,
-  avengersTags: 0.9,
-  cardPoints: 0.9,
-  mult2same: 1.2,
-  mult3diff: 2,
-  multRecruit: 1.2,
-  multReserve: 0,
-  wouldBeFirstOfColor: 1.5,
-  wouldGetLocation: 3,
-  wouldGetTimeStone: 1.8,
-};
+const WEIGHTS = global.WEIGHTS; // set in scripts/trainer.js
 
 function canAfford(card, tokens) {
   if (!card) {

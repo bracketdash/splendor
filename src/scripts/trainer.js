@@ -4,45 +4,71 @@ import createPlayer from "../createPlayer.js";
 import getOptionScore from "../getOptionScore.development.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
-// REMEMBER: update playerIndex for testing the right player!
-const playerIndex = 1;
-const players = [
-  createPlayer("Baseline", getOptionScoreBaseline),
-  createPlayer("Development", getOptionScore),
-];
+const DEV_INDEX = 1;
+const GAMES_PER_WEIGHT_SET = 5;
+const INCREMENT_AMOUNT = 0.5;
+const MAX_WEIGHT = 2;
+const MIN_RECORDING_SCORE = 2;
 
-const singleTestNumGames = 50;
-const minScore = 20;
+// create players
 
-// TODO: continue refactor from here
+const players = [];
+const baselinePlayer = createPlayer("Baseline", getOptionScoreBaseline);
+const devPlayer = createPlayer("Dev", getOptionScore);
+if (DEV_INDEX) {
+  players.push(baselinePlayer);
+  players.push(devPlayer);
+} else {
+  players.push(devPlayer);
+  players.push(baselinePlayer);
+}
 
-global.weights = [0.9, 0.9, 1.5, 1.8, 0.3, 1.2, 0.3, 2.1, 1.2];
+// set up weights and increment function
 
-const incrementIndex = [2, 2, 4, 5, 0];
-const increments = [0.3, 0.6, 0.9, 1.2, 1.5, 1.8, 2.1];
+global.WEIGHTS = {
+  affordapointsDiff: 1.5,
+  avengersTags: 0.9,
+  cardPoints: 0.9,
+  mult2same: 1.2,
+  mult3diff: 2,
+  multRecruit: 1.2,
+  multReserve: 0,
+  wouldBeFirstOfColor: 1.5,
+  wouldGetLocation: 3,
+  wouldGetTimeStone: 1.8,
+};
+
+const weightKeys = Object.keys(global.WEIGHTS);
 
 function tryIncrementWeights() {
   const looper = function (place) {
     if (place < 0) {
       return false;
     }
-    if (incrementIndex[place] === increments.length - 1) {
-      incrementIndex[place] = 0;
-      global.weights[place] = increments[0];
+    if (global.WEIGHTS[weightKeys[place]] === MAX_WEIGHT) {
+      global.WEIGHTS[weightKeys[place]] = 0;
       return looper(place - 1);
     }
-    incrementIndex[place] += 1;
-    global.weights[place] = increments[incrementIndex[place]];
+    global.WEIGHTS[weightKeys[place]] += INCREMENT_AMOUNT;
     return true;
   };
-
-  return looper(4);
+  return looper(weightKeys.length - 1);
 }
 
+// game runner and weight set win tracker
+
+const game = createGame(players);
 const weightComboWins = {};
 
 let winTally = Array(players.length).fill(0);
 let currentGameNum = 1;
+
+// game.getState(); <-- get the initial state of the game
+// game.makeMove(selectedOption, player).then((state) => {
+//   data is the new game state with state.options, or the game over state with state.winners
+// });
+
+// TODO: continue refactor from here
 
 const endGameCallback = function (_, playerStats) {
   winTally.forEach((_, index) => {
@@ -92,5 +118,3 @@ const endGameCallback = function (_, playerStats) {
   });
   new Game(players, endGameCallback).start();
 };
-
-new Game(players, endGameCallback).start();
