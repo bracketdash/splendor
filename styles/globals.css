@@ -65,6 +65,7 @@ main h3 {
   background: #ee0;
 }
 .cost-orb.yellow,
+.card.yellow .card-banner,
 .tile-bonus-cost.yellow {
   color: #555;
 }
@@ -100,37 +101,21 @@ main h3 {
   height: 118px;
   width: 150px;
   border: 1px solid #888;
-  border-radius: 3px;
+  border-radius: 10px;
   position: relative;
-}
-
-.card.deck {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: #aaa;
-  color: #fff;
-}
-
-.card.deck .remaining-num {
-  font-size: 40px;
-}
-
-.card.deck .remaining-label {
-  font-size: 11px;
-}
-
-.card:not(.deck) {
   text-align: left;
   font-size: 11px;
   padding: 5px;
 }
 
 .card .card-banner {
-  margin: -5px;
   display: flex;
+  margin: -6px;
   height: 40px;
-  background: #eee;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  color: #fff;
 }
 
 .card .avengers-tag,
@@ -156,7 +141,6 @@ main h3 {
 .card .card-points {
   font-size: 24px;
   line-height: 40px;
-  color: #fff;
   padding: 0 6px;
 }
 
@@ -335,6 +319,10 @@ main h3 {
   box-shadow: inset 0 2px 0 #bbb;
 }
 
+.the-bank {
+  padding: 20px 0;
+}
+
 /* PLAYER AREA */
 
 .player-area-container {
@@ -383,17 +371,18 @@ main h3 {
 
 .player-area-container button .ai-score {
   position: absolute;
-  top: -5px;
-  right: -5px;
-  margin-left: -14px;
-  background: #900;
+  top: -3px;
+  right: -3px;
+  background: #369;
   color: #fff;
-  font-size: 9px;
+  font-size: 8px;
   padding: 0 5px;
-  height: 14px;
-  min-width: 14px;
-  line-height: 14px;
-  border-radius: 7px;
+  height: 15px;
+  min-width: 15px;
+  line-height: 15px;
+  border-top-right-radius: 10px;
+  border-bottom-left-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
 .option-token {

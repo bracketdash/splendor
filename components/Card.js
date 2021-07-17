@@ -14,13 +14,13 @@ export default function Card(props) {
         ></div>
         {Array(props.card.getNumAvengersTags())
           .fill(1)
-          .map(() => (
-            <div className="avengers-tag">A</div>
+          .map((_, i) => (
+            <div className="avengers-tag" key={i}>A</div>
           ))}
       </div>
       <div className="card-cost">
-        {Object.keys(props.card.getCost()).map((color) => (
-          <div className={`cost-orb ${color}`}>
+        {Object.keys(props.card.getCost()).map((color, i) => (
+          <div className={`cost-orb ${color}`} key={i}>
             {props.card.getCost()[color]}
           </div>
         ))}

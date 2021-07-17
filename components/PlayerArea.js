@@ -12,9 +12,12 @@ export default function PlayerArea(props) {
           : "player-area-container"
       }
     >
-      <h2>{props.player.getName()} - {props.points} Points</h2>
-      {colors.map((color) => (
+      <h2>
+        {props.player.getName()} - {props.points} Points
+      </h2>
+      {colors.map((color, i) => (
         <Token
+          key={i}
           color={color}
           num={
             props.gameState.ownerTracker.tokens[color].filter(
@@ -46,8 +49,8 @@ export default function PlayerArea(props) {
             >
               <div className="action">
                 {option.tokens
-                  ? option.tokens.map((token) => (
-                      <span className={`option-token ${token}`}></span>
+                  ? option.tokens.map((token, ii) => (
+                      <span className={`option-token ${token}`} key={ii}></span>
                     ))
                   : `${option.type
                       .substring(0, 1)

@@ -22,6 +22,8 @@ export default function MiddleArea(props) {
             </div>
           </div>
         </div>
+      </div>
+      <div className="tiles-container">
         {props.gameState.locationTiles.map((locationTile, i) => {
           const owner = locationTile.getOwner();
           return (
@@ -30,8 +32,8 @@ export default function MiddleArea(props) {
                 <div className="tile-name">{locationTile.getName()}</div>
                 <div className="tile-points">+3</div>
                 <div className="tile-cost">
-                  {Object.keys(locationTile.getCost()).map((color) => (
-                    <div className={`tile-bonus-cost ${color}`}>
+                  {Object.keys(locationTile.getCost()).map((color, ii) => (
+                    <div className={`tile-bonus-cost ${color}`} key={ii}>
                       {locationTile.getCost()[color]}
                     </div>
                   ))}
@@ -47,32 +49,25 @@ export default function MiddleArea(props) {
       {[3, 2, 1].map((level) => {
         return (
           <div className="level-row" key={level}>
-            <div>
-              <div className={`card deck lvl-${level}`}>
-                <div className="remaining-num">
-                  {props.gameState.decks[level - 1].length}
-                </div>
-                <div className="remaining-label">remaining</div>
-                <div className="level-stars">{" * ".repeat(level)}</div>
-              </div>
-            </div>
             {props.gameState.freeAgents[level - 1].map((card, i) => (
               <Card card={card} key={i} />
             ))}
           </div>
         );
       })}
-      <h3>The Bank</h3>
-      {colors.map((color) => (
-        <Token
-          color={color}
-          num={
-            props.gameState.ownerTracker.tokens[color].filter(
-              (owner) => owner === null
-            ).length
-          }
-        />
-      ))}
+      <div className="the-bank">
+        {colors.map((color, i) => (
+          <Token
+            key={i}
+            color={color}
+            num={
+              props.gameState.ownerTracker.tokens[color].filter(
+                (owner) => owner === null
+              ).length
+            }
+          />
+        ))}
+      </div>
     </div>
   );
 }
