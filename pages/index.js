@@ -5,24 +5,21 @@ import createGame from "../tools/createGame.js";
 import createPlayer from "../tools/createPlayer.js";
 import PlayerConfig from "../components/PlayerConfig.js";
 
-// ui TODOs
-// TODO: style cards
-// TODO: add win condition checklist to top right of player area ([] 16+ Points, [] Green, [] Yellow, etc.)
-
-// bug TODOs
+// BUGS
 // TODO: recruiting not deducting tokens?
 // TODO: locations not being assigned?
 // TODO: gray tokens not included in the option object for reserves? - fix option display logic once fixed
 // TODO: end-game scenario breaking the page?
 
-// refactor TODOs
+// REFACTOR
 // TODO: make the player config screen the home route and /game the game screen
 // TODO: move some css into index.module.css and game.module.css
 // TODO: /components - keep Card, PlayerArea, and Token, build the rest into pages/index.js and pages/game.js
 // TODO: /tools - createCard seems unnecessary
 // TODO: /tools - the Decider class is really just a couple of functions
 
-// more TODOs (related to ai) in getOptionScore.js
+// AI IMPROVEMENTS
+// See getOptionScore.js
 
 export default function Home() {
   const [configuringPlayers, setConfiguringPlayers] = useState(true);

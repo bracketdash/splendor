@@ -12,7 +12,7 @@ export default function PlayerArea(props) {
           : "player-area-container"
       }
     >
-      <h2>{props.player.getName()}</h2>
+      <h2>{props.player.getName()} - {props.points} Points</h2>
       {colors.map((color) => (
         <Token
           color={color}

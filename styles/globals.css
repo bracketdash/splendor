@@ -59,25 +59,36 @@ main h3 {
   background: #888;
 }
 .token.yellow,
+.cost-orb.yellow,
+.card.yellow .card-banner,
 .tile-bonus-cost.yellow {
   background: #ee0;
 }
+.cost-orb.yellow,
 .tile-bonus-cost.yellow {
   color: #555;
 }
 .token.red,
+.cost-orb.red,
+.card.red .card-banner,
 .tile-bonus-cost.red {
   background: #d33;
 }
 .token.orange,
+.cost-orb.orange,
+.card.orange .card-banner,
 .tile-bonus-cost.orange {
   background: #f92;
 }
 .token.blue,
+.cost-orb.blue,
+.card.blue .card-banner,
 .tile-bonus-cost.blue {
   background: #16b;
 }
 .token.purple,
+.cost-orb.purple,
+.card.purple .card-banner,
 .tile-bonus-cost.purple {
   background: #909;
 }
@@ -86,41 +97,105 @@ main h3 {
 
 .card {
   margin: 10px;
-  height: 180px;
-  width: 120px;
+  height: 118px;
+  width: 150px;
   border: 1px solid #888;
   border-radius: 3px;
+  position: relative;
 }
 
 .card.deck {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  position: relative;
-  background: #bbb;
+  background: #aaa;
   color: #fff;
 }
 
 .card.deck .remaining-num {
-  font-size: 50px;
+  font-size: 40px;
 }
 
 .card.deck .remaining-label {
   font-size: 11px;
 }
 
-.card.deck .level-stars {
-  width: 100%;
-  display: block;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-
 .card:not(.deck) {
   text-align: left;
   font-size: 11px;
   padding: 5px;
+}
+
+.card .card-banner {
+  margin: -5px;
+  display: flex;
+  height: 40px;
+  background: #eee;
+}
+
+.card .avengers-tag,
+.card .time-stone {
+  height: 20px;
+  width: 20px;
+  margin: 10px 5px;
+  background: #999;
+  border: 1px solid #fff;
+  border-radius: 15px;
+  color: #fff;
+  text-align: center;
+  line-height: 18px;
+}
+
+.card .time-stone {
+  background: #090;
+}
+.card .time-stone.hide {
+  display: none;
+}
+
+.card .card-points {
+  font-size: 24px;
+  line-height: 40px;
+  color: #fff;
+  padding: 0 6px;
+}
+
+.card .card-cost {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  top: 50px;
+  left: 0;
+  width: 100%;
+}
+
+.cost-orb {
+  margin: 0 3px;
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  line-height: 28px;
+  color: #fff;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.card .card-name {
+  width: 100%;
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  text-align: center;
+  font-weight: bold;
+}
+
+.card .level-stars {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  text-align: center;
 }
 
 /* PLAYER CONFIG */
