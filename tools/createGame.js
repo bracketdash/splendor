@@ -125,19 +125,22 @@ class Game {
     return score;
   }
 
-  getState() {
+  getState(skipOptions) {
     const state = {
       decks: this.decks,
       freeAgents: this.freeAgents,
       locationTiles: this.locationTiles,
       numPlayers: this.numPlayers,
       ownerTracker: this.ownerTracker,
+      options: [],
       players: this.players,
       round: this.round,
       whoseTurn: this.whoseTurn,
     };
-    const player = this.players[this.whoseTurn];
-    state.options = player.getOptions(player, state);
+    if (!skipOptions) {
+      const player = this.players[this.whoseTurn];
+      state.options = player.getOptions(player, state);
+    }
     return state;
   }
 
@@ -251,7 +254,14 @@ class Game {
         this.locationTileCheck(player, decision.location);
         this.avengersAssembleTileCheck(player);
         if (this.infinityGauntletTileCheck(player)) {
-          return false;
+          // TODO: this may not be the end of the game
+          // TODO: if this player isn't last, we need to go to the end of the round still
+          // TODO: provide player stats, or at least an array of winning player indexes
+          return new Promise((resolve) => {
+            const results = this.getState(true);
+            results.gameOver = true;
+            resolve(this.getState());
+          });
         }
         break;
     }

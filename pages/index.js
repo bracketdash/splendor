@@ -5,10 +5,7 @@ import createGame from "../tools/createGame.js";
 import createPlayer from "../tools/createPlayer.js";
 import PlayerConfig from "../components/PlayerConfig.js";
 
-// LOGIC BUGS
-// TODO: end-game scenario breaking the page?
-
-// DISPLAY BUGS
+// TODO: handle game over
 // TODO: alignment issues with cards with points vs no points in player area
 
 // REFACTOR
