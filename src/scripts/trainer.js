@@ -72,19 +72,19 @@ function handleEngGame(playerStats) {
   process.stdout.cursorTo(0);
   process.stdout.write(
     `${JSON.stringify(global.WEIGHTS)} -- ${
-      winTally[playerIndex]
+      winTally[DEV_INDEX]
     }/${currentGameNum}/${GAMES_PER_WEIGHT_SET}`
   );
 
   if (currentGameNum === GAMES_PER_WEIGHT_SET - 1) {
     currentGameNum = 0;
-    if (winTally[playerIndex] > MIN_RECORDING_SCORE) {
-      weightComboWins[JSON.stringify(global.WEIGHTS)] = winTally[playerIndex];
+    if (winTally[DEV_INDEX] > MIN_RECORDING_SCORE) {
+      weightComboWins[JSON.stringify(global.WEIGHTS)] = winTally[DEV_INDEX];
       process.stdout.clearLine();
       process.stdout.cursorTo(0);
       console.log(
         `${JSON.stringify(global.WEIGHTS)} -- won ${
-          winTally[playerIndex]
+          winTally[DEV_INDEX]
         } / ${GAMES_PER_WEIGHT_SET}`
       );
     }
