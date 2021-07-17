@@ -4,6 +4,20 @@ import createPlayer from "../createPlayer.js";
 import getOptionScore from "../getOptionScore.development.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
+// starting weights - helpful if you need to pick up where you left off, otherwise should be 0
+global.WEIGHTS = {
+  affordapointsDiff: 0.5,
+  avengersTags: 0.5,
+  cardPoints: 0.5,
+  mult2same: 0.5,
+  mult3diff: 0.5,
+  multRecruit: 0.5,
+  multReserve: 0.5,
+  wouldBeFirstOfColor: 0.5,
+  wouldGetLocation: 0.5,
+  wouldGetTimeStone: 0,
+};
+
 // 0 to have bot go first, 1 to have bot go second
 // it is typically harder to win as the second player
 const DEV_INDEX = 1;
@@ -11,10 +25,10 @@ const DEV_INDEX = 1;
 // how many games to run:
 // higher means more confidence in the weights you end up with, but takes longer to run
 // lower run quickly, but provides less confidence
-const GAMES_PER_WEIGHT_SET = 10;
+const GAMES_PER_WEIGHT_SET = 5;
 
 // if too many wins are being recorded, make this closer to GAMES_PER_WEIGHT_SET
-const MIN_RECORDING_SCORE = 9;
+const MIN_RECORDING_SCORE = 4;
 
 // if you are running this on a high-end rig, you can adjust these values to find potentially smarter bots
 const INCREMENT_AMOUNT = 0.5;
@@ -34,19 +48,6 @@ if (DEV_INDEX) {
 }
 
 // set up weights and increment function
-
-global.WEIGHTS = {
-  affordapointsDiff: 0,
-  avengersTags: 0,
-  cardPoints: 0,
-  mult2same: 0,
-  mult3diff: 0,
-  multRecruit: 0,
-  multReserve: 0,
-  wouldBeFirstOfColor: 0,
-  wouldGetLocation: 0,
-  wouldGetTimeStone: 0,
-};
 
 const weightKeys = Object.keys(global.WEIGHTS);
 
@@ -81,22 +82,21 @@ function handleEngGame(playerStats) {
   process.stdout.clearLine();
   process.stdout.cursorTo(0);
   process.stdout.write(
-    `${Object.values(global.WEIGHTS).join(",")} -- ${
+    `${Object.keys(weightComboWins).length} champions found -- ${
       winTally[DEV_INDEX]
-    }/${currentGameNum}/${GAMES_PER_WEIGHT_SET}`
+    }/${currentGameNum} - ${Object.values(global.WEIGHTS).join(",")}`
   );
 
-  if (currentGameNum === GAMES_PER_WEIGHT_SET - 1) {
+  if (
+    currentGameNum === GAMES_PER_WEIGHT_SET - 1 ||
+    winTally[DEV_INDEX] > MIN_RECORDING_SCORE ||
+    winTally[DEV_INDEX] <
+      MIN_RECORDING_SCORE - (GAMES_PER_WEIGHT_SET - currentGameNum)
+  ) {
     currentGameNum = 0;
     if (winTally[DEV_INDEX] > MIN_RECORDING_SCORE) {
-      weightComboWins[JSON.stringify(global.WEIGHTS)] = winTally[DEV_INDEX];
-      process.stdout.clearLine();
-      process.stdout.cursorTo(0);
-      console.log(
-        `${Object.values(global.WEIGHTS).join(",")} -- ${
-          winTally[DEV_INDEX]
-        }/${GAMES_PER_WEIGHT_SET}`
-      );
+      weightComboWins[Object.values(global.WEIGHTS).join(",")] =
+        winTally[DEV_INDEX];
     }
 
     winTally = Array(players.length).fill(0);
@@ -115,7 +115,7 @@ function handleEngGame(playerStats) {
     }
 
     console.log("Training complete. Winners below:");
-    console.log(weightComboWins);
+    console.log(JSON.stringify(weightComboWins));
 
     return;
   }
