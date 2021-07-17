@@ -50,6 +50,7 @@ class Decider {
     });
 
     const tokensToRemove = [];
+    // TODO: if we have to use gray tokens for this, add them here
     Object.keys(cardCost).forEach((color) => {
       Array(cardCost[color])
         .fill(1)
@@ -162,7 +163,20 @@ class Decider {
             })
           );
           if (!atMaxReserves) {
-            allOptions.push({ type: "reserve", level: rowIndex + 1, index });
+            if (
+              gameState.ownerTracker.tokens.gray.filter(
+                (owner) => owner === null
+              ).length
+            ) {
+              allOptions.push({
+                type: "reserve",
+                level: rowIndex + 1,
+                index,
+                tokens: ["gray"],
+              });
+            } else {
+              allOptions.push({ type: "reserve", level: rowIndex + 1, index });
+            }
           }
         }
       });

@@ -52,7 +52,9 @@ export default function PlayerArea(props) {
                   ? option.tokens.map((token, ii) => (
                       <span className={`option-token ${token}`} key={ii}></span>
                     ))
-                  : `${option.type
+                  : ""}
+                {option.type === "recruit" || option.type === "reserve"
+                  ? `${option.type
                       .substring(0, 1)
                       .toUpperCase()}${option.type.substring(
                       1
@@ -63,7 +65,8 @@ export default function PlayerArea(props) {
                       : props.gameState.freeAgents[option.level - 1][
                           option.index
                         ]
-                    ).getName()}`}
+                    ).getName()}`
+                  : ""}
                 {option.location ? ` + ${option.location.getName()}` : ""}
               </div>
               <div className="ai-score">{option.score.toFixed(0)}</div>
