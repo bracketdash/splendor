@@ -122,6 +122,7 @@ function handleEngGame(playerStats) {
 }
 
 function continueGame(decision) {
+  // TODO: get current player - maybe pass it into continueGame()?
   game.makeMove(decision, CURRENT_PLAYER_TODO).then((state) => {
     if (state.playerStats) {
       handleEngGame(state.playerStats);

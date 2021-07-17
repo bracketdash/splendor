@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "trainer": "node ./scripts/trainer"
+    "trainer": "node src/scripts/trainer"
   },
   "dependencies": {
     "next": "11.0.1",
