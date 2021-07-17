@@ -209,7 +209,7 @@ class Game {
     this.locationTiles.forEach((locationTile) => {
       if (locationTile === location && locationTile.getOwner() === null) {
         if (
-          Object.keys(locationTile.cost).every(
+          Object.keys(locationTile.getCost()).every(
             (color) =>
               this.getPlayerBonus(player, color) >= locationTile.cost[color]
           )

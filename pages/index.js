@@ -6,7 +6,6 @@ import createPlayer from "../tools/createPlayer.js";
 import PlayerConfig from "../components/PlayerConfig.js";
 
 // BUGS
-// TODO: locations not being assigned? -- option.location missing? -- display location in option button
 // TODO: option.tokens.gray not included for reserve options? - fix option display logic once fixed
 // TODO: end-game scenario breaking the page?
 

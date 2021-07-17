@@ -38,7 +38,7 @@ class Decider {
     locationTiles.forEach((locationTile) => {
       if (locationTile.getOwner() === null) {
         if (
-          Object.keys(locationTile.cost).every(
+          Object.keys(locationTile.getCost()).every(
             (color) =>
               playerBonuses[color] &&
               playerBonuses[color] >= locationTile.cost[color]
@@ -49,19 +49,26 @@ class Decider {
       }
     });
 
-    if (locationOptions.length && locationOptions.length > 1) {
+    const tokensToRemove = [];
+    Object.keys(cardCost).forEach((color) => {
+      Array(cardCost[color])
+        .fill(1)
+        .forEach(() => {
+          tokensToRemove.push(color);
+        });
+    });
+
+    if (locationOptions.length) {
       locationOptions.forEach((location) => {
-        allOptions.push({ type: "recruit", level, index, location });
+        allOptions.push({
+          type: "recruit",
+          level,
+          index,
+          location,
+          tokensToRemove,
+        });
       });
     } else {
-      const tokensToRemove = [];
-      Object.keys(cardCost).forEach((color) => {
-        Array(cardCost[color])
-          .fill(1)
-          .forEach(() => {
-            tokensToRemove.push(color);
-          });
-      });
       allOptions.push({
         type: "recruit",
         level,

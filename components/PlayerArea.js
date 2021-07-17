@@ -64,6 +64,7 @@ export default function PlayerArea(props) {
                           option.index
                         ]
                     ).getName()}`}
+                {option.location ? ` + ${option.location.getName()}` : ""}
               </div>
               <div className="ai-score">{option.score.toFixed(0)}</div>
             </button>
