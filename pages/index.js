@@ -7,7 +7,7 @@ import PlayerConfig from "../components/PlayerConfig.js";
 
 // ui TODOs
 // TODO: style cards
-// TODO: add win condition checklist to top right of player area
+// TODO: add win condition checklist to top right of player area ([] 16+ Points, [] Green, [] Yellow, etc.)
 
 // bug TODOs
 // TODO: recruiting not deducting tokens?
