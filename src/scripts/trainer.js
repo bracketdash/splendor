@@ -4,11 +4,16 @@ import createPlayer from "../createPlayer.js";
 import getOptionScore from "../getOptionScore.development.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
-const DEV_INDEX = 1; // 0 to have bot go first
-const GAMES_PER_WEIGHT_SET = 5;
+// 0 to have bot go first, 1 to have bot go second
+const DEV_INDEX = 1;
+
+// if too many wins are being recorded, make things tighter here
+const GAMES_PER_WEIGHT_SET = 10;
+const MIN_RECORDING_SCORE = 9;
+
+// when we run this on a nicer rig, we can adjust these values to produce a smarter final bot
 const INCREMENT_AMOUNT = 0.5;
 const MAX_WEIGHT = 2;
-const MIN_RECORDING_SCORE = 4;
 
 // create players
 
@@ -26,16 +31,16 @@ if (DEV_INDEX) {
 // set up weights and increment function
 
 global.WEIGHTS = {
-  affordapointsDiff: 1.5,
-  avengersTags: 0.9,
-  cardPoints: 0.9,
-  mult2same: 1.2,
-  mult3diff: 2,
-  multRecruit: 1.2,
+  affordapointsDiff: 0,
+  avengersTags: 0,
+  cardPoints: 0,
+  mult2same: 0,
+  mult3diff: 0,
+  multRecruit: 0,
   multReserve: 0,
-  wouldBeFirstOfColor: 1.5,
-  wouldGetLocation: 3,
-  wouldGetTimeStone: 1.8,
+  wouldBeFirstOfColor: 0,
+  wouldGetLocation: 0,
+  wouldGetTimeStone: 0,
 };
 
 const weightKeys = Object.keys(global.WEIGHTS);
