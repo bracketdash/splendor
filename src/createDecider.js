@@ -24,6 +24,7 @@ class Decider {
       const tokensOfColor = playerTokens[color] || 0;
       const bonusesOfColor = playerBonuses[color] || 0;
       const needed = cardCost[color] - (tokensOfColor + bonusesOfColor);
+
       if (needed > 0) {
         if (grayTokensLeft < needed) {
           playerCanAffordCard = false;
@@ -53,6 +54,8 @@ class Decider {
     });
 
     const tokensToRemove = [];
+    // TODO: tokensToRemove does not take into account card bonuses!
+    // TODO: also, some instances of playerBonuses below should be playerTokens
     Object.keys(cardCost).forEach((color) => {
       if (playerBonuses[color] && playerBonuses[color] >= cardCost[color]) {
         Array(cardCost[color])
@@ -176,7 +179,6 @@ class Decider {
     gameState.freeAgents.forEach((row, rowIndex) => {
       row.forEach((characterCard, index) => {
         if (characterCard !== null) {
-          // TODO: recruit options are being added that the player can't afford
           this.addRecruitOptionIfApplicable(
             Object.assign({}, recruitConfig, {
               characterCard,
