@@ -32,7 +32,7 @@ const GAMES_PER_WEIGHT_SET = 3;
 const MIN_RECORDING_SCORE = 2;
 
 // you can ignore the next 3 constants if you set this to true
-const ITERATE_OVER_INPUT_FILE = false;
+const ITERATE_OVER_INPUT_FILE = true;
 
 // if you are running this on a high-end rig, you can adjust these values to find potentially smarter bots
 const INCREMENT_AMOUNT = 1;
