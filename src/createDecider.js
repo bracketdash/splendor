@@ -56,6 +56,7 @@ class Decider {
     const tokensToRemove = [];
     // TODO: tokensToRemove does not take into account card bonuses!
     // TODO: also, some instances of playerBonuses below should be playerTokens
+    // TODO: probably wanna redo training after fixing this
     Object.keys(cardCost).forEach((color) => {
       if (playerBonuses[color] && playerBonuses[color] >= cardCost[color]) {
         Array(cardCost[color])
