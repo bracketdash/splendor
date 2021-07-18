@@ -3,7 +3,6 @@ import fs from "fs";
 import createGame from "../createGame.js";
 import createPlayer from "../createPlayer.js";
 
-// TODO: switching to getOptionScore.development.js causes errors
 import getOptionScoreDevelopment from "../getOptionScore.development.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
@@ -27,17 +26,17 @@ const DEV_INDEX = 1;
 // how many games to run:
 // higher means more confidence in the weights you end up with, but takes longer to run
 // lower run quickly, but provides less confidence
-const GAMES_PER_WEIGHT_SET = 100;
+const GAMES_PER_WEIGHT_SET = 3;
 
 // if too many wins are being recorded, make this closer to GAMES_PER_WEIGHT_SET
-const MIN_RECORDING_SCORE = 90;
+const MIN_RECORDING_SCORE = 2;
 
 // you can ignore the next 3 constants if you set this to true
-const ITERATE_OVER_INPUT_FILE = true;
+const ITERATE_OVER_INPUT_FILE = false;
 
 // if you are running this on a high-end rig, you can adjust these values to find potentially smarter bots
 const INCREMENT_AMOUNT = 1;
-const MAX_WEIGHT = 2;
+const MAX_WEIGHT = 3;
 const MIN_WEIGHT = 1;
 
 // create players
@@ -78,11 +77,13 @@ if (ITERATE_OVER_INPUT_FILE) {
       });
     }
   );
+  global.WEIGHTS = winners[0];
 }
 
 function tryIncrementWeights() {
   if (ITERATE_OVER_INPUT_FILE) {
-    global.WEIGHTS = winners[winnerIndex++];
+    global.WEIGHTS = winners[winnerIndex];
+    winnerIndex++;
     return winnerIndex < winners.length + 1;
   }
   const looper = function (place) {
@@ -178,23 +179,8 @@ function continueGame(decision) {
     if (state.playerStats) {
       handleEngGame(state.playerStats);
     } else {
-      // DEBUGGING
-      if (state.options[0].type === "skip" && !state.playerStats) {
-        console.log("\n\nFREE AGENTS:\n");
-        console.log(state.freeAgents); // -- something is going on with freeagents...
-        console.log(state.freeAgents[2]); // -- something is going on with freeagents...
-        // console.log("\n\nTOKENS:\n");
-        // console.log(state.ownerTracker.tokens);
-        // console.log("\n\nPLAYERS:\n");
-        // console.log(state.players[0]);
-        // console.log(state.players[1]);
-        // most common situation: neither player has a level 3 card, so neither qualifies
-        // why are recruiting level 3 cards not coming through as options?
-        // if the user cannot afford it, I find it hard to believe with how many recuirts they have
-        // it can't be that there are no level 3 cards available because none have been reserved or recruited
-        return;
-      }
-
+      // TODO: detect when both players are out of options for > 2 rounds and skip to next game
+      // there is sometimes an infinite loop where neither player has any options
       continueGame(state.options[0]);
     }
   });
