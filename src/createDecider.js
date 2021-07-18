@@ -212,6 +212,14 @@ class Decider {
       );
     });
 
+    if (!allOptions.length) {
+      // TODO: players are getting into zero option loops
+      // this is likely a bug, but I haven't pinpointed it yet
+      console.log("\nNo options.");
+
+      return [{ type: "skip", score: 1 }];
+    }
+
     const scoredOptions = allOptions.map((option) => {
       option.score = this.getOptionScore(player, gameState, option);
       return option;
@@ -221,6 +229,6 @@ class Decider {
   }
 }
 
-export default function createDecider() {
-  return new Decider();
+export default function createDecider(scorer) {
+  return new Decider(scorer);
 }

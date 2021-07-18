@@ -39,6 +39,9 @@ function getCardScore(card, player) {
 }
 
 export default function getOptionScoreBaseline(player, gameState, option) {
+  // DEBUGGING
+  return Math.round(Math.random() * 100);
+
   const proposedTokens = {};
   const allCards = gameState.freeAgents[0]
     .concat(gameState.freeAgents[1])
@@ -46,7 +49,7 @@ export default function getOptionScoreBaseline(player, gameState, option) {
     .concat(player.getReserves());
 
   let card;
-  let score = 1;
+  let score = 0;
   let tokensHaveChanged = false;
 
   if (option.type === "recruit" || option.type === "reserve") {

@@ -1,5 +1,3 @@
-const WEIGHTS = global.WEIGHTS; // set in scripts/trainer.js
-
 function canAfford(card, tokens) {
   if (!card) {
     return false;
@@ -21,12 +19,12 @@ function canAfford(card, tokens) {
 }
 
 function getCardScore(card, player) {
-  const infinityScore = card.getInfinityPoints() * WEIGHTS.cardPoints;
-  const avangersTagScore = card.getNumAvengersTags() * WEIGHTS.avengersTags;
+  const infinityScore = card.getInfinityPoints() * global.WEIGHTS.cardPoints;
+  const avangersTagScore = card.getNumAvengersTags() * global.WEIGHTS.avengersTags;
   const recruits = player.getRecruits();
   const cardBonus = card.getBonus();
-  let bonusScore = WEIGHTS.wouldBeFirstOfColor;
-  let greenScore = WEIGHTS.wouldGetTimeStone;
+  let bonusScore = global.WEIGHTS.wouldBeFirstOfColor;
+  let greenScore = global.WEIGHTS.wouldGetTimeStone;
   recruits.forEach((recruit) => {
     if (cardBonus === recruit.getBonus()) {
       bonusScore = 0;
@@ -49,7 +47,7 @@ export default function getOptionScore(player, gameState, option) {
   let score = 1;
 
   if (option.location) {
-    score += WEIGHTS.wouldGetLocation;
+    score += global.WEIGHTS.wouldGetLocation;
   }
 
   if (option.type === "recruit" || option.type === "reserve") {
@@ -120,11 +118,11 @@ export default function getOptionScore(player, gameState, option) {
       .reduce((a, c) => a + c, 0);
 
     score +=
-      (affordapointsAfter - affordapointsBefore) * WEIGHTS.affordapointsDiff;
+      (affordapointsAfter - affordapointsBefore) * global.WEIGHTS.affordapointsDiff;
   }
 
   score *=
-    WEIGHTS[
+    global.WEIGHTS[
       `mult${option.type.substring(0, 1).toUpperCase()}${option.type.substring(
         1
       )}`

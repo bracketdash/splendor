@@ -227,7 +227,7 @@ class Game {
 
   makeMove(decision) {
     const player = this.players[this.whoseTurn];
-    
+
     switch (decision.type) {
       case "3diff":
       case "2same":
