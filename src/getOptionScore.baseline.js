@@ -1,14 +1,14 @@
 const WEIGHTS = {
-  affordapointsDiff: 1.5,
-  avengersTags: 0.9,
-  cardPoints: 0.9,
-  mult2same: 1.2,
-  mult3diff: 2,
-  multRecruit: 1.2,
-  multReserve: 0,
-  wouldBeFirstOfColor: 1.5,
+  affordapointsDiff: 3,
+  avengersTags: 2,
+  cardPoints: 1,
+  mult2same: 1,
+  mult3diff: 1,
+  multRecruit: 3,
+  multReserve: 1,
+  wouldBeFirstOfColor: 2,
   wouldGetLocation: 3,
-  wouldGetTimeStone: 1.8,
+  wouldGetTimeStone: 2,
 };
 
 function canAfford(card, tokens) {

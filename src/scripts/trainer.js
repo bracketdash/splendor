@@ -26,10 +26,10 @@ const DEV_INDEX = 1;
 // how many games to run:
 // higher means more confidence in the weights you end up with, but takes longer to run
 // lower run quickly, but provides less confidence
-const GAMES_PER_WEIGHT_SET = 3;
+const GAMES_PER_WEIGHT_SET = 100;
 
 // if too many wins are being recorded, make this closer to GAMES_PER_WEIGHT_SET
-const MIN_RECORDING_SCORE = 2;
+const MIN_RECORDING_SCORE = 0;
 
 // you can ignore the next 3 constants if you set this to true
 const ITERATE_OVER_INPUT_FILE = true;
