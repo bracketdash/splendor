@@ -4,7 +4,7 @@ import createGame from "../createGame.js";
 import createPlayer from "../createPlayer.js";
 
 // TODO: switching to getOptionScore.development.js causes errors
-import getOptionScoreDevelopment from "../getOptionScore.js";
+import getOptionScoreDevelopment from "../getOptionScore.development.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
 global.WEIGHTS = {
@@ -181,8 +181,8 @@ function continueGame(decision) {
       // DEBUGGING
       if (state.options[0].type === "skip" && !state.playerStats) {
         console.log("\n\nFREE AGENTS:\n");
-        console.log(state.freeAgents);// -- something is going on with freeagents...
-        console.log(state.freeAgents[2]);// -- something is going on with freeagents...
+        console.log(state.freeAgents); // -- something is going on with freeagents...
+        console.log(state.freeAgents[2]); // -- something is going on with freeagents...
         // console.log("\n\nTOKENS:\n");
         // console.log(state.ownerTracker.tokens);
         // console.log("\n\nPLAYERS:\n");
