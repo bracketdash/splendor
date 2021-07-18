@@ -20,7 +20,8 @@ function canAfford(card, tokens) {
 
 function getCardScore(card, player) {
   const infinityScore = card.getInfinityPoints() * global.WEIGHTS.cardPoints;
-  const avangersTagScore = card.getNumAvengersTags() * global.WEIGHTS.avengersTags;
+  const avangersTagScore =
+    card.getNumAvengersTags() * global.WEIGHTS.avengersTags;
   const recruits = player.getRecruits();
   const cardBonus = card.getBonus();
   let bonusScore = global.WEIGHTS.wouldBeFirstOfColor;
@@ -118,7 +119,8 @@ export default function getOptionScore(player, gameState, option) {
       .reduce((a, c) => a + c, 0);
 
     score +=
-      (affordapointsAfter - affordapointsBefore) * global.WEIGHTS.affordapointsDiff;
+      (affordapointsAfter - affordapointsBefore) *
+      global.WEIGHTS.affordapointsDiff;
   }
 
   score *=

@@ -3,7 +3,8 @@ import fs from "fs";
 import createGame from "../createGame.js";
 import createPlayer from "../createPlayer.js";
 
-import getOptionScoreDevelopment from "../getOptionScore.development.js";
+// TODO: switching to getOptionScore.development.js causes errors
+import getOptionScoreDevelopment from "../getOptionScore.js";
 import getOptionScoreBaseline from "../getOptionScore.baseline.js";
 
 global.WEIGHTS = {
@@ -177,6 +178,23 @@ function continueGame(decision) {
     if (state.playerStats) {
       handleEngGame(state.playerStats);
     } else {
+      // DEBUGGING
+      if (state.options[0].type === "skip" && !state.playerStats) {
+        console.log("\n\nFREE AGENTS:\n");
+        console.log(state.freeAgents);// -- something is going on with freeagents...
+        console.log(state.freeAgents[2]);// -- something is going on with freeagents...
+        // console.log("\n\nTOKENS:\n");
+        // console.log(state.ownerTracker.tokens);
+        // console.log("\n\nPLAYERS:\n");
+        // console.log(state.players[0]);
+        // console.log(state.players[1]);
+        // most common situation: neither player has a level 3 card, so neither qualifies
+        // why are recruiting level 3 cards not coming through as options?
+        // if the user cannot afford it, I find it hard to believe with how many recuirts they have
+        // it can't be that there are no level 3 cards available because none have been reserved or recruited
+        return;
+      }
+
       continueGame(state.options[0]);
     }
   });

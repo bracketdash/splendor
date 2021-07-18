@@ -261,6 +261,7 @@ class Game {
     }
 
     const playerStats = this.infinityGauntletTileCheck(player);
+
     if (playerStats) {
       return new Promise((resolve) => {
         const results = this.getState(true);
