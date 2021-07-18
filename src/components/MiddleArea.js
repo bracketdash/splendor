@@ -6,7 +6,11 @@ const colors = ["gray", "yellow", "red", "orange", "blue", "purple"];
 export default function MiddleArea(props) {
   return (
     <div>
-      <h2>Round {props.gameState.round}</h2>
+      <h2>
+        {!props.gameState.playerStats
+          ? `Round ${props.gameState.round}`
+          : "GAME OVER"}
+      </h2>
       <div className="tiles-container">
         <div>
           <div className="tile">

@@ -257,15 +257,16 @@ class Game {
         player.removeReserve(decision.index);
         this.locationTileCheck(player, decision.location);
         this.avengersAssembleTileCheck(player);
-        const playerStats = this.infinityGauntletTileCheck(player);
-        if (playerStats) {
-          return new Promise((resolve) => {
-            const results = this.getState(true);
-            results.playerStats = playerStats;
-            resolve(results);
-          });
-        }
         break;
+    }
+
+    const playerStats = this.infinityGauntletTileCheck(player);
+    if (playerStats) {
+      return new Promise((resolve) => {
+        const results = this.getState(true);
+        results.playerStats = playerStats;
+        resolve(results);
+      });
     }
 
     this.whoseTurn++;

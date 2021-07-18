@@ -213,8 +213,12 @@ class Decider {
     });
 
     if (!allOptions.length) {
-      // TODO: players are getting into zero option loops
+      // TODO: players are getting into zero option loops, causing games to go forever
       // this is likely a bug, but I haven't pinpointed it yet
+      // best way to see this happen is probably to load the browser app
+      // then have a script running in the console to autoplay until this happens
+      // it *may* only happen with our trainee bots, which would mean something is wrong with them probably
+      // hmm...maybe this is due to the previous player qualifying for the gauntlet but the game continuing?
       console.log("\nNo options.");
 
       return [{ type: "skip", score: 1 }];
