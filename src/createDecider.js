@@ -176,6 +176,7 @@ class Decider {
     gameState.freeAgents.forEach((row, rowIndex) => {
       row.forEach((characterCard, index) => {
         if (characterCard !== null) {
+          // TODO: recruit options are being added that the player can't afford
           this.addRecruitOptionIfApplicable(
             Object.assign({}, recruitConfig, {
               characterCard,
