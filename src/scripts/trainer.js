@@ -174,13 +174,52 @@ function handleEngGame(playerStats) {
   });
 }
 
+let skips = 0;
+
 function continueGame(decision) {
   game.makeMove(decision).then((state) => {
     if (state.playerStats) {
+      skips = 0;
       handleEngGame(state.playerStats);
     } else {
-      // TODO: detect when both players are out of options for > 2 rounds and skip to next game
-      // there is sometimes an infinite loop where neither player has any options
+      if (state.options[0].type === "skip") {
+        skips++;
+        if (skips > 3) {
+          currentGameNum = 0;
+          winTally = Array(players.length).fill(0);
+
+          if (tryIncrementWeights()) {
+            players.forEach((player) => {
+              player.reset();
+            });
+
+            game = createGame(players);
+            game.makeMove(game.getState().options[0]).then((state) => {
+              continueGame(state.options[0]);
+            });
+
+            return;
+          }
+
+          fs.writeFile(
+            "src/data/winners.json",
+            JSON.stringify(weightComboWins),
+            (err) => {
+              if (err) {
+                console.error(err);
+                return;
+              }
+              process.stdout.clearLine();
+              process.stdout.cursorTo(0);
+              console.log(
+                "Training complete. Winners saved to src/data/winners.json"
+              );
+            }
+          );
+          skips = 0;
+          return;
+        }
+      }
       continueGame(state.options[0]);
     }
   });
