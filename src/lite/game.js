@@ -180,13 +180,6 @@ export default class Game {
       (affordapointsAfter - affordapointsBefore) *
       this.weights.affordapointsDiff;
 
-    score *=
-      this.weights[
-        `mult${option.type
-          .substring(0, 1)
-          .toUpperCase()}${option.type.substring(1)}`
-      ];
-
     return score;
   }
 
