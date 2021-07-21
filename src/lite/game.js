@@ -33,6 +33,7 @@ export default class Game {
       afterStateFirstOfColor: 2,
       afterStatePoints: 1,
       afterStateTimeStone: 1,
+      closerToTimeStone: 1,
     };
   }
 
@@ -166,8 +167,15 @@ export default class Game {
       if (afterState.recruits.some(({ level }) => level === 3)) {
         score += this.weights.afterStateTimeStone;
       } else {
-        // TODO: instead of adding 0 if they wouldn't get a level 3,
-        // add a score based on how much closer they are to getting a level 3 * this.weights.closerToTimeStone
+        let closerToTimeStoneScore = 0;
+        this.freeAgents[2].forEach((card) => {
+          // TODO
+          // closerToTimeStoneScore +=
+          // (how many total bonuses/tokens we are away from being able to afford the card currently)
+          // -
+          // (how many total bonuses/tokens we are away from being able to afford the card after)
+        });
+        score += closerToTimeStoneScore * this.weights.closerToTimeStone;
       }
     }
 
