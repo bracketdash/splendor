@@ -48,8 +48,8 @@ export default class Game {
     });
   }
 
-  getBonuses() {
-    return this.recruits.reduce((bonuses, cc) => {
+  getBonuses(recruits) {
+    return (recruits || this.recruits).reduce((bonuses, cc) => {
       const bonus = cc.bonus;
       if (!bonuses[bonus]) {
         bonuses[bonus] = 1;
@@ -167,24 +167,51 @@ export default class Game {
       if (afterState.recruits.some(({ level }) => level === 3)) {
         score += this.weights.afterStateTimeStone;
       } else {
+        const afterBonuses = this.getBonuses(afterState.recruits);
+        const currentBonuses = this.getBonuses();
         let closerToTimeStoneScore = 0;
         this.freeAgents[2].forEach((card) => {
-          // TODO
-          // closerToTimeStoneScore +=
-          // (how many total bonuses/tokens we are away from being able to afford the card currently)
-          // -
-          // (how many total bonuses/tokens we are away from being able to afford the card after)
+          let afterPurchasingPower = 0;
+          let currentPurchasingPower = 0;
+          Object.keys(card.cost).forEach((color) => {
+            const afterBonus = afterBonuses[color] || 0;
+            const afterNeeded = card.cost[color] - afterBonus;
+            const currentBonus = currentBonuses[color] || 0;
+            const currentNeeded = card.cost[color] - currentBonus;
+            afterPurchasingPower +=
+              Math.min(afterBonus, card.cost[color]) +
+              (afterNeeded > 0
+                ? Math.min(afterState.tokens[color], afterNeeded)
+                : 0);
+            currentPurchasingPower +=
+              Math.min(currentBonus, card.cost[color]) +
+              (currentNeeded > 0
+                ? Math.min(this.tokens[color], currentNeeded)
+                : 0);
+          });
+          closerToTimeStoneScore +=
+            (afterPurchasingPower - currentPurchasingPower) /
+            Object.values(card.cost).reduce((s, c) => s + c, 0);
         });
         score += closerToTimeStoneScore * this.weights.closerToTimeStone;
       }
     }
 
-    // TODO: point addition or subtraction based on which cards they are able to afford
-    // (or closer or further from being able to afford) compared to the current state
-    // basically, get what the option scores would be for recruiting each freeAgent, then
-    // give them that entire amount if they would be able to afford that card in afterState, or
-    // give them a percentage of that amount based on how much closer they are to being able to afford it in afterState
-    // ( (total of colors we have that can go toward the card currently) - ( " after) ) / (total of all colors needed for card)
+    let affordaScore = 0;
+    this.freeAgents.forEach((row, rowIndex) => {
+      row.forEach((freeAgent, index) => {
+        if (rowIndex === option.level - 1 && index === option.index) {
+          return;
+        }
+        // TODO: get what the option scores would be for recruiting freeAgent (avoiding recursion)
+        // TODO: if they couldn't afford it before, but now can, give them the full amount
+        // TODO: if they couldn't afford if before or after, give them a percentage of the amount
+        // ( (total of colors we have that can go toward the card currently) - ( " after) ) / (total of all colors needed for card)
+        // TODO: if they could afford it before, but now can't:
+        // TODO: deduct a percentage - the different between being able to afford it and current
+      });
+    });
+    score += affordaScore * this.weights.affordaScore;
 
     return score;
   }
