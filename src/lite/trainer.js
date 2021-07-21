@@ -4,7 +4,7 @@ import Game from "./game.js";
 const GAMES_PER_WEIGHT_SET = 3;
 const INCREMENT_AMOUNT = 1;
 const ITERATE_OVER_INPUT_FILE = false;
-const MAX_ROUNDS_TO_RECORD = 20;
+const MAX_ROUNDS_TO_RECORD = 23;
 const MAX_WEIGHT = 4;
 const MIN_WEIGHT = 1;
 
@@ -75,8 +75,8 @@ function continueGame(decision) {
       if (currentGameNum >= GAMES_PER_WEIGHT_SET) {
         currentGameNum = 0;
 
-        if (state.round <= MAX_ROUNDS_TO_RECORD) {
-          const comboStr = Object.values(weights).join(",");
+        const comboStr = Object.values(weights).join(",");
+        if (state.round <= MAX_ROUNDS_TO_RECORD || !!weightCombos[comboStr]) {
           if (!weightCombos[comboStr]) {
             weightCombos[comboStr] = state.round;
           } else {
