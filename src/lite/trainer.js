@@ -8,8 +8,6 @@ const MAX_ROUNDS_TO_RECORD = 20;
 const MAX_WEIGHT = 4;
 const MIN_WEIGHT = 1;
 
-// set up weights and increment function
-
 const weights = {
   affordaScore: 1,
   afterStateAllColors: 1,
@@ -58,8 +56,6 @@ function tryIncrementWeights() {
   return looper(weightKeys.length - 1);
 }
 
-// game runner and weightset win tracker
-
 const weightCombos = {};
 
 let currentGameNum = 1;
@@ -89,7 +85,7 @@ function continueGame(decision) {
         }
 
         if (tryIncrementWeights()) {
-          game = new Game(players);
+          game = new Game(weights);
           game.makeMove(game.getState().options[0]).then((state) => {
             continueGame(state.options[0]);
           });
@@ -114,6 +110,15 @@ function continueGame(decision) {
       game.makeMove(game.getState().options[0]).then((state) => {
         continueGame(state.options[0]);
       });
+    } else if (!state.options) {
+      currentGameNum++;
+      if (tryIncrementWeights()) {
+        game = new Game(weights);
+        game.makeMove(game.getState().options[0]).then((state) => {
+          continueGame(state.options[0]);
+        });
+        return;
+      }
     } else {
       continueGame(state.options[0]);
     }

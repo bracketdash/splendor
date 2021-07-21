@@ -111,10 +111,7 @@ export default class Game {
     });
 
     if (!allOptions.length) {
-      console.log(JSON.stringify(this.freeAgents, 2));
-      console.log(JSON.stringify(this.recruits, 2));
-      console.log(JSON.stringify(this.tokens, 2));
-      throw new Error("ZERO OPTIONS");
+      return false;
     }
 
     const scoredOptions = allOptions.map((option) => {
