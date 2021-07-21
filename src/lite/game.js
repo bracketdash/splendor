@@ -29,11 +29,12 @@ export default class Game {
     this.recruits = [];
     this.round = 1;
     this.weights = weights || {
+      affordaScore: 1,
       afterStateAllColors: 1,
-      afterStateFirstOfColor: 2,
+      afterStateFirstOfColor: 1,
       afterStatePoints: 1,
       afterStateTimeStone: 1,
-      closerToAffording: 2,
+      closerToAffording: 1,
       closerToTimeStone: 1,
     };
   }
@@ -108,7 +109,10 @@ export default class Game {
     });
 
     if (!allOptions.length) {
-      return [{ type: "skip", score: 1 }];
+      console.log(JSON.stringify(this.freeAgents, 2));
+      console.log(JSON.stringify(this.recruits, 2));
+      console.log(JSON.stringify(this.tokens, 2));
+      throw new Error("ZERO OPTIONS");
     }
 
     const scoredOptions = allOptions.map((option) => {
@@ -148,10 +152,10 @@ export default class Game {
 
     if (
       !colors.every(
-        (c) => !!this.recruits.filter((cc) => cc.getBonus() === c).length
+        (c) => !!this.recruits.filter((cc) => cc.bonus === c).length
       ) &&
       colors.every(
-        (c) => !!afterState.recruits.filter((cc) => cc.getBonus() === c).length
+        (c) => !!afterState.recruits.filter((cc) => cc.bonus === c).length
       )
     ) {
       score += this.weights.afterStateAllColors;
@@ -212,7 +216,7 @@ export default class Game {
         let agentScore =
           freeAgent.infinityPoints * this.weights.afterStatePoints;
         if (!afterState.recruits.some((c) => freeAgent.bonus === c.bonus)) {
-          agentScore += this.weights.wouldBeFirstOfColor;
+          agentScore += this.weights.afterStateFirstOfColor;
         }
         if (
           freeAgent.level === 3 &&
@@ -220,6 +224,7 @@ export default class Game {
         ) {
           agentScore += this.weights.afterStateTimeStone;
         }
+
         if (
           !this.canAfford(freeAgent.cost) &&
           this.canAfford(freeAgent.cost, afterWallet)
@@ -254,9 +259,9 @@ export default class Game {
       const row = decision.level - 1;
       this.recruits.push(this.freeAgents[row][decision.index]);
       if (this.decks[row].length) {
-        this.freeAgents[row][index] = this.decks[row].pop();
+        this.freeAgents[row][decision.index] = this.decks[row].pop();
       } else {
-        this.freeAgents[row][index] = null;
+        this.freeAgents[row][decision.index] = null;
       }
       if (decision.tokensToRemove && decision.tokensToRemove.length) {
         decision.tokensToRemove.forEach((color) => {
@@ -264,11 +269,6 @@ export default class Game {
         });
       }
     } else {
-      // DEBUGGING
-      if (!decision.tokens) {
-        console.log(decision);
-      }
-
       decision.tokens.forEach((color) => {
         this.tokens[color]++;
       });
@@ -291,9 +291,7 @@ export default class Game {
   meetsWinCriteria(recruits) {
     return (
       recruits.reduce((p, r) => p + r.infinityPoints, 0) > 15 &&
-      colors.every(
-        (c) => !!recruits.filter((cc) => cc.getBonus() === c).length
-      ) &&
+      colors.every((c) => !!recruits.filter((cc) => cc.bonus === c).length) &&
       recruits.some(({ level }) => level === 3)
     );
   }

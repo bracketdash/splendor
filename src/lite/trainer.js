@@ -11,6 +11,7 @@ const MIN_WEIGHT = 1;
 // set up weights and increment function
 
 const weights = {
+  affordaScore: 1,
   afterStateAllColors: 1,
   afterStateFirstOfColor: 1,
   afterStatePoints: 1,
