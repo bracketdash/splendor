@@ -203,12 +203,13 @@ export default class Game {
         if (rowIndex === option.level - 1 && index === option.index) {
           return;
         }
-        // TODO: get what the option scores would be for recruiting freeAgent (avoiding recursion)
+        // TODO: calculate "the full amount"
+        // card points + if they would be the first lvl 3 + if they would be the first of a color
+
         // TODO: if they couldn't afford it before, but now can, give them the full amount
-        // TODO: if they couldn't afford if before or after, give them a percentage of the amount
-        // ( (total of colors we have that can go toward the card currently) - ( " after) ) / (total of all colors needed for card)
-        // TODO: if they could afford it before, but now can't:
-        // TODO: deduct a percentage - the different between being able to afford it and current
+
+        // TODO: if they couldn't afford if before or after, or if they could afford it before, but now can't:
+        // give them (or deduct from them) a percentage of the full amount
       });
     });
     score += affordaScore * this.weights.affordaScore;
