@@ -203,13 +203,39 @@ export default class Game {
         if (rowIndex === option.level - 1 && index === option.index) {
           return;
         }
-        // TODO: calculate "the full amount"
-        // card points + if they would be the first lvl 3 + if they would be the first of a color
+        let agentScore = card.infinityPoints * this.weights.afterStatePoints;
+        // TODO: (+ 1 if they would be the first lvl 3) * this.weghts.afterStateTimeStone
+        // TODO: (+ 1 if they would be the first of a color) * this.weghts.afterStateFirstOfColor
 
-        // TODO: if they couldn't afford it before, but now can, give them the full amount
-
-        // TODO: if they couldn't afford if before or after, or if they could afford it before, but now can't:
-        // give them (or deduct from them) a percentage of the full amount
+        if (true /* TODO: if they couldn't afford it before, but now can */) {
+          affordaScore += agentScore;
+        } else {
+          affordaScore += agentScore * 1; // TODO
+          // affordaScore += agentScore * (the stuff below);
+          /*
+          let afterPurchasingPower = 0;
+          let currentPurchasingPower = 0;
+          Object.keys(card.cost).forEach((color) => {
+            const afterBonus = afterBonuses[color] || 0;
+            const afterNeeded = card.cost[color] - afterBonus;
+            const currentBonus = currentBonuses[color] || 0;
+            const currentNeeded = card.cost[color] - currentBonus;
+            afterPurchasingPower +=
+              Math.min(afterBonus, card.cost[color]) +
+              (afterNeeded > 0
+                ? Math.min(afterState.tokens[color], afterNeeded)
+                : 0);
+            currentPurchasingPower +=
+              Math.min(currentBonus, card.cost[color]) +
+              (currentNeeded > 0
+                ? Math.min(this.tokens[color], currentNeeded)
+                : 0);
+          });
+          closerToTimeStoneScore +=
+            (afterPurchasingPower - currentPurchasingPower) /
+            Object.values(card.cost).reduce((s, c) => s + c, 0);
+          */
+        }
       });
     });
     score += affordaScore * this.weights.affordaScore;
