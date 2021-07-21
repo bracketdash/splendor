@@ -29,13 +29,10 @@ export default class Game {
     this.recruits = [];
     this.round = 1;
     this.weights = weights || {
-      affordapointsDiff: 3,
-      avengersTags: 2,
-      cardPoints: 1,
-      mult3diff: 1,
-      multReserve: 1,
-      wouldBeFirstOfColor: 2,
-      wouldGetTimeStone: 2,
+      afterStateAllColors: 1,
+      afterStateFirstOfColor: 2,
+      afterStatePoints: 1,
+      afterStateTimeStone: 1,
     };
   }
 
@@ -121,21 +118,6 @@ export default class Game {
   }
 
   getOptionScore(option) {
-    const getCardScore = (card, level) => {
-      let cardScore = 1;
-      cardScore += card.infinityPoints * this.weights.cardPoints;
-      if (card.level === 3 && !this.recruits.some((r) => r.level === 3)) {
-        cardScore += this.weights.wouldBeFirstOfColor;
-      }
-      if (!this.recruits.some((r) => card.bonus === r.bonus)) {
-        cardScore += this.weights.wouldGetTimeStone;
-      }
-      if (!level || level <= this.weights.maxCardScoreLevel) {
-        // TODO: weigh how valuable it would be to get a bonus of this color (colorScore * this.weights.colorScore)
-      }
-      return cardScore;
-    };
-
     const afterState = {
       recruits: [...this.recruits],
       tokens: Object.assign({}, this.tokens),
@@ -153,13 +135,41 @@ export default class Game {
       });
     }
 
-    let score = 0;
-
     if (meetsWinCriteria(afterState.recruits)) {
       return 9999;
     }
 
-    // TODO: points for how much closer they are to meeting the win conditions
+    let score =
+      (afterState.recruits.reduce((p, r) => p + r.infinityPoints) -
+        this.recruits.reduce((p, r) => p + r.infinityPoints)) *
+      this.weights.afterStatePoints;
+
+    if (
+      !colors.every(
+        (c) => !!this.recruits.filter((cc) => cc.getBonus() === c).length
+      ) &&
+      colors.every(
+        (c) => !!afterState.recruits.filter((cc) => cc.getBonus() === c).length
+      )
+    ) {
+      score += this.weights.afterStateAllColors;
+    } else if (
+      !this.recuits.some(
+        (r) =>
+          r.bonus === afterState.recruits[afterState.recruits.length - 1].bonus
+      )
+    ) {
+      score += this.weights.afterStateFirstOfColor;
+    }
+
+    if (!this.recruits.some(({ level }) => level === 3)) {
+      if (afterState.recruits.some(({ level }) => level === 3)) {
+        score += this.weights.afterStateTimeStone;
+      } else {
+        // TODO: instead of adding 0 if they wouldn't get a level 3,
+        // add a score based on how much closer they are to getting a level 3 * this.weights.closerToTimeStone
+      }
+    }
 
     // TODO: point addition or subtraction based on which cards they are able to afford
     // (or closer or further from being able to afford) compared to the current state
