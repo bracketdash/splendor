@@ -33,6 +33,7 @@ export default class Game {
       afterStateFirstOfColor: 2,
       afterStatePoints: 1,
       afterStateTimeStone: 1,
+      closerToAffording: 2,
       closerToTimeStone: 1,
     };
   }
@@ -197,6 +198,11 @@ export default class Game {
       }
     }
 
+    const afterWallet = Object.assign(
+      {},
+      this.tokens,
+      this.getBonuses(afterState.recruits)
+    );
     let affordaScore = 0;
     this.freeAgents.forEach((row, rowIndex) => {
       row.forEach((freeAgent, index) => {
@@ -204,37 +210,22 @@ export default class Game {
           return;
         }
         let agentScore = card.infinityPoints * this.weights.afterStatePoints;
-        // TODO: (+ 1 if they would be the first lvl 3) * this.weghts.afterStateTimeStone
-        // TODO: (+ 1 if they would be the first of a color) * this.weghts.afterStateFirstOfColor
-
-        if (true /* TODO: if they couldn't afford it before, but now can */) {
+        if (!afterState.recruits.some((c) => freeAgent.bonus === c.bonus)) {
+          agentScore += WEIGHTS.wouldBeFirstOfColor;
+        }
+        if (
+          freeAgent.level === 3 &&
+          !afterState.recruits.some((c) => c.level === 3)
+        ) {
+          agentScore += WEIGHTS.afterStateTimeStone;
+        }
+        if (
+          !canAfford(freeAgent.cost) &&
+          canAfford(freeAgent.cost, afterWallet)
+        ) {
           affordaScore += agentScore;
         } else {
-          affordaScore += agentScore * 1; // TODO
-          // affordaScore += agentScore * (the stuff below);
-          /*
-          let afterPurchasingPower = 0;
-          let currentPurchasingPower = 0;
-          Object.keys(card.cost).forEach((color) => {
-            const afterBonus = afterBonuses[color] || 0;
-            const afterNeeded = card.cost[color] - afterBonus;
-            const currentBonus = currentBonuses[color] || 0;
-            const currentNeeded = card.cost[color] - currentBonus;
-            afterPurchasingPower +=
-              Math.min(afterBonus, card.cost[color]) +
-              (afterNeeded > 0
-                ? Math.min(afterState.tokens[color], afterNeeded)
-                : 0);
-            currentPurchasingPower +=
-              Math.min(currentBonus, card.cost[color]) +
-              (currentNeeded > 0
-                ? Math.min(this.tokens[color], currentNeeded)
-                : 0);
-          });
-          closerToTimeStoneScore +=
-            (afterPurchasingPower - currentPurchasingPower) /
-            Object.values(card.cost).reduce((s, c) => s + c, 0);
-          */
+          affordaScore += agentScore * (1 / this.weights.closerToAffording);
         }
       });
     });
