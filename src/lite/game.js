@@ -181,6 +181,10 @@ export default class Game {
 
     // TODO: point addition or subtraction based on which cards they are able to afford
     // (or closer or further from being able to afford) compared to the current state
+    // basically, get what the option scores would be for recruiting each freeAgent, then
+    // give them that entire amount if they would be able to afford that card in afterState, or
+    // give them a percentage of that amount based on how much closer they are to being able to afford it in afterState
+    // ( (total of colors we have that can go toward the card currently) - ( " after) ) / (total of all colors needed for card)
 
     return score;
   }
