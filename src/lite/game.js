@@ -92,9 +92,11 @@ export default class Game {
           if (this.canAfford(cost)) {
             const tokensToRemove = Object.keys(cost).reduce((arr, color) => {
               const needed = cost[color] - (bonuses[color] || 0);
-              getNullArray(needed).forEach(() => {
-                arr.push(color);
-              });
+              if (needed > 0) {
+                getNullArray(needed).forEach(() => {
+                  arr.push(color);
+                });
+              }
               return arr;
             }, []);
             allOptions.push({
