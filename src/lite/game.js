@@ -136,8 +136,6 @@ export default class Game {
       return cardScore;
     };
 
-    let score = 1;
-
     // TODO: refactor this to just create an afterState object first
     // make sure afterState doesn't reveal to the bot the next card in the deck
     // TODO: points for meeting the win conditions (should be like 999 or something)
@@ -158,6 +156,8 @@ export default class Game {
       .map((c) => getCardScore(c))
       .reduce((a, c) => a + c, 0);
 
+    let score = 0;
+
     if (option.type === "recruit") {
       const card = this.freeAgents[option.level - 1][option.index];
       const bonus = card.getBonus();
@@ -174,11 +174,11 @@ export default class Game {
       .map((c) => getCardScore(c))
       .reduce((a, c) => a + c, 0);
 
-    score +=
+    return (
+      score +
       (affordapointsAfter - affordapointsBefore) *
-      this.weights.affordapointsDiff;
-
-    return score;
+        this.weights.affordapointsDiff
+    );
   }
 
   getState(skipOptions) {
