@@ -136,49 +136,35 @@ export default class Game {
       return cardScore;
     };
 
-    // TODO: refactor this to just create an afterState object first
-    // make sure afterState doesn't reveal to the bot the next card in the deck
-    // TODO: points for meeting the win conditions (should be like 999 or something)
-    // TODO: points for how much closer they are to meeting the win conditions
-    // TODO: point addition or subtraction based on which cards they are able to afford (or closer or further from being able to afford) compared to the current state
-
-    const proposedTokens = Object.assign({}, this.tokens);
-    this.recruits.forEach((recruit) => {
-      proposedTokens[recruit.bonus]++;
-    });
-
-    const allCards = this.freeAgents[0]
-      .concat(this.freeAgents[1])
-      .concat(this.freeAgents[2]);
-
-    const affordapointsBefore = allCards
-      .filter((c) => canAfford(c, proposedTokens))
-      .map((c) => getCardScore(c))
-      .reduce((a, c) => a + c, 0);
-
-    let score = 0;
-
+    const afterState = {
+      recruits: [...this.recruits],
+      tokens: Object.assign({}, this.tokens),
+    };
     if (option.type === "recruit") {
-      const card = this.freeAgents[option.level - 1][option.index];
-      const bonus = card.getBonus();
-      score += getCardScore(card);
-      proposedTokens[bonus]++;
-    } else if (option.tokens) {
+      afterState.recruits.push(this.freeAgents[option.level - 1][option.index]);
+      if (option.tokensToRemove && option.tokensToRemove.length) {
+        option.tokensToRemove.forEach((color) => {
+          afterState.tokens[color]--;
+        });
+      }
+    } else {
       option.tokens.forEach((color) => {
-        proposedTokens[color]++;
+        afterState.tokens[color]++;
       });
     }
 
-    const affordapointsAfter = allCards
-      .filter((c) => canAfford(c, proposedTokens))
-      .map((c) => getCardScore(c))
-      .reduce((a, c) => a + c, 0);
+    let score = 0;
 
-    return (
-      score +
-      (affordapointsAfter - affordapointsBefore) *
-        this.weights.affordapointsDiff
-    );
+    if (meetsWinCriteria(afterState.recruits)) {
+      return 9999;
+    }
+
+    // TODO: points for how much closer they are to meeting the win conditions
+
+    // TODO: point addition or subtraction based on which cards they are able to afford
+    // (or closer or further from being able to afford) compared to the current state
+
+    return score;
   }
 
   getState(skipOptions) {
@@ -214,13 +200,8 @@ export default class Game {
         this.tokens[color]++;
       });
     }
-    const hasEnoughPoints =
-      this.recruits.reduce((p, r) => p + r.infinityPoints) > 15;
-    const hasAllColors = colors.every(
-      (c) => !!this.recruits.filter((cc) => cc.getBonus() === c).length
-    );
-    const hasTimeStone = this.recruits.some(({ level }) => level === 3);
-    if (hasEnoughPoints && hasAllColors && hasTimeStone) {
+
+    if (this.meetsWinCriteria(this.recruits)) {
       return new Promise((resolve) => {
         const results = this.getState(true);
         results.gameOver = true;
@@ -232,5 +213,15 @@ export default class Game {
         resolve(this.getState());
       });
     }
+  }
+
+  meetsWinCriteria(recruits) {
+    return (
+      recruits.reduce((p, r) => p + r.infinityPoints) > 15 &&
+      colors.every(
+        (c) => !!recruits.filter((cc) => cc.getBonus() === c).length
+      ) &&
+      recruits.some(({ level }) => level === 3)
+    );
   }
 }
