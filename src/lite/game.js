@@ -83,12 +83,12 @@ export default class Game {
       threeDiffLoop(1, colors, []);
     }
 
-    const bonuses = getBonuses();
+    const bonuses = this.getBonuses();
     this.freeAgents.forEach((row, rowIndex) => {
       row.forEach((characterCard, index) => {
         if (characterCard !== null) {
           const cost = characterCard.cost;
-          if (canAfford(cost)) {
+          if (this.canAfford(cost)) {
             const tokensToRemove = Object.keys(cost).reduce((arr, color) => {
               const needed = cost[color] - (bonuses[color] || 0);
               getNullArray(needed).forEach(() => {
@@ -137,13 +137,13 @@ export default class Game {
       });
     }
 
-    if (meetsWinCriteria(afterState.recruits)) {
+    if (this.meetsWinCriteria(afterState.recruits)) {
       return 9999;
     }
 
     let score =
-      (afterState.recruits.reduce((p, r) => p + r.infinityPoints) -
-        this.recruits.reduce((p, r) => p + r.infinityPoints)) *
+      (afterState.recruits.reduce((p, r) => p + r.infinityPoints, 0) -
+        this.recruits.reduce((p, r) => p + r.infinityPoints, 0)) *
       this.weights.afterStatePoints;
 
     if (
@@ -156,7 +156,7 @@ export default class Game {
     ) {
       score += this.weights.afterStateAllColors;
     } else if (
-      !this.recuits.some(
+      !this.recruits.some(
         (r) =>
           r.bonus === afterState.recruits[afterState.recruits.length - 1].bonus
       )
@@ -209,19 +209,20 @@ export default class Game {
         if (rowIndex === option.level - 1 && index === option.index) {
           return;
         }
-        let agentScore = card.infinityPoints * this.weights.afterStatePoints;
+        let agentScore =
+          freeAgent.infinityPoints * this.weights.afterStatePoints;
         if (!afterState.recruits.some((c) => freeAgent.bonus === c.bonus)) {
-          agentScore += WEIGHTS.wouldBeFirstOfColor;
+          agentScore += this.weights.wouldBeFirstOfColor;
         }
         if (
           freeAgent.level === 3 &&
           !afterState.recruits.some((c) => c.level === 3)
         ) {
-          agentScore += WEIGHTS.afterStateTimeStone;
+          agentScore += this.weights.afterStateTimeStone;
         }
         if (
-          !canAfford(freeAgent.cost) &&
-          canAfford(freeAgent.cost, afterWallet)
+          !this.canAfford(freeAgent.cost) &&
+          this.canAfford(freeAgent.cost, afterWallet)
         ) {
           affordaScore += agentScore;
         } else {
@@ -263,6 +264,11 @@ export default class Game {
         });
       }
     } else {
+      // DEBUGGING
+      if (!decision.tokens) {
+        console.log(decision);
+      }
+
       decision.tokens.forEach((color) => {
         this.tokens[color]++;
       });
@@ -284,7 +290,7 @@ export default class Game {
 
   meetsWinCriteria(recruits) {
     return (
-      recruits.reduce((p, r) => p + r.infinityPoints) > 15 &&
+      recruits.reduce((p, r) => p + r.infinityPoints, 0) > 15 &&
       colors.every(
         (c) => !!recruits.filter((cc) => cc.getBonus() === c).length
       ) &&
