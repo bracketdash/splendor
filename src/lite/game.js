@@ -121,11 +121,7 @@ export default class Game {
   }
 
   getOptionScore(option) {
-    // THE BRAINS - this is the part that's trained during training
-    // a bunch of different sets of values for this.weights will be tested
-    // winner is the set of values that wins in the fewest average rounds
-
-    const getCardScore = (card) => {
+    const getCardScore = (card, level) => {
       let cardScore = 1;
       cardScore += card.infinityPoints * this.weights.cardPoints;
       if (card.level === 3 && !this.recruits.some((r) => r.level === 3)) {
@@ -134,7 +130,9 @@ export default class Game {
       if (!this.recruits.some((r) => card.bonus === r.bonus)) {
         cardScore += this.weights.wouldGetTimeStone;
       }
-      // TODO: weigh how valuable it would be to get a bonus of this color (colorScore * this.weights.colorScore)
+      if (!level || level <= this.weights.maxCardScoreLevel) {
+        // TODO: weigh how valuable it would be to get a bonus of this color (colorScore * this.weights.colorScore)
+      }
       return cardScore;
     };
 
