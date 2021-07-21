@@ -209,7 +209,10 @@ export default class Game {
     let affordaScore = 0;
     this.freeAgents.forEach((row, rowIndex) => {
       row.forEach((freeAgent, index) => {
-        if (rowIndex === option.level - 1 && index === option.index) {
+        if (
+          !freeAgent ||
+          (rowIndex === option.level - 1 && index === option.index)
+        ) {
           return;
         }
         let agentScore =

@@ -69,14 +69,14 @@ function continueGame(decision) {
       process.stdout.write(
         `${Object.keys(weightCombos).length} - ${Object.values(weights).join(
           ","
-        )} - ${currentGameNum}`
+        )} - ${currentGameNum} - ${state.round}`
       );
 
-      if (currentGameNum === GAMES_PER_WEIGHT_SET) {
+      if (currentGameNum >= GAMES_PER_WEIGHT_SET) {
         currentGameNum = 0;
 
         if (state.round <= MAX_ROUNDS_TO_RECORD) {
-          const comboStr = Object.values(global.WEIGHTS).join(",");
+          const comboStr = Object.values(weights).join(",");
           if (!weightCombos[comboStr]) {
             weightCombos[comboStr] = state.round;
           } else {
