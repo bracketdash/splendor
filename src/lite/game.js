@@ -29,13 +29,8 @@ export default class Game {
     this.recruits = [];
     this.round = 1;
     this.weights = weights || {
-      affordaScore: 1,
-      afterStateAllColors: 1,
-      afterStateFirstOfColor: 1,
-      afterStatePoints: 1,
-      afterStateTimeStone: 1,
-      closerToAffording: 1,
-      closerToTimeStone: 1,
+      closerToAffording: 3,
+      closerToTimeStone: 4,
     };
   }
 
@@ -145,9 +140,8 @@ export default class Game {
     }
 
     let score =
-      (afterState.recruits.reduce((p, r) => p + r.infinityPoints, 0) -
-        this.recruits.reduce((p, r) => p + r.infinityPoints, 0)) *
-      this.weights.afterStatePoints;
+      afterState.recruits.reduce((p, r) => p + r.infinityPoints, 0) -
+      this.recruits.reduce((p, r) => p + r.infinityPoints, 0);
 
     if (
       !colors.every(
@@ -157,19 +151,19 @@ export default class Game {
         (c) => !!afterState.recruits.filter((cc) => cc.bonus === c).length
       )
     ) {
-      score += this.weights.afterStateAllColors;
+      score += 1;
     } else if (
       !this.recruits.some(
         (r) =>
           r.bonus === afterState.recruits[afterState.recruits.length - 1].bonus
       )
     ) {
-      score += this.weights.afterStateFirstOfColor;
+      score += 1;
     }
 
     if (!this.recruits.some(({ level }) => level === 3)) {
       if (afterState.recruits.some(({ level }) => level === 3)) {
-        score += this.weights.afterStateTimeStone;
+        score += 1;
       } else {
         const afterBonuses = this.getBonuses(afterState.recruits);
         const currentBonuses = this.getBonuses();
@@ -218,16 +212,15 @@ export default class Game {
         ) {
           return;
         }
-        let agentScore =
-          freeAgent.infinityPoints * this.weights.afterStatePoints;
+        let agentScore = freeAgent.infinityPoints;
         if (!afterState.recruits.some((c) => freeAgent.bonus === c.bonus)) {
-          agentScore += this.weights.afterStateFirstOfColor;
+          agentScore += 1;
         }
         if (
           freeAgent.level === 3 &&
           !afterState.recruits.some((c) => c.level === 3)
         ) {
-          agentScore += this.weights.afterStateTimeStone;
+          agentScore += 1;
         }
 
         if (
@@ -240,7 +233,7 @@ export default class Game {
         }
       });
     });
-    score += affordaScore * this.weights.affordaScore;
+    score += affordaScore;
 
     return score;
   }

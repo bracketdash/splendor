@@ -1,23 +1,18 @@
 import fs from "fs";
 import Game from "./game.js";
 
-const GAMES_PER_WEIGHT_SET = 200;
-const MAX_AVG_ROUNDS = 37;
+const GAMES_PER_WEIGHT_SET = 50;
+const MAX_AVG_ROUNDS = 36;
 
 const ITERATE_OVER_INPUT_FILE = true;
 
-const MIN_WEIGHT = 1;
-const INCREMENT_AMOUNT = 1;
+const MIN_WEIGHT = 2;
+const INCREMENT_AMOUNT = 0.1;
 const MAX_WEIGHT = 5;
 
 const weights = {
-  affordaScore: 1,
-  afterStateAllColors: 1,
-  afterStateFirstOfColor: 1,
-  afterStatePoints: 1,
-  afterStateTimeStone: 1,
-  closerToAffording: 1,
-  closerToTimeStone: 1,
+  closerToAffording: 2,
+  closerToTimeStone: 2,
 };
 
 const winners = [];
@@ -26,12 +21,8 @@ if (ITERATE_OVER_INPUT_FILE) {
     (key) => {
       const v = key.split(",").map((n) => parseFloat(n));
       winners.push({
-        afterStateAllColors: v[0],
-        afterStateFirstOfColor: v[1],
-        afterStatePoints: v[2],
-        afterStateTimeStone: v[3],
-        closerToAffording: v[4],
-        closerToTimeStone: v[5],
+        closerToAffording: v[0],
+        closerToTimeStone: v[1],
       });
     }
   );
@@ -78,7 +69,7 @@ function tryIncrementWeights() {
     if (place < 0) {
       return false;
     }
-    if (weights[weightKeys[place]] === MAX_WEIGHT) {
+    if (weights[weightKeys[place]] >= MAX_WEIGHT) {
       weights[weightKeys[place]] = MIN_WEIGHT;
       return looper(place - 1);
     }
