@@ -55,7 +55,29 @@ function tryIncrementWeights() {
     weights[weightKeys[place]] += INCREMENT_AMOUNT;
     return true;
   };
-  return looper(weightKeys.length - 1);
+  if (looper(weightKeys.length - 1)) {
+    game = new Game(weights);
+    game.makeMove(game.getState().options[0]).then((state) => {
+      continueGame(state.options[0]);
+    });
+    return true;
+  } else {
+    console.log("Training complete.");
+    fs.writeFile(
+      "src/lite/output.json",
+      JSON.stringify(weightCombos),
+      (err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0);
+        console.log("Results saved to output.json");
+      }
+    );
+    return false;
+  }
 }
 
 const weightCombos = {};
@@ -70,6 +92,15 @@ function continueGame(decision) {
     if (skips > 30) {
       // TODO: if bot has to skip 30 times, it's too stupid to survive
       // TODO: remove this candidate from the record and move onto the next
+      skips = 0;
+      currentGameNum = 0;
+      const comboStr = Object.values(weights).join(",");
+      if (weightCombos[comboStr]) {
+        delete weightCombos[comboStr];
+      }
+      if (tryIncrementWeights()) {
+        return;
+      }
     }
   }
   game.makeMove(decision).then((state) => {
@@ -93,29 +124,8 @@ function continueGame(decision) {
           weightCombos[comboStr] += state.round;
         }
 
-        if (tryIncrementWeights()) {
-          game = new Game(weights);
-          game.makeMove(game.getState().options[0]).then((state) => {
-            continueGame(state.options[0]);
-          });
-          return;
-        } else {
-          console.log("Training complete.");
-          fs.writeFile(
-            "src/lite/output.json",
-            JSON.stringify(weightCombos),
-            (err) => {
-              if (err) {
-                console.error(err);
-                return;
-              }
-              process.stdout.clearLine();
-              process.stdout.cursorTo(0);
-              console.log("Results saved to output.json");
-            }
-          );
-          return;
-        }
+        tryIncrementWeights();
+        return;
       }
 
       currentGameNum++;
