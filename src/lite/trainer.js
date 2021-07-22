@@ -4,7 +4,7 @@ import Game from "./game.js";
 const GAMES_PER_WEIGHT_SET = 3;
 const INCREMENT_AMOUNT = 1;
 const ITERATE_OVER_INPUT_FILE = false;
-const MAX_AVG_ROUNDS = 90;
+const MAX_AVG_ROUNDS = 40;
 const MAX_WEIGHT = 4;
 const MIN_WEIGHT = 1;
 
@@ -93,6 +93,7 @@ function continueGame(decision) {
       skips = 0;
       if (currentGameNum >= GAMES_PER_WEIGHT_SET) {
         currentGameNum = 0;
+        const comboStr = Object.values(weights).join(",");
         if (
           weightCombos[comboStr].rounds / weightCombos[comboStr].games >
           MAX_AVG_ROUNDS
@@ -125,13 +126,13 @@ function continueGame(decision) {
           weightCombos[comboStr]
             ? (
                 weightCombos[comboStr].rounds / weightCombos[comboStr].games
-              ).toFixed(2)
+              ).toFixed(0)
             : "--"
         }`
       );
 
       if (!weightCombos[comboStr]) {
-        weightCombos[comboStr] = { rounds: state.round, game: 1 };
+        weightCombos[comboStr] = { rounds: state.round, games: 1 };
       } else {
         weightCombos[comboStr].games++;
         weightCombos[comboStr].rounds += state.round;
