@@ -1,4 +1,8 @@
-import characterCards from "../data/characterCards.js";
+// const game = new Game();
+// game.getState().options
+// game.makeMove(decision)
+
+import characterCards from "./data/characterCards.js";
 
 const colors = ["blue", "orange", "purple", "red", "yellow"];
 
@@ -11,7 +15,7 @@ function getShuffled(items) {
 }
 
 export default class Game {
-  constructor(weights) {
+  constructor() {
     this.decks = [
       getShuffled(characterCards.filter((cc) => cc.level === 1)),
       getShuffled(characterCards.filter((cc) => cc.level === 2)),
@@ -28,10 +32,6 @@ export default class Game {
     }, {});
     this.recruits = [];
     this.round = 1;
-    this.weights = weights || {
-      closerToAffording: 3.54,
-      closerToTimeStone: 3.88,
-    };
   }
 
   canAfford(cost, wallet) {
@@ -194,7 +194,7 @@ export default class Game {
             (afterPurchasingPower - currentPurchasingPower) /
             Object.values(card.cost).reduce((s, c) => s + c, 0);
         });
-        score += closerToTimeStoneScore * this.weights.closerToTimeStone;
+        score += closerToTimeStoneScore * 3.88;
       }
     }
 
@@ -229,7 +229,7 @@ export default class Game {
         ) {
           affordaScore += agentScore;
         } else {
-          affordaScore += agentScore * (1 / this.weights.closerToAffording);
+          affordaScore += agentScore * 0.2824858757;
         }
       });
     });

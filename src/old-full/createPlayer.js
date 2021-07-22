@@ -1,9 +1,6 @@
-import createDecider from "./createDecider.js";
-
 class Player {
-  constructor(name, ai) {
+  constructor(name) {
     this.name = name;
-    this.ai = ai;
     this.recruits = [];
     this.reserves = [];
   }
@@ -18,10 +15,6 @@ class Player {
 
   getName() {
     return this.name;
-  }
-
-  getOptions(player, gameState) {
-    return this.ai.getOptions(player, gameState);
   }
 
   getRecruits() {
@@ -42,11 +35,6 @@ class Player {
 
   removeReserve(index) {
     this.reserves.splice(index, 1);
-  }
-
-  reset() {
-    this.recruits = [];
-    this.reserves = [];
   }
 }
 
