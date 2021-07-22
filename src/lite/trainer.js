@@ -1,9 +1,10 @@
 import fs from "fs";
 import Game from "./game.js";
 
-const GAMES_PER_WEIGHT_SET = 10;
+const GAMES_PER_WEIGHT_SET = 3;
 const INCREMENT_AMOUNT = 1;
 const ITERATE_OVER_INPUT_FILE = false;
+const MAX_AVG_ROUNDS = 90;
 const MAX_WEIGHT = 4;
 const MIN_WEIGHT = 1;
 
@@ -45,7 +46,6 @@ function tryIncrementWeights() {
   }
   const looper = function (place) {
     if (place < 0) {
-      console.log("place < 0");
       return false;
     }
     if (weights[weightKeys[place]] === MAX_WEIGHT) {
@@ -90,49 +90,69 @@ function continueGame(decision) {
   if (decision.type === "skip") {
     skips++;
     if (skips > 30) {
-      // TODO: if bot has to skip 30 times, it's too stupid to survive
-      // TODO: remove this candidate from the record and move onto the next
       skips = 0;
-      currentGameNum = 0;
-      const comboStr = Object.values(weights).join(",");
-      if (weightCombos[comboStr]) {
-        delete weightCombos[comboStr];
+      if (currentGameNum >= GAMES_PER_WEIGHT_SET) {
+        currentGameNum = 0;
+        if (
+          weightCombos[comboStr].rounds / weightCombos[comboStr].games >
+          MAX_AVG_ROUNDS
+        ) {
+          delete weightCombos[comboStr];
+        }
+        tryIncrementWeights();
+      } else {
+        currentGameNum++;
+        game = new Game(weights);
+        game.makeMove(game.getState().options[0]).then((state) => {
+          continueGame(state.options[0]);
+        });
       }
-      if (tryIncrementWeights()) {
-        return;
-      }
+      return;
     }
   }
   game.makeMove(decision).then((state) => {
     if (state.gameOver) {
+      const comboStr = Object.values(weights).join(",");
+
       skips = 0;
+
       process.stdout.clearLine();
       process.stdout.cursorTo(0);
       process.stdout.write(
         `${Object.keys(weightCombos).length} - ${Object.values(weights).join(
           ","
-        )} - ${currentGameNum} - ${state.round}`
+        )} - ${
+          weightCombos[comboStr]
+            ? (
+                weightCombos[comboStr].rounds / weightCombos[comboStr].games
+              ).toFixed(2)
+            : "--"
+        }`
       );
+
+      if (!weightCombos[comboStr]) {
+        weightCombos[comboStr] = { rounds: state.round, game: 1 };
+      } else {
+        weightCombos[comboStr].games++;
+        weightCombos[comboStr].rounds += state.round;
+      }
 
       if (currentGameNum >= GAMES_PER_WEIGHT_SET) {
         currentGameNum = 0;
-
-        const comboStr = Object.values(weights).join(",");
-        if (!weightCombos[comboStr]) {
-          weightCombos[comboStr] = state.round;
-        } else {
-          weightCombos[comboStr] += state.round;
+        if (
+          weightCombos[comboStr].rounds / weightCombos[comboStr].games >
+          MAX_AVG_ROUNDS
+        ) {
+          delete weightCombos[comboStr];
         }
-
         tryIncrementWeights();
-        return;
+      } else {
+        currentGameNum++;
+        game = new Game(weights);
+        game.makeMove(game.getState().options[0]).then((state) => {
+          continueGame(state.options[0]);
+        });
       }
-
-      currentGameNum++;
-      game = new Game(weights);
-      game.makeMove(game.getState().options[0]).then((state) => {
-        continueGame(state.options[0]);
-      });
     } else {
       continueGame(state.options[0]);
     }
