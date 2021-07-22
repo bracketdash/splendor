@@ -1,21 +1,22 @@
 import fs from "fs";
 import Game from "./game.js";
 
-const GAMES_PER_WEIGHT_SET = 5;
-const MAX_AVG_ROUNDS = 35;
+const GAMES_PER_WEIGHT_SET = 1000;
+const MAX_AVG_ROUNDS = 40;
 
-const ITERATE_OVER_INPUT_FILE = false;
+const ITERATE_OVER_INPUT_FILE = true;
 
-const MIN_WEIGHT = 3.1;
-const INCREMENT_AMOUNT = 0.05;
-const MAX_WEIGHT = 5;
+const MIN_WEIGHT = 3.41;
+const INCREMENT_AMOUNT = 0.01;
+const MAX_WEIGHT = 3.94;
 
 const weights = {
-  closerToAffording: 3.1,
-  closerToTimeStone: 3.1,
+  closerToAffording: 3.41,
+  closerToTimeStone: 3.41,
 };
 
-// "4.9,3.1": { "rounds": 6948, "games": 201 }
+// 4.9,3.1
+// 3.9,3.45
 
 const winners = [];
 if (ITERATE_OVER_INPUT_FILE) {
