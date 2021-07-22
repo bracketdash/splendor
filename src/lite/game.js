@@ -111,7 +111,7 @@ export default class Game {
     });
 
     if (!allOptions.length) {
-      return false;
+      return [{ type: "skip" }];
     }
 
     const scoredOptions = allOptions.map((option) => {
@@ -175,6 +175,9 @@ export default class Game {
         const currentBonuses = this.getBonuses();
         let closerToTimeStoneScore = 0;
         this.freeAgents[2].forEach((card) => {
+          if (!card) {
+            return;
+          }
           let afterPurchasingPower = 0;
           let currentPurchasingPower = 0;
           Object.keys(card.cost).forEach((color) => {
@@ -249,6 +252,7 @@ export default class Game {
       options: [],
       recruits: this.recruits,
       round: this.round,
+      tokens: this.tokens,
     };
     if (!skipOptions) {
       state.options = this.getOptions();
@@ -270,7 +274,7 @@ export default class Game {
           this.tokens[color]--;
         });
       }
-    } else {
+    } else if (decision.tokens) {
       decision.tokens.forEach((color) => {
         this.tokens[color]++;
       });
@@ -283,6 +287,21 @@ export default class Game {
         resolve(results);
       });
     } else {
+      this.decks.some((deck, row) => {
+        if (deck.length) {
+          return this.freeAgents[row].some((freeAgent, index) => {
+            if (freeAgent) {
+              if (this.decks[row].length) {
+                this.freeAgents[row][index] = this.decks[row].pop();
+              } else {
+                this.freeAgents[row][index] = null;
+              }
+
+              return true;
+            }
+          });
+        }
+      });
       this.round++;
       return new Promise((resolve) => {
         resolve(this.getState());
