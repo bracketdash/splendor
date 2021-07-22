@@ -67,15 +67,9 @@ let skips = 0;
 function continueGame(decision) {
   if (decision.type === "skip") {
     skips++;
-    if (skips > 10) {
-      console.log(
-        game.getState().freeAgents.map((d) => d.map((a) => (a ? a.cost : "--")))
-      );
-      console.log(game.getState().recruits.map((r) => r.bonus));
-      console.log(game.getState().tokens);
-      if (skip > 15) {
-        throw new Error("skips > 15");
-      }
+    if (skips > 30) {
+      // TODO: if bot has to skip 30 times, it's too stupid to survive
+      // TODO: remove this candidate from the record and move onto the next
     }
   }
   game.makeMove(decision).then((state) => {
