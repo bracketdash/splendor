@@ -15,7 +15,19 @@ function getShuffled(items) {
 }
 
 export default class Game {
-  constructor() {
+  constructor(playerNames) {
+    this.players = playerNames.map((name) => ({
+      name,
+      recruits: [],
+      reserves: [],
+      tokens: colors.reduce((tokens, color) => {
+        tokens[color] = 0;
+        return tokens;
+      }, {}),
+    }));
+    this.round = 1;
+    this.whoseTurn = 0;
+    this.avengersTileOwner = null;
     this.decks = [
       getShuffled(characterCards.filter((cc) => cc.level === 1)),
       getShuffled(characterCards.filter((cc) => cc.level === 2)),
@@ -26,13 +38,11 @@ export default class Game {
       getNullArray(4).map(() => this.decks[1].pop()),
       getNullArray(4).map(() => this.decks[2].pop()),
     ];
-    this.tokens = colors.reduce((tokens, color) => {
-      tokens[color] = 0;
-      return tokens;
-    }, {});
-    this.recruits = [];
-    this.round = 1;
+    // TODO: set location tiles and bank tokens according to number of players
   }
+
+  // TODO: continue refactor from here (use /old-full)
+  // TODO: update components
 
   canAfford(cost, wallet) {
     return !Object.keys(cost).some((color) => {

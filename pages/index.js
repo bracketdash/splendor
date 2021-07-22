@@ -4,8 +4,7 @@ import Head from "next/head";
 import GameArea from "../src/components/GameArea.js";
 import PlayerConfig from "../src/components/PlayerConfig.js";
 
-import createGame from "../src/createGame.js";
-import createPlayer from "../src/createPlayer.js";
+import Game from "../src/game.js";
 
 export default function Home() {
   const [configuringPlayers, setConfiguringPlayers] = useState(true);
@@ -13,17 +12,11 @@ export default function Home() {
   const [game, setGame] = useState(null);
 
   function startGame(playerData) {
+    const playerNames = playerData
+      .filter((p) => !p.sittingOut)
+      .map(({ name }) => name);
     setConfiguringPlayers(false);
-    setGame(
-      createGame(
-        playerData.reduce((arr, config) => {
-          if (!config.sittingOut) {
-            arr.push(createPlayer(config.name));
-          }
-          return arr;
-        }, [])
-      )
-    );
+    setGame(new Game(playerNames));
   }
 
   return (
