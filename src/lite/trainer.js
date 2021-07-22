@@ -15,9 +15,6 @@ const weights = {
   closerToTimeStone: 3.41,
 };
 
-// 4.9,3.1
-// 3.9,3.45
-
 const winners = [];
 if (ITERATE_OVER_INPUT_FILE) {
   Object.keys(JSON.parse(fs.readFileSync("src/lite/input.json"))).forEach(

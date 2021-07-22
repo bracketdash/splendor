@@ -29,8 +29,8 @@ export default class Game {
     this.recruits = [];
     this.round = 1;
     this.weights = weights || {
-      closerToAffording: 3,
-      closerToTimeStone: 4,
+      closerToAffording: 3.54,
+      closerToTimeStone: 3.88,
     };
   }
 
