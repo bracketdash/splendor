@@ -1,10 +1,10 @@
 import fs from "fs";
 import Game from "./game.js";
 
-const GAMES_PER_WEIGHT_SET = 3;
-const MAX_AVG_ROUNDS = 30;
+const GAMES_PER_WEIGHT_SET = 10;
+const MAX_AVG_ROUNDS = 29;
 
-const ITERATE_OVER_INPUT_FILE = false;
+const ITERATE_OVER_INPUT_FILE = true;
 
 const MIN_WEIGHT = 1;
 const INCREMENT_AMOUNT = 1;
