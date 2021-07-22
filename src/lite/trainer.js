@@ -2,7 +2,7 @@ import fs from "fs";
 import Game from "./game.js";
 
 const GAMES_PER_WEIGHT_SET = 10;
-const MAX_AVG_ROUNDS = 29;
+const MAX_AVG_ROUNDS = 30;
 
 const ITERATE_OVER_INPUT_FILE = true;
 
@@ -39,25 +39,11 @@ if (ITERATE_OVER_INPUT_FILE) {
 }
 
 const weightKeys = Object.keys(weights);
+
 let winnerIndex = 1;
-function tryIncrementWeights() {
-  if (ITERATE_OVER_INPUT_FILE) {
-    Object.assign(weights, winners[winnerIndex]);
-    winnerIndex++;
-    return winnerIndex < winners.length + 1;
-  }
-  const looper = function (place) {
-    if (place < 0) {
-      return false;
-    }
-    if (weights[weightKeys[place]] === MAX_WEIGHT) {
-      weights[weightKeys[place]] = MIN_WEIGHT;
-      return looper(place - 1);
-    }
-    weights[weightKeys[place]] += INCREMENT_AMOUNT;
-    return true;
-  };
-  if (looper(weightKeys.length - 1)) {
+
+function newGameOrDone(keepGoing) {
+  if (keepGoing) {
     game = new Game(weights);
     game.makeMove(game.getState().options[0]).then((state) => {
       continueGame(state.options[0]);
@@ -80,6 +66,26 @@ function tryIncrementWeights() {
     );
     return false;
   }
+}
+
+function tryIncrementWeights() {
+  if (ITERATE_OVER_INPUT_FILE) {
+    Object.assign(weights, winners[winnerIndex]);
+    winnerIndex++;
+    return newGameOrDone(winnerIndex < winners.length + 1);
+  }
+  const looper = function (place) {
+    if (place < 0) {
+      return false;
+    }
+    if (weights[weightKeys[place]] === MAX_WEIGHT) {
+      weights[weightKeys[place]] = MIN_WEIGHT;
+      return looper(place - 1);
+    }
+    weights[weightKeys[place]] += INCREMENT_AMOUNT;
+    return true;
+  };
+  return newGameOrDone(looper(weightKeys.length - 1));
 }
 
 const weightCombos = {};
