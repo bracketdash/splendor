@@ -360,7 +360,14 @@ export default class Game {
         this.avengersTileOwner = currPlayer;
       }
     }
-    // TODO: handle location owner assignment if they qualify and location is not already owned
+    this.locations.forEach((location) => {
+      if (
+        !location.owner &&
+        this.canAfford(currPlayer, location.cost, this.getBonuses(currPlayer))
+      ) {
+        location.owner = currPlayer;
+      }
+    });
     if (this.meetsWinCriteria(currPlayer)) {
       return new Promise((resolve) => {
         const results = this.getState(true);
