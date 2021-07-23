@@ -79,7 +79,7 @@ export default class Game {
       0
     );
     if (numTokens < 10) {
-      const threeDiffLoop = function (n, src, combo) {
+      const threeDiffLoop = (n, src, combo) => {
         if (n === 0) {
           if (combo.length && numTokens < 11 - combo.length) {
             allOptions.push({ type: "3diff", tokens: combo });
@@ -329,7 +329,7 @@ export default class Game {
         }
       }
     } else if (decision.type === "reserve") {
-      this.recruits.push(this.freeAgents[row][decision.index]);
+      currPlayer.recruits.push(this.freeAgents[row][decision.index]);
       if (this.decks[row].length) {
         this.freeAgents[row][decision.index] = this.decks[row].pop();
       } else {
@@ -346,7 +346,21 @@ export default class Game {
         currPlayer.tokens[color]--;
       });
     }
-    // TODO: handle avengers and location tile owner changes
+    const getAvengersTags = (player) => {
+      return pllayer.recruits.reduce();
+    };
+    if (getAvengersTags(currPlayer) > 2) {
+      const playerTags = this.players
+        .map((p) => ({ p, tags: getAvengersTags(p) }))
+        .filter((pt) => pt.tags > 2)
+        .sort((a, b) => (a.tags > b.tags ? -1 : 1));
+      if (playerTags.length > 1 && playerTags[0] > playerTags[1]) {
+        this.avengersTileOwner = playerTags[0].p;
+      } else {
+        this.avengersTileOwner = currPlayer;
+      }
+    }
+    // TODO: handle location owner assignment if they qualify and location is not already owned
     if (this.meetsWinCriteria(currPlayer)) {
       return new Promise((resolve) => {
         const results = this.getState(true);
