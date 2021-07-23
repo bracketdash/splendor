@@ -301,6 +301,8 @@ export default class Game {
           affordaScore += agentScore;
         } else {
           affordaScore += agentScore * 0.2824858757;
+          // TODO: replace 0.2824858757 value based on how *much* closer they are to affording the card
+          // check out how closerToTimeStoneScore is calculated
         }
       });
     });
@@ -353,7 +355,7 @@ export default class Game {
         }
       }
     } else if (decision.type === "reserve") {
-      currPlayer.recruits.push(this.freeAgents[row][decision.index]);
+      currPlayer.reserves.push(this.freeAgents[row][decision.index]);
       if (this.decks[row].length) {
         this.freeAgents[row][decision.index] = this.decks[row].pop();
       } else {
