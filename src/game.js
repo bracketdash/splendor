@@ -271,13 +271,10 @@ export default class Game {
 
     const afterWallet = Object.assign(
       {},
-      player.tokens,
+      afterState.tokens,
       this.getBonuses(player, afterState.recruits)
     );
     let affordaScore = 0;
-
-    // DEBUGGING
-    console.log(option);
 
     this.freeAgents.forEach((row, rowIndex) => {
       row.forEach((freeAgent, index) => {
@@ -302,14 +299,8 @@ export default class Game {
           this.canAfford(player, freeAgent.cost, afterWallet)
         ) {
           affordaScore += agentScore;
-
-          // DEBUGGING
-          console.log(`${freeAgent.name} - ${agentScore} - afford`);
         } else {
           affordaScore += agentScore * 0.2824858757;
-
-          // DEBUGGING
-          console.log(`${freeAgent.name} - ${agentScore} - closer`);
         }
       });
     });
@@ -380,7 +371,7 @@ export default class Game {
       });
     }
     const getAvengersTags = (player) => {
-      return player.recruits.reduce((t, r) => t + r.avengersTags);
+      return player.recruits.reduce((t, r) => t + r.avengersTags, 0);
     };
     if (getAvengersTags(currPlayer) > 2) {
       const playerTags = this.players
@@ -408,22 +399,7 @@ export default class Game {
         resolve(results);
       });
     } else {
-      this.decks.some((deck, row) => {
-        if (deck.length) {
-          return this.freeAgents[row].some((freeAgent, index) => {
-            if (freeAgent) {
-              if (this.decks[row].length) {
-                this.freeAgents[row][index] = this.decks[row].pop();
-              } else {
-                this.freeAgents[row][index] = null;
-              }
-
-              return true;
-            }
-          });
-        }
-      });
-      this.round++;
+      this.whoseTurn = this.round++ % this.players.length;
       return new Promise((resolve) => {
         resolve(this.getState());
       });

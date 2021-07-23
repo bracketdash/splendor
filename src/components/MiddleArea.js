@@ -7,7 +7,7 @@ export default function MiddleArea(props) {
   return (
     <div>
       <h2>
-        {!props.gameState.gameOver
+        {props.gameState.gameOver
           ? "GAME OVER"
           : `Round ${props.gameState.round}`}
       </h2>
