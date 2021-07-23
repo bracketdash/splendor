@@ -24,7 +24,6 @@ export default function GameArea(props) {
           key={i}
           gameState={gameState}
           player={player}
-          points={props.game.getPlayerScore(player)}
           onMove={makeMove}
         />
       ))}

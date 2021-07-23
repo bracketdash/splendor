@@ -13,28 +13,20 @@ export default function PlayerArea(props) {
       }
     >
       <h2>
-        {props.player.getName()} - {props.points} Points
+        {props.player.name} - {props.player.points} Points
       </h2>
       {colors.map((color, i) => (
-        <Token
-          key={i}
-          color={color}
-          num={
-            props.gameState.ownerTracker.tokens[color].filter(
-              (owner) => owner === props.player
-            ).length
-          }
-        />
+        <Token key={i} color={color} num={props.player.tokens[color]} />
       ))}
-      <h4>{props.player.getRecruits().length > 0 ? "Recruits" : ""}</h4>
+      <h4>{props.player.recruits.length > 0 ? "Recruits" : ""}</h4>
       <div className="cards-container">
-        {props.player.getRecruits().map((card, i) => (
+        {props.player.recruits.map((card, i) => (
           <Card card={card} key={i} />
         ))}
       </div>
-      <h4>{props.player.getReserves().length > 0 ? "Reserves" : ""}</h4>
+      <h4>{props.player.reserves.length > 0 ? "Reserves" : ""}</h4>
       <div className="cards-container">
-        {props.player.getReserves().map((card, i) => (
+        {props.player.reserves.map((card, i) => (
           <div>
             <Card card={card} key={i} />
           </div>
@@ -62,18 +54,16 @@ export default function PlayerArea(props) {
                 {option.type === "recruit" || option.type === "reserve"
                   ? `${option.type
                       .substring(0, 1)
-                      .toUpperCase()}${option.type.substring(
-                      1
-                    )} ${(option.level === "reserves"
-                      ? props.gameState.players[
-                          props.gameState.whoseTurn
-                        ].getReserves()[option.index]
-                      : props.gameState.freeAgents[option.level - 1][
-                          option.index
-                        ]
-                    ).getName()}`
+                      .toUpperCase()}${option.type.substring(1)} ${
+                      (option.level === "reserves"
+                        ? props.player.reserves[option.index]
+                        : props.gameState.freeAgents[option.level - 1][
+                            option.index
+                          ]
+                      ).name
+                    }`
                   : ""}
-                {option.location ? ` + ${option.location.getName()}` : ""}
+                {option.location ? ` + ${option.location.name}` : ""}
               </div>
               <div className="ai-score">{option.score.toFixed(0)}</div>
             </button>

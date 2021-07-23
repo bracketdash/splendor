@@ -165,6 +165,19 @@ export default class Game {
     return scoredOptions;
   }
 
+  getPoints(player) {
+    let points = player.recruits.reduce((p, r) => p + r.points, 0);
+    if (player === this.avengersTileOwner) {
+      points += 3;
+    }
+    this.locations.forEach((location) => {
+      if (player === location.owner) {
+        points += 3;
+      }
+    });
+    return points;
+  }
+
   getOptionScore(player, option) {
     const afterState = {
       recruits: [...player.recruits],
@@ -293,12 +306,17 @@ export default class Game {
   }
 
   getState(skipOptions) {
+    const players = this.players.map((p) => {
+      p.points = this.getPoints(p);
+      return p;
+    });
     const state = {
+      avengersTileOwner: this.avengersTileOwner,
       bankChips: this.bankChips,
       decks: this.decks,
       freeAgents: this.freeAgents,
       options: [],
-      players: this.players,
+      players,
       round: this.round,
       whoseTurn: this.whoseTurn,
     };
@@ -398,17 +416,8 @@ export default class Game {
   }
 
   meetsWinCriteria(player) {
-    let points = player.recruits.reduce((p, r) => p + r.points, 0);
-    if (player === this.avengersTileOwner) {
-      points += 3;
-    }
-    this.locations.forEach((location) => {
-      if (player === location.owner) {
-        points += 3;
-      }
-    });
     return (
-      points > 15 &&
+      this.getPoints(player) > 15 &&
       colors.every(
         (c) => !!player.recruits.filter((cc) => cc.bonus === c).length
       ) &&
