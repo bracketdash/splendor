@@ -4,7 +4,6 @@ export default [
       blue: 4,
       yellow: 4,
     },
-    infinityPoints: 3,
     name: "Avengers Tower, NYC",
   },
   {
@@ -12,7 +11,6 @@ export default [
       purple: 4,
       red: 4,
     },
-    infinityPoints: 3,
     name: "Attilan",
   },
   {
@@ -20,7 +18,6 @@ export default [
       orange: 4,
       yellow: 4,
     },
-    infinityPoints: 3,
     name: "Hell's Kitchen, NYC",
   },
   {
@@ -28,7 +25,6 @@ export default [
       orange: 4,
       purple: 4,
     },
-    infinityPoints: 3,
     name: "Triskelion",
   },
   {
@@ -36,7 +32,6 @@ export default [
       orange: 4,
       yellow: 4,
     },
-    infinityPoints: 3,
     name: "Hell's Kitchen, NYC",
   },
   {
@@ -44,7 +39,6 @@ export default [
       blue: 4,
       red: 4,
     },
-    infinityPoints: 3,
     name: "Wakanda",
   },
   {
@@ -53,7 +47,6 @@ export default [
       purple: 3,
       yellow: 3,
     },
-    infinityPoints: 3,
     name: "Asgard",
   },
   {
@@ -62,7 +55,6 @@ export default [
       red: 3,
       yellow: 3,
     },
-    infinityPoints: 3,
     name: "Knowhere",
   },
   {
@@ -71,7 +63,6 @@ export default [
       purple: 3,
       red: 3,
     },
-    infinityPoints: 3,
     name: "Atlantis",
   },
 ];

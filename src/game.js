@@ -1,7 +1,3 @@
-// const game = new Game();
-// game.getState().options
-// game.makeMove(decision)
-
 import characterCards from "./data/characterCards.js";
 import locationTiles from "./data/locationTiles.js";
 
@@ -48,6 +44,7 @@ export default class Game {
       chips[color] = numPlayersToTokenMap[this.playerNames.length];
       return chips;
     }, {});
+    this.bankChips.gray = 5;
   }
 
   canAfford(player, cost, wallet) {
@@ -75,8 +72,8 @@ export default class Game {
 
   getOptions() {
     const allOptions = [];
+    const bonuses = this.getBonuses(currPlayer);
     const currPlayer = this.players[this.whoseTurn];
-
     const numTokens = Object.values(currPlayer.tokens).reduce(
       (a, b) => a + b,
       0
@@ -97,14 +94,24 @@ export default class Game {
       threeDiffLoop(3, colors, []);
       threeDiffLoop(2, colors, []);
       threeDiffLoop(1, colors, []);
-      // TODO: add 2same options
+      Object.keys(this.bankChips).forEach((color) => {
+        if (color === "gray") {
+          return;
+        }
+        if (this.bankChips[color] > 3 && numTokens < 9) {
+          allOptions.push({ type: "2same", tokens: [color, color] });
+        }
+      });
     }
-
-    const bonuses = this.getBonuses(currPlayer);
     this.freeAgents.forEach((row, rowIndex) => {
       row.forEach((characterCard, index) => {
         if (characterCard !== null) {
           const cost = characterCard.cost;
+          allOptions.push({
+            type: "reserve",
+            level: rowIndex + 1,
+            index,
+          });
           if (this.canAfford(currPlayer, cost)) {
             const tokensToRemove = Object.keys(cost).reduce((arr, color) => {
               const needed = cost[color] - (bonuses[color] || 0);
@@ -125,9 +132,26 @@ export default class Game {
         }
       });
     });
-
-    // TODO: add options to recruit from this player's reserves if any
-    // TODO: add reserve options
+    currPlayer.reserves.forEach((characterCard, index) => {
+      const cost = characterCard.cost;
+      if (this.canAfford(currPlayer, cost)) {
+        const tokensToRemove = Object.keys(cost).reduce((arr, color) => {
+          const needed = cost[color] - (bonuses[color] || 0);
+          if (needed > 0) {
+            getNullArray(needed).forEach(() => {
+              arr.push(color);
+            });
+          }
+          return arr;
+        }, []);
+        allOptions.push({
+          type: "recruit",
+          level: "reserves",
+          index,
+          tokensToRemove,
+        });
+      }
+    });
 
     if (!allOptions.length) {
       return [{ type: "skip" }];
@@ -147,13 +171,19 @@ export default class Game {
       tokens: Object.assign({}, player.tokens),
     };
     if (option.type === "recruit") {
-      afterState.recruits.push(this.freeAgents[option.level - 1][option.index]);
+      if (option.level === "reserves") {
+        afterState.recruits.push(this.reserves[option.index]);
+      } else {
+        afterState.recruits.push(
+          this.freeAgents[option.level - 1][option.index]
+        );
+      }
       if (option.tokensToRemove && option.tokensToRemove.length) {
         option.tokensToRemove.forEach((color) => {
           afterState.tokens[color]--;
         });
       }
-    } else {
+    } else if (option.tokens) {
       option.tokens.forEach((color) => {
         afterState.tokens[color]++;
       });
@@ -164,8 +194,8 @@ export default class Game {
     }
 
     let score =
-      afterState.recruits.reduce((p, r) => p + r.infinityPoints, 0) -
-      player.recruits.reduce((p, r) => p + r.infinityPoints, 0);
+      afterState.recruits.reduce((p, r) => p + r.points, 0) -
+      player.recruits.reduce((p, r) => p + r.points, 0);
 
     if (
       !colors.every(
@@ -236,7 +266,7 @@ export default class Game {
         ) {
           return;
         }
-        let agentScore = freeAgent.infinityPoints;
+        let agentScore = freeAgent.points;
         if (!afterState.recruits.some((c) => freeAgent.bonus === c.bonus)) {
           agentScore += 1;
         }
@@ -280,27 +310,43 @@ export default class Game {
 
   makeMove(decision) {
     const currPlayer = this.players[this.whoseTurn];
-    // TODO: handle 2same, reserve, and recruiting reserves options
-    // TODO: handle avengers and location tile owner changes at end of turn
+    const row =
+      decision.level && typeof decision.level === "number"
+        ? decision.level - 1
+        : decision.level
+        ? decision.level
+        : null;
     if (decision.type === "recruit") {
-      const row = decision.level - 1;
-      currPlayer.recruits.push(this.freeAgents[row][decision.index]);
+      if (row === "reserves") {
+        currPlayer.recruits.push(currPlayer.reserves[decision.index]);
+        currPlayer.reserves.splice(decision.index, 1);
+      } else {
+        currPlayer.recruits.push(this.freeAgents[row][decision.index]);
+        if (this.decks[row].length) {
+          this.freeAgents[row][decision.index] = this.decks[row].pop();
+        } else {
+          this.freeAgents[row][decision.index] = null;
+        }
+      }
+    } else if (decision.type === "reserve") {
+      this.recruits.push(this.freeAgents[row][decision.index]);
       if (this.decks[row].length) {
         this.freeAgents[row][decision.index] = this.decks[row].pop();
       } else {
         this.freeAgents[row][decision.index] = null;
       }
-      if (decision.tokensToRemove && decision.tokensToRemove.length) {
-        decision.tokensToRemove.forEach((color) => {
-          currPlayer.tokens[color]--;
-        });
-      }
-    } else if (decision.tokens) {
+    }
+    if (decision.tokens && decision.tokens.length) {
       decision.tokens.forEach((color) => {
         currPlayer.tokens[color]++;
       });
     }
-
+    if (decision.tokensToRemove && decision.tokensToRemove.length) {
+      decision.tokensToRemove.forEach((color) => {
+        currPlayer.tokens[color]--;
+      });
+    }
+    // TODO: handle avengers and location tile owner changes
     if (this.meetsWinCriteria(currPlayer)) {
       return new Promise((resolve) => {
         const results = this.getState(true);
@@ -331,9 +377,17 @@ export default class Game {
   }
 
   meetsWinCriteria(player) {
-    // TODO: take into account avengers and locations tiles if any
+    let points = player.recruits.reduce((p, r) => p + r.points, 0);
+    if (player === this.avengersTileOwner) {
+      points += 3;
+    }
+    this.locations.forEach((location) => {
+      if (player === location.owner) {
+        points += 3;
+      }
+    });
     return (
-      player.recruits.reduce((p, r) => p + r.infinityPoints, 0) > 15 &&
+      points > 15 &&
       colors.every(
         (c) => !!player.recruits.filter((cc) => cc.bonus === c).length
       ) &&
