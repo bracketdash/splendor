@@ -380,7 +380,7 @@ export default class Game {
       });
     }
     const getAvengersTags = (player) => {
-      return player.recruits.reduce();
+      return player.recruits.reduce((t, r) => t + r.avengersTags);
     };
     if (getAvengersTags(currPlayer) > 2) {
       const playerTags = this.players
