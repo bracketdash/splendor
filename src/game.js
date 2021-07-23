@@ -29,19 +29,23 @@ export default class Game {
     this.locations = getNullArray(playerNames.length).map(() => {
       return shuffledLocations.pop();
     });
-    this.players = playerNames.map((name) => ({
-      name,
-      recruits: [],
-      reserves: [],
-      tokens: colors.reduce((tokens, color) => {
+    this.players = playerNames.map((name) => {
+      const tokens = colors.reduce((tokens, color) => {
         tokens[color] = 0;
         return tokens;
-      }, {}),
-    }));
+      }, {});
+      tokens.gray = 0;
+      return {
+        name,
+        recruits: [],
+        reserves: [],
+        tokens,
+      };
+    });
     this.round = 1;
     this.whoseTurn = 0;
     this.bankChips = colors.reduce((chips, color) => {
-      chips[color] = numPlayersToTokenMap[this.playerNames.length];
+      chips[color] = numPlayersToTokenMap[playerNames.length];
       return chips;
     }, {});
     this.bankChips.gray = 5;
@@ -72,8 +76,8 @@ export default class Game {
 
   getOptions() {
     const allOptions = [];
-    const bonuses = this.getBonuses(currPlayer);
     const currPlayer = this.players[this.whoseTurn];
+    const bonuses = this.getBonuses(currPlayer);
     const numTokens = Object.values(currPlayer.tokens).reduce(
       (a, b) => a + b,
       0
@@ -254,7 +258,7 @@ export default class Game {
             currentPurchasingPower +=
               Math.min(currentBonus, card.cost[color]) +
               (currentNeeded > 0
-                ? Math.min(this.tokens[color], currentNeeded)
+                ? Math.min(afterState.tokens[color], currentNeeded)
                 : 0);
           });
           closerToTimeStoneScore +=
@@ -300,7 +304,13 @@ export default class Game {
         }
       });
     });
+
+    // TODO: something funky is going on with affordaScore being the same every time for 3diff, 2same
+    console.log(option);
+    console.log(affordaScore);
+    
     score += affordaScore;
+
 
     return score;
   }
@@ -315,6 +325,7 @@ export default class Game {
       bankChips: this.bankChips,
       decks: this.decks,
       freeAgents: this.freeAgents,
+      locations: this.locations,
       options: [],
       players,
       round: this.round,
@@ -365,7 +376,7 @@ export default class Game {
       });
     }
     const getAvengersTags = (player) => {
-      return pllayer.recruits.reduce();
+      return player.recruits.reduce();
     };
     if (getAvengersTags(currPlayer) > 2) {
       const playerTags = this.players

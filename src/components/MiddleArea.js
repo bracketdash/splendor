@@ -29,7 +29,7 @@ export default function MiddleArea(props) {
       </div>
       <div className="tiles-container">
         {props.gameState.locations.map((location, i) => {
-          const owner = location.getOwner();
+          const owner = location.owner;
           return (
             <div key={i}>
               <div className="tile">
@@ -43,7 +43,7 @@ export default function MiddleArea(props) {
                   ))}
                 </div>
                 <div className="tile-owner">
-                  {owner ? owner.getName() : "Not Yet Owned"}
+                  {location.owner ? location.owner.name : "Not Yet Owned"}
                 </div>
               </div>
             </div>
