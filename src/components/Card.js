@@ -3,7 +3,7 @@ export default function Card(props) {
     <div className={`card ${props.card.bonus}`}>
       <div className="card-banner">
         <div className="card-points">
-          {props.card.infinityPoints ? `+${props.card.points}` : ""}
+          {props.card.points ? `+${props.card.points}` : ""}
         </div>
         <div
           className={props.card.level > 2 ? "time-stone" : "time-stone hide"}

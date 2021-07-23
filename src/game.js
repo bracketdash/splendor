@@ -275,6 +275,10 @@ export default class Game {
       this.getBonuses(player, afterState.recruits)
     );
     let affordaScore = 0;
+
+    // DEBUGGING
+    console.log(option);
+
     this.freeAgents.forEach((row, rowIndex) => {
       row.forEach((freeAgent, index) => {
         if (
@@ -293,24 +297,24 @@ export default class Game {
         ) {
           agentScore += 1;
         }
-
         if (
           !this.canAfford(player, freeAgent.cost) &&
           this.canAfford(player, freeAgent.cost, afterWallet)
         ) {
           affordaScore += agentScore;
+
+          // DEBUGGING
+          console.log(`${freeAgent.name} - ${agentScore} - afford`);
         } else {
           affordaScore += agentScore * 0.2824858757;
+
+          // DEBUGGING
+          console.log(`${freeAgent.name} - ${agentScore} - closer`);
         }
       });
     });
 
-    // TODO: something funky is going on with affordaScore being the same every time for 3diff, 2same
-    console.log(option);
-    console.log(affordaScore);
-    
     score += affordaScore;
-
 
     return score;
   }
