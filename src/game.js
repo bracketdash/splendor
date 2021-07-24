@@ -67,15 +67,21 @@ export default class Game {
   }
 
   getBonuses(player, recruits) {
-    return (recruits || player.recruits).reduce((bonuses, cc) => {
-      const bonus = cc.bonus;
-      if (!bonuses[bonus]) {
-        bonuses[bonus] = 1;
-      } else {
-        bonuses[bonus]++;
-      }
-      return bonuses;
-    }, {});
+    return Object.assign(
+      colors.reduce((tokens, color) => {
+        tokens[color] = 0;
+        return tokens;
+      }, {}),
+      (recruits || player.recruits).reduce((bonuses, cc) => {
+        const bonus = cc.bonus;
+        if (!bonuses[bonus]) {
+          bonuses[bonus] = 1;
+        } else {
+          bonuses[bonus]++;
+        }
+        return bonuses;
+      }, {})
+    );
   }
 
   getOptions() {
@@ -263,12 +269,13 @@ export default class Game {
       score += 1;
     }
 
+    const afterBonuses = this.getBonuses(player, afterState.recruits);
+    const currentBonuses = this.getBonuses(player);
+
     if (!player.recruits.some(({ level }) => level === 3)) {
       if (afterState.recruits.some(({ level }) => level === 3)) {
         score += 5;
       } else {
-        const afterBonuses = this.getBonuses(player, afterState.recruits);
-        const currentBonuses = this.getBonuses(player);
         let closerToTimeStoneScore = 0;
         this.freeAgents[2].forEach((card) => {
           if (!card) {
@@ -277,6 +284,7 @@ export default class Game {
           let afterPurchasingPower = 0;
           let currentPurchasingPower = 0;
           Object.keys(card.cost).forEach((color) => {
+            // TODO: this ony takes into account bonuses; it should also include tokens
             const afterBonus = afterBonuses[color] || 0;
             const afterNeeded = card.cost[color] - afterBonus;
             const currentBonus = currentBonuses[color] || 0;
@@ -323,7 +331,7 @@ export default class Game {
         this.locations
           .filter((l) => !l.owner)
           .forEach((location) => {
-            const afterWalletPlusBonus = Object.defaults({}, afterWallet);
+            const afterWalletPlusBonus = Object.assign({}, afterWallet);
             afterWalletPlusBonus[freeAgent.bonus] += 1;
             if (this.canAfford(player, location.cost, afterWalletPlusBonus)) {
               agentScore += 2;
@@ -335,22 +343,21 @@ export default class Game {
         ) {
           affordaScore += agentScore;
         } else {
-          const afterBonuses = this.getBonuses(player, afterState.recruits);
-          const currentBonuses = this.getBonuses(player);
           let afterPurchasingPower = 0;
           let currentPurchasingPower = 0;
-          Object.keys(card.cost).forEach((color) => {
+          Object.keys(freeAgent.cost).forEach((color) => {
+            // TODO: this ony takes into account bonuses; it should also include tokens
             const afterBonus = afterBonuses[color];
-            const afterNeeded = card.cost[color] - afterBonus;
+            const afterNeeded = freeAgent.cost[color] - afterBonus;
             const currentBonus = currentBonuses[color];
-            const currentNeeded = card.cost[color] - currentBonus;
+            const currentNeeded = freeAgent.cost[color] - currentBonus;
             afterPurchasingPower +=
-              Math.min(afterBonus, card.cost[color]) +
+              Math.min(afterBonus, freeAgent.cost[color]) +
               (afterNeeded > 0
                 ? Math.min(afterState.tokens[color], afterNeeded)
                 : 0);
             currentPurchasingPower +=
-              Math.min(currentBonus, card.cost[color]) +
+              Math.min(currentBonus, freeAgent.cost[color]) +
               (currentNeeded > 0
                 ? Math.min(afterState.tokens[color], currentNeeded)
                 : 0);
@@ -358,10 +365,13 @@ export default class Game {
           affordaScore +=
             agentScore *
             ((afterPurchasingPower - currentPurchasingPower) /
-              Object.values(card.cost).reduce((s, c) => s + c, 0));
+              Object.values(freeAgent.cost).reduce((s, c) => s + c, 0));
         }
       });
     });
+
+    console.log(option);
+    console.log(`affordaScore: ${affordaScore}`);
 
     score += affordaScore;
 
