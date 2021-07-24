@@ -303,12 +303,17 @@ export default class Game {
             (afterPurchasingPower - currentPurchasingPower) /
             Object.values(card.cost).reduce((s, c) => s + c, 0);
         });
-        score += closerToTimeStoneScore * 4;
+        if (closerToTimeStoneScore > 0) {
+          score += closerToTimeStoneScore * 4;
+        }
       }
     }
 
-    let affordaScore = 0;
+    // TODO: BUG - getOptions is ignoring this.bankChips - they shouldn't be allowed to go negative
+    // TODO: present move options in ui better - flexbox columns - "take tokens", "recruit", "reserve"
+    // TODO: score reserve options
 
+    let affordaScore = 0;
     this.freeAgents.forEach((row, rowIndex) => {
       row.forEach((freeAgent, index) => {
         if (
@@ -360,15 +365,20 @@ export default class Game {
                 ? Math.min(player.tokens[color], currentNeeded)
                 : 0);
           });
-          affordaScore +=
-            agentScore *
-            ((afterPurchasingPower - currentPurchasingPower) /
-              Object.values(freeAgent.cost).reduce((s, c) => s + c, 0));
+          const ratio =
+            (afterPurchasingPower - currentPurchasingPower) /
+            Object.values(freeAgent.cost).reduce((s, c) => s + c, 0);
+          if (ratio > 0) {
+            affordaScore += agentScore * ratio;
+          }
         }
       });
     });
-
     score += affordaScore;
+
+    if (option.type === "recruit") {
+      score *= 16;
+    }
 
     return score;
   }
