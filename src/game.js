@@ -284,7 +284,6 @@ export default class Game {
           let afterPurchasingPower = 0;
           let currentPurchasingPower = 0;
           Object.keys(card.cost).forEach((color) => {
-            // TODO: this ony takes into account bonuses; it should also include tokens
             const afterBonus = afterBonuses[color] || 0;
             const afterNeeded = card.cost[color] - afterBonus;
             const currentBonus = currentBonuses[color] || 0;
@@ -297,7 +296,7 @@ export default class Game {
             currentPurchasingPower +=
               Math.min(currentBonus, card.cost[color]) +
               (currentNeeded > 0
-                ? Math.min(afterState.tokens[color], currentNeeded)
+                ? Math.min(player.tokens[color], currentNeeded)
                 : 0);
           });
           closerToTimeStoneScore +=
@@ -346,7 +345,6 @@ export default class Game {
           let afterPurchasingPower = 0;
           let currentPurchasingPower = 0;
           Object.keys(freeAgent.cost).forEach((color) => {
-            // TODO: this ony takes into account bonuses; it should also include tokens
             const afterBonus = afterBonuses[color];
             const afterNeeded = freeAgent.cost[color] - afterBonus;
             const currentBonus = currentBonuses[color];
@@ -359,7 +357,7 @@ export default class Game {
             currentPurchasingPower +=
               Math.min(currentBonus, freeAgent.cost[color]) +
               (currentNeeded > 0
-                ? Math.min(afterState.tokens[color], currentNeeded)
+                ? Math.min(player.tokens[color], currentNeeded)
                 : 0);
           });
           affordaScore +=
