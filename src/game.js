@@ -85,6 +85,7 @@ export default class Game {
   }
 
   getOptions() {
+    // TODO: BUG - getOptions is ignoring this.bankChips - they shouldn't be allowed to go negative
     const allOptions = [];
     const currPlayer = this.players[this.whoseTurn];
     const bonuses = this.getBonuses(currPlayer);
@@ -309,8 +310,6 @@ export default class Game {
       }
     }
 
-    // TODO: BUG - getOptions is ignoring this.bankChips - they shouldn't be allowed to go negative
-    // TODO: present move options in ui better - flexbox columns - "take tokens", "recruit", "reserve"
     // TODO: score reserve options
 
     let affordaScore = 0;
@@ -384,6 +383,7 @@ export default class Game {
   }
 
   getState(skipOptions) {
+    // TODO: present move options in ui better - flexbox columns - "take tokens", "recruit", "reserve"
     const players = this.players.map((p) => {
       p.points = this.getPoints(p);
       return p;
