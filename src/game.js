@@ -373,8 +373,6 @@ export default class Game {
       }
     }
 
-    // TODO: score reserve options
-
     let affordaScore = 0;
     this.freeAgents.forEach((row, rowIndex) => {
       row.forEach((freeAgent, index) => {
