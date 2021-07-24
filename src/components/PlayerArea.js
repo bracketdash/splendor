@@ -27,9 +27,7 @@ export default function PlayerArea(props) {
       <h4>{props.player.reserves.length > 0 ? "Reserves" : ""}</h4>
       <div className="cards-container">
         {props.player.reserves.map((card, i) => (
-          <div>
-            <Card card={card} key={i} />
-          </div>
+          <Card card={card} key={i} />
         ))}
       </div>
       <h4>
@@ -41,7 +39,7 @@ export default function PlayerArea(props) {
         {props.gameState.players[props.gameState.whoseTurn] === props.player ? (
           Object.keys(props.gameState.options).map((optGroup) => {
             if (!props.gameState.options[optGroup].length) {
-              return <div></div>;
+              return <div key={optGroup}></div>;
             }
             return (
               <div className="option-column" key={optGroup}>

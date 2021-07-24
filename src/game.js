@@ -52,6 +52,7 @@ export default class Game {
   }
 
   canAfford(player, cost, wallet) {
+    // TODO: handle gray tokens appropriately
     return !Object.keys(cost).some((color) => {
       if (wallet) {
         return cost[color] > wallet[color];
@@ -133,11 +134,15 @@ export default class Game {
       row.forEach((characterCard, index) => {
         if (characterCard !== null) {
           const cost = characterCard.cost;
-          allOptions.push({
+          const reserveOption = {
             type: "reserve",
             level: rowIndex + 1,
             index,
-          });
+          };
+          if (this.bankChips.gray > 0) {
+            reserveOption.tokens = ["gray"];
+          }
+          allOptions.push(reserveOption);
           if (this.canAfford(currPlayer, cost)) {
             const tokensToRemove = Object.keys(cost).reduce((arr, color) => {
               const needed = cost[color] - (bonuses[color] || 0);
