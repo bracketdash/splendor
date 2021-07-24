@@ -52,27 +52,28 @@ export default class Game {
   }
 
   canAfford(player, cost, wallet) {
-    // TODO: broken
     let graysLeft = wallet ? wallet.gray : player.tokens.gray;
     return !Object.keys(cost).some((color) => {
       if (wallet) {
-        if (cost[color] <= wallet[color]) {
-          return true;
-        } else if (graysLeft >= cost[color] - wallet[color]) {
-          graysLeft -= cost[color] - wallet[color];
+        if (cost[color] > wallet[color]) {
+          if (graysLeft >= cost[color] - wallet[color]) {
+            graysLeft -= cost[color] - wallet[color];
+            return false;
+          }
           return true;
         } else {
           return false;
         }
       } else {
         const bonusesOfColor = this.getBonuses(player)[color] || 0;
-        if (cost[color] <= player.tokens[color] + bonusesOfColor) {
-          return true;
-        } else if (
-          graysLeft >=
-          cost[color] - (player.tokens[color] + bonusesOfColor)
-        ) {
-          graysLeft -= cost[color] - (player.tokens[color] + bonusesOfColor);
+        if (cost[color] > player.tokens[color] + bonusesOfColor) {
+          if (
+            graysLeft >=
+            cost[color] - (player.tokens[color] + bonusesOfColor)
+          ) {
+            graysLeft -= cost[color] - (player.tokens[color] + bonusesOfColor);
+            return false;
+          }
           return true;
         } else {
           return false;
@@ -319,20 +320,48 @@ export default class Game {
           let afterPurchasingPower = 0;
           let currentPurchasingPower = 0;
           Object.keys(card.cost).forEach((color) => {
-            const afterBonus = afterBonuses[color] || 0;
-            const afterNeeded = card.cost[color] - afterBonus;
-            const currentBonus = currentBonuses[color] || 0;
-            const currentNeeded = card.cost[color] - currentBonus;
-            afterPurchasingPower +=
-              Math.min(afterBonus, card.cost[color]) +
-              (afterNeeded > 0
-                ? Math.min(afterState.tokens[color], afterNeeded)
-                : 0);
-            currentPurchasingPower +=
-              Math.min(currentBonus, card.cost[color]) +
-              (currentNeeded > 0
-                ? Math.min(player.tokens[color], currentNeeded)
-                : 0);
+            const afterBonus = afterBonuses[color];
+            const afterTokens = card.cost[color] - afterBonus;
+            const currentBonus = currentBonuses[color];
+            const currentTokens = card.cost[color] - currentBonus;
+            afterPurchasingPower += Math.min(afterBonus, card.cost[color]);
+            if (afterTokens > 0) {
+              const afterGrays = Math.min(
+                afterState.tokens[color],
+                afterTokens
+              );
+              afterPurchasingPower += afterGrays;
+              if (
+                card.cost[color] -
+                  (Math.min(afterBonus, card.cost[color]) + afterGrays) >
+                0
+              ) {
+                afterPurchasingPower += Math.min(
+                  card.cost[color] -
+                    (Math.min(afterBonus, card.cost[color]) + afterGrays),
+                  afterState.tokens.gray
+                );
+              }
+            }
+            currentPurchasingPower += Math.min(currentBonus, card.cost[color]);
+            if (currentTokens > 0) {
+              const currentGrays = Math.min(
+                player.tokens[color],
+                currentTokens
+              );
+              currentPurchasingPower += currentGrays;
+              if (
+                card.cost[color] -
+                  (Math.min(currentBonus, card.cost[color]) + currentGrays) >
+                0
+              ) {
+                afterPurchasingPower += Math.min(
+                  card.cost[color] -
+                    (Math.min(currentBonus, card.cost[color]) + currentGrays),
+                  player.tokens.gray
+                );
+              }
+            }
           });
           closerToTimeStoneScore +=
             (afterPurchasingPower - currentPurchasingPower) /
@@ -365,18 +394,18 @@ export default class Game {
         ) {
           agentScore += 3;
         }
+        const afterWalletPlusBonus = Object.assign({}, afterWallet);
+        afterWalletPlusBonus[freeAgent.bonus] += 1;
         this.locations
           .filter((l) => !l.owner)
           .forEach((location) => {
-            const afterWalletPlusBonus = Object.assign({}, afterWallet);
-            afterWalletPlusBonus[freeAgent.bonus] += 1;
             if (this.canAfford(player, location.cost, afterWalletPlusBonus)) {
               agentScore += 2;
             }
           });
         if (
           !this.canAfford(player, freeAgent.cost) &&
-          this.canAfford(player, freeAgent.cost, afterWallet)
+          this.canAfford(player, freeAgent.cost, afterWalletPlusBonus)
         ) {
           affordaScore += agentScore;
         } else {
@@ -384,19 +413,52 @@ export default class Game {
           let currentPurchasingPower = 0;
           Object.keys(freeAgent.cost).forEach((color) => {
             const afterBonus = afterBonuses[color];
-            const afterNeeded = freeAgent.cost[color] - afterBonus;
+            const afterTokens = freeAgent.cost[color] - afterBonus;
             const currentBonus = currentBonuses[color];
-            const currentNeeded = freeAgent.cost[color] - currentBonus;
-            afterPurchasingPower +=
-              Math.min(afterBonus, freeAgent.cost[color]) +
-              (afterNeeded > 0
-                ? Math.min(afterState.tokens[color], afterNeeded)
-                : 0);
-            currentPurchasingPower +=
-              Math.min(currentBonus, freeAgent.cost[color]) +
-              (currentNeeded > 0
-                ? Math.min(player.tokens[color], currentNeeded)
-                : 0);
+            const currentTokens = freeAgent.cost[color] - currentBonus;
+            afterPurchasingPower += Math.min(afterBonus, freeAgent.cost[color]);
+            if (afterTokens > 0) {
+              const afterGrays = Math.min(
+                afterState.tokens[color],
+                afterTokens
+              );
+              afterPurchasingPower += afterGrays;
+              if (
+                freeAgent.cost[color] -
+                  (Math.min(afterBonus, freeAgent.cost[color]) + afterGrays) >
+                0
+              ) {
+                afterPurchasingPower += Math.min(
+                  freeAgent.cost[color] -
+                    (Math.min(afterBonus, freeAgent.cost[color]) + afterGrays),
+                  afterState.tokens.gray
+                );
+              }
+            }
+            currentPurchasingPower += Math.min(
+              currentBonus,
+              freeAgent.cost[color]
+            );
+            if (currentTokens > 0) {
+              const currentGrays = Math.min(
+                player.tokens[color],
+                currentTokens
+              );
+              currentPurchasingPower += currentGrays;
+              if (
+                freeAgent.cost[color] -
+                  (Math.min(currentBonus, freeAgent.cost[color]) +
+                    currentGrays) >
+                0
+              ) {
+                afterPurchasingPower += Math.min(
+                  freeAgent.cost[color] -
+                    (Math.min(currentBonus, freeAgent.cost[color]) +
+                      currentGrays),
+                  player.tokens.gray
+                );
+              }
+            }
           });
           const ratio =
             (afterPurchasingPower - currentPurchasingPower) /
@@ -410,7 +472,9 @@ export default class Game {
     score += affordaScore;
 
     if (option.type === "recruit") {
-      // TODO?: score *= 16;
+      score *= 8;
+    } else if (option.type === "reserve") {
+      score *= 0.5;
     }
 
     return score;
