@@ -12,11 +12,11 @@ export default function GameArea(props) {
 
   function makeMove(selectedOption, player) {
     props.game.makeMove(selectedOption, player).then((newGameState) => {
-      const newPlayer = newGameState.players[newGameState.whoseTurn].computer;
+      const newPlayer = newGameState.players[newGameState.whoseTurn];
       if (newPlayer.computer) {
         makeMove(
-          newGameState.options
-            .reduce((opts, set) => opts.concat(set), [])
+          Object.keys(newGameState.options)
+            .reduce((opts, key) => opts.concat(newGameState.options[key]), [])
             .sort((a, b) => (a.score > b.score ? -1 : 1))[0],
           newPlayer
         );

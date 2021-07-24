@@ -9,7 +9,9 @@ export default function MiddleArea(props) {
       <h2>
         {props.gameState.gameOver
           ? "GAME OVER"
-          : `Round ${props.gameState.round}`}
+          : `Round ${props.gameState.round} - ${
+              props.gameState.players[props.gameState.whoseTurn].name
+            }'s turn`}
       </h2>
       <div className="tiles-container">
         <div>

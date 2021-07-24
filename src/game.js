@@ -578,7 +578,11 @@ export default class Game {
         resolve(results);
       });
     } else {
-      this.whoseTurn = this.round++ % this.players.length;
+      this.whoseTurn++;
+      if (this.whoseTurn > this.players.length - 1) {
+        this.round++;
+        this.whoseTurn = 0;
+      }
       return new Promise((resolve) => {
         resolve(this.getState());
       });
