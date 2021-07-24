@@ -52,13 +52,23 @@ export default class Game {
   }
 
   canAfford(player, cost, wallet) {
-    // TODO: handle gray tokens appropriately
+    let graysLeft = wallet ? wallet.gray : player.tokens.gray;
     return !Object.keys(cost).some((color) => {
       if (wallet) {
-        return cost[color] > wallet[color];
+        if (cost[color] > wallet[color]) {
+          return false;
+        } else {
+          // TODO: handle gray tokens appropriately
+          // if graysLeft > (still needed after bonuses and token), reduce graysLeft and return true
+          // if not, return false;
+        }
       } else {
         const bonusesOfColor = this.getBonuses(player)[color] || 0;
-        return cost[color] > player.tokens[color] + bonusesOfColor;
+        if (cost[color] > player.tokens[color] + bonusesOfColor) {
+          return false;
+        } else {
+          // TODO: handle gray tokens appropriately (same as above)
+        }
       }
     });
   }
