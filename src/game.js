@@ -231,7 +231,19 @@ export default class Game {
       }
     }
 
-    // TODO: +3 points for each locations tile owned in afterState that was not owned before
+    const afterWallet = Object.assign(
+      {},
+      afterState.tokens,
+      this.getBonuses(player, afterState.recruits)
+    );
+
+    this.locations
+      .filter((l) => !l.owner)
+      .forEach((location) => {
+        if (this.canAfford(player, location.cost, afterWallet)) {
+          score += 3;
+        }
+      });
 
     if (
       !colors.every(
@@ -288,11 +300,6 @@ export default class Game {
       }
     }
 
-    const afterWallet = Object.assign(
-      {},
-      afterState.tokens,
-      this.getBonuses(player, afterState.recruits)
-    );
     let affordaScore = 0;
 
     this.freeAgents.forEach((row, rowIndex) => {
@@ -328,9 +335,30 @@ export default class Game {
         ) {
           affordaScore += agentScore;
         } else {
-          affordaScore += agentScore * 0.2824858757;
-          // TODO: replace 0.2824858757 value based on how *much* closer they are to affording the card
-          // check out how closerToTimeStoneScore is calculated
+          const afterBonuses = this.getBonuses(player, afterState.recruits);
+          const currentBonuses = this.getBonuses(player);
+          let afterPurchasingPower = 0;
+          let currentPurchasingPower = 0;
+          Object.keys(card.cost).forEach((color) => {
+            const afterBonus = afterBonuses[color];
+            const afterNeeded = card.cost[color] - afterBonus;
+            const currentBonus = currentBonuses[color];
+            const currentNeeded = card.cost[color] - currentBonus;
+            afterPurchasingPower +=
+              Math.min(afterBonus, card.cost[color]) +
+              (afterNeeded > 0
+                ? Math.min(afterState.tokens[color], afterNeeded)
+                : 0);
+            currentPurchasingPower +=
+              Math.min(currentBonus, card.cost[color]) +
+              (currentNeeded > 0
+                ? Math.min(afterState.tokens[color], currentNeeded)
+                : 0);
+          });
+          affordaScore +=
+            agentScore *
+            ((afterPurchasingPower - currentPurchasingPower) /
+              Object.values(card.cost).reduce((s, c) => s + c, 0));
         }
       });
     });
