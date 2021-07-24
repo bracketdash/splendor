@@ -62,6 +62,10 @@ export default class Game {
     });
   }
 
+  getAvengersTags(recruits) {
+    return recruits.reduce((t, r) => t + r.avengersTags, 0);
+  }
+
   getBonuses(player, recruits) {
     return (recruits || player.recruits).reduce((bonuses, cc) => {
       const bonus = cc.bonus;
@@ -214,6 +218,21 @@ export default class Game {
       afterState.recruits.reduce((p, r) => p + r.points, 0) -
       player.recruits.reduce((p, r) => p + r.points, 0);
 
+    if (this.avengersTileOwner !== player) {
+      if (this.avengersTileOwner) {
+        if (
+          this.getAvengersTags(afterState.recruits) >
+          this.getAvengersTags(this.avengersTileOwner.recruits)
+        ) {
+          score += 3;
+        }
+      } else if (this.getAvengersTags(afterState.recruits) > 2) {
+        score += 3;
+      }
+    }
+
+    // TODO: +3 points for each locations tile owned in afterState that was not owned before
+
     if (
       !colors.every(
         (c) => !!player.recruits.filter((cc) => cc.bonus === c).length
@@ -222,7 +241,7 @@ export default class Game {
         (c) => !!afterState.recruits.filter((cc) => cc.bonus === c).length
       )
     ) {
-      score += 1;
+      score += 2;
     } else if (
       !player.recruits.some(
         (r) =>
@@ -234,7 +253,7 @@ export default class Game {
 
     if (!player.recruits.some(({ level }) => level === 3)) {
       if (afterState.recruits.some(({ level }) => level === 3)) {
-        score += 1;
+        score += 5;
       } else {
         const afterBonuses = this.getBonuses(player, afterState.recruits);
         const currentBonuses = this.getBonuses(player);
@@ -265,7 +284,7 @@ export default class Game {
             (afterPurchasingPower - currentPurchasingPower) /
             Object.values(card.cost).reduce((s, c) => s + c, 0);
         });
-        score += closerToTimeStoneScore * 3.88;
+        score += closerToTimeStoneScore * 4;
       }
     }
 
@@ -284,16 +303,25 @@ export default class Game {
         ) {
           return;
         }
-        let agentScore = freeAgent.points;
+        let agentScore = freeAgent.points + freeAgent.avengersTags;
         if (!afterState.recruits.some((c) => freeAgent.bonus === c.bonus)) {
-          agentScore += 1;
+          agentScore += 2;
         }
         if (
           freeAgent.level === 3 &&
           !afterState.recruits.some((c) => c.level === 3)
         ) {
-          agentScore += 1;
+          agentScore += 3;
         }
+        this.locations
+          .filter((l) => !l.owner)
+          .forEach((location) => {
+            const afterWalletPlusBonus = Object.defaults({}, afterWallet);
+            afterWalletPlusBonus[freeAgent.bonus] += 1;
+            if (this.canAfford(player, location.cost, afterWalletPlusBonus)) {
+              agentScore += 2;
+            }
+          });
         if (
           !this.canAfford(player, freeAgent.cost) &&
           this.canAfford(player, freeAgent.cost, afterWallet)
@@ -372,12 +400,9 @@ export default class Game {
         currPlayer.tokens[color]--;
       });
     }
-    const getAvengersTags = (player) => {
-      return player.recruits.reduce((t, r) => t + r.avengersTags, 0);
-    };
-    if (getAvengersTags(currPlayer) > 2) {
+    if (this.getAvengersTags(currPlayer.recruits) > 2) {
       const playerTags = this.players
-        .map((p) => ({ p, tags: getAvengersTags(p) }))
+        .map((p) => ({ p, tags: this.getAvengersTags(p.recruits) }))
         .filter((pt) => pt.tags > 2)
         .sort((a, b) => (a.tags > b.tags ? -1 : 1));
       if (playerTags.length > 1 && playerTags[0] > playerTags[1]) {
