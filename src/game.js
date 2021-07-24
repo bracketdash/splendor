@@ -396,6 +396,7 @@ export default class Game {
   }
 
   makeMove(decision) {
+    // TODO: this.bankChips aren't being updated
     const currPlayer = this.players[this.whoseTurn];
     const row =
       decision.level && typeof decision.level === "number"
