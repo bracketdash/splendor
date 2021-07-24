@@ -55,19 +55,27 @@ export default class Game {
     let graysLeft = wallet ? wallet.gray : player.tokens.gray;
     return !Object.keys(cost).some((color) => {
       if (wallet) {
-        if (cost[color] > wallet[color]) {
-          return false;
+        if (cost[color] <= wallet[color]) {
+          return true;
+        } else if (graysLeft >= 0) {
+          // TODO: if graysLeft > (still needed after bonuses and token)
+          // TODO: reduce graysLeft and return true
+          graysLeft -= 0;
+          return true;
         } else {
-          // TODO: handle gray tokens appropriately
-          // if graysLeft > (still needed after bonuses and token), reduce graysLeft and return true
-          // if not, return false;
+          return false;
         }
       } else {
         const bonusesOfColor = this.getBonuses(player)[color] || 0;
-        if (cost[color] > player.tokens[color] + bonusesOfColor) {
-          return false;
+        if (cost[color] <= player.tokens[color] + bonusesOfColor) {
+          return true;
+        } else if (graysLeft >= 0) {
+          // TODO: if graysLeft > (still needed after bonuses and token)
+          // TODO: reduce graysLeft and return true
+          graysLeft -= 0;
+          return true;
         } else {
-          // TODO: handle gray tokens appropriately (same as above)
+          return false;
         }
       }
     });
