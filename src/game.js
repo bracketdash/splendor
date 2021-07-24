@@ -57,10 +57,8 @@ export default class Game {
       if (wallet) {
         if (cost[color] <= wallet[color]) {
           return true;
-        } else if (graysLeft >= 0) {
-          // TODO: if graysLeft > (still needed after bonuses and token)
-          // TODO: reduce graysLeft and return true
-          graysLeft -= 0;
+        } else if (graysLeft >= cost[color] - wallet[color]) {
+          graysLeft -= cost[color] - wallet[color];
           return true;
         } else {
           return false;
@@ -69,10 +67,11 @@ export default class Game {
         const bonusesOfColor = this.getBonuses(player)[color] || 0;
         if (cost[color] <= player.tokens[color] + bonusesOfColor) {
           return true;
-        } else if (graysLeft >= 0) {
-          // TODO: if graysLeft > (still needed after bonuses and token)
-          // TODO: reduce graysLeft and return true
-          graysLeft -= 0;
+        } else if (
+          graysLeft >=
+          cost[color] - (player.tokens[color] + bonusesOfColor)
+        ) {
+          graysLeft -= cost[color] - (player.tokens[color] + bonusesOfColor);
           return true;
         } else {
           return false;
