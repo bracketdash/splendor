@@ -80,7 +80,7 @@ export default function PlayerArea(props) {
                           : ""}
                         {option.location ? ` + ${option.location.name}` : ""}
                       </div>
-                      <div className="ai-score">{option.score.toFixed(3)}</div>
+                      <div className="ai-score">{option.score.toFixed(2)}</div>
                     </button>
                   );
                 })}

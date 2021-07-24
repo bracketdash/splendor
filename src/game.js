@@ -52,6 +52,7 @@ export default class Game {
   }
 
   canAfford(player, cost, wallet) {
+    // TODO: broken
     let graysLeft = wallet ? wallet.gray : player.tokens.gray;
     return !Object.keys(cost).some((color) => {
       if (wallet) {
@@ -409,7 +410,7 @@ export default class Game {
     score += affordaScore;
 
     if (option.type === "recruit") {
-      score *= 16;
+      // TODO?: score *= 16;
     }
 
     return score;
