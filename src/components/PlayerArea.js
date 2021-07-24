@@ -37,41 +37,62 @@ export default function PlayerArea(props) {
           ? "Select A Move"
           : ""}
       </h4>
-      {props.gameState.players[props.gameState.whoseTurn] === props.player ? (
-        props.gameState.options.map((option, i) => {
-          return (
-            <button
-              className={option.tokens ? "has-tokens" : ""}
-              key={i}
-              onClick={() => props.onMove(option, props.player)}
-            >
-              <div className="action">
-                {option.tokens
-                  ? option.tokens.map((token, ii) => (
-                      <span className={`option-token ${token}`} key={ii}></span>
-                    ))
-                  : ""}
-                {option.type === "recruit" || option.type === "reserve"
-                  ? `${option.type
-                      .substring(0, 1)
-                      .toUpperCase()}${option.type.substring(1)} ${
-                      (option.level === "reserves"
-                        ? props.player.reserves[option.index]
-                        : props.gameState.freeAgents[option.level - 1][
-                            option.index
-                          ]
-                      ).name
-                    }`
-                  : ""}
-                {option.location ? ` + ${option.location.name}` : ""}
+      <div className="option-columns">
+        {props.gameState.players[props.gameState.whoseTurn] === props.player ? (
+          Object.keys(props.gameState.options).map((optGroup) => {
+            if (!props.gameState.options[optGroup].length) {
+              return <div></div>;
+            }
+            return (
+              <div className="option-column" key={optGroup}>
+                <h3>
+                  {optGroup === "chips"
+                    ? "Take Chips"
+                    : `${optGroup
+                        .substring(0, 1)
+                        .toUpperCase()}${optGroup.substring(1)}`}
+                </h3>
+                {props.gameState.options[optGroup].map((option, i) => {
+                  return (
+                    <button
+                      className={option.tokens ? "has-tokens" : ""}
+                      key={i}
+                      onClick={() => props.onMove(option, props.player)}
+                    >
+                      <div className="action">
+                        {option.tokens
+                          ? option.tokens.map((token, ii) => (
+                              <span
+                                className={`option-token ${token}`}
+                                key={ii}
+                              ></span>
+                            ))
+                          : ""}
+                        {option.type === "recruit" || option.type === "reserve"
+                          ? `${option.type
+                              .substring(0, 1)
+                              .toUpperCase()}${option.type.substring(1)} ${
+                              (option.level === "reserves"
+                                ? props.player.reserves[option.index]
+                                : props.gameState.freeAgents[option.level - 1][
+                                    option.index
+                                  ]
+                              ).name
+                            }`
+                          : ""}
+                        {option.location ? ` + ${option.location.name}` : ""}
+                      </div>
+                      <div className="ai-score">{option.score.toFixed(3)}</div>
+                    </button>
+                  );
+                })}
               </div>
-              <div className="ai-score">{option.score.toFixed(3)}</div>
-            </button>
-          );
-        })
-      ) : (
-        <p>&nbsp;</p>
-      )}
+            );
+          })
+        ) : (
+          <p>&nbsp;</p>
+        )}
+      </div>
     </div>
   );
 }

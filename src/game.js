@@ -85,7 +85,6 @@ export default class Game {
   }
 
   getOptions() {
-    // TODO: BUG - getOptions is ignoring this.bankChips - they shouldn't be allowed to go negative
     const allOptions = [];
     const currPlayer = this.players[this.whoseTurn];
     const bonuses = this.getBonuses(currPlayer);
@@ -93,7 +92,9 @@ export default class Game {
       (a, b) => a + b,
       0
     );
+
     if (numTokens < 10) {
+      // TODO: BUG - getOptions is ignoring this.bankChips - they shouldn't be allowed to go negative
       const threeDiffLoop = (n, src, combo) => {
         if (n === 0) {
           if (combo.length && numTokens < 11 - combo.length) {
@@ -118,6 +119,7 @@ export default class Game {
         }
       });
     }
+
     this.freeAgents.forEach((row, rowIndex) => {
       row.forEach((characterCard, index) => {
         if (characterCard !== null) {
@@ -383,7 +385,6 @@ export default class Game {
   }
 
   getState(skipOptions) {
-    // TODO: present move options in ui better - flexbox columns - "take tokens", "recruit", "reserve"
     const players = this.players.map((p) => {
       p.points = this.getPoints(p);
       return p;
@@ -400,7 +401,19 @@ export default class Game {
       whoseTurn: this.whoseTurn,
     };
     if (!skipOptions) {
-      state.options = this.getOptions();
+      state.options = this.getOptions().reduce(
+        (obj, opt) => {
+          const key =
+            opt.type === "3diff" || opt.type === "2same" ? "chips" : opt.type;
+          obj[key].push(opt);
+          return obj;
+        },
+        {
+          chips: [],
+          recruit: [],
+          reserve: [],
+        }
+      );
     }
     return state;
   }
