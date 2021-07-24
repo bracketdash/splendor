@@ -94,11 +94,20 @@ export default class Game {
     );
 
     if (numTokens < 10) {
-      // TODO: BUG - getOptions is ignoring this.bankChips - they shouldn't be allowed to go negative
       const threeDiffLoop = (n, src, combo) => {
         if (n === 0) {
           if (combo.length && numTokens < 11 - combo.length) {
-            allOptions.push({ type: "3diff", tokens: combo });
+            let bankCanAfford = true;
+            combo.reduce((obj, color) => {
+              obj[color]--;
+              if (obj[color] < 0) {
+                bankCanAfford = false;
+              }
+              return obj;
+            }, Object.assign({}, this.bankChips));
+            if (bankCanAfford) {
+              allOptions.push({ type: "3diff", tokens: combo });
+            }
           }
           return;
         }
