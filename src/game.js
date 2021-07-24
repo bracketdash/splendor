@@ -396,7 +396,6 @@ export default class Game {
   }
 
   makeMove(decision) {
-    // TODO: this.bankChips aren't being updated
     const currPlayer = this.players[this.whoseTurn];
     const row =
       decision.level && typeof decision.level === "number"
@@ -426,12 +425,14 @@ export default class Game {
     }
     if (decision.tokens && decision.tokens.length) {
       decision.tokens.forEach((color) => {
+        this.bankChips[color]--;
         currPlayer.tokens[color]++;
       });
     }
     if (decision.tokensToRemove && decision.tokensToRemove.length) {
       decision.tokensToRemove.forEach((color) => {
         currPlayer.tokens[color]--;
+        this.bankChips[color]++;
       });
     }
     if (this.getAvengersTags(currPlayer.recruits) > 2) {
