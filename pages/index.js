@@ -12,11 +12,9 @@ export default function Home() {
   const [game, setGame] = useState(null);
 
   function startGame(playerData) {
-    const playerNames = playerData
-      .filter((p) => !p.sittingOut)
-      .map(({ name }) => name);
+    const players = playerData.filter((p) => !p.sittingOut);
     setConfiguringPlayers(false);
-    setGame(new Game(playerNames));
+    setGame(new Game(players));
   }
 
   return (

@@ -225,8 +225,6 @@ main h3 {
 
 .player-config-row input[type="checkbox"] {
   margin-right: 5px;
-  position: relative;
-  top: -2px;
 }
 
 .player-config-container button {

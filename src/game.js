@@ -12,7 +12,7 @@ function getShuffled(items) {
 }
 
 export default class Game {
-  constructor(playerNames) {
+  constructor(players) {
     const numPlayersToTokenMap = [null, null, 4, 5, 7];
     const shuffledLocations = getShuffled(locationTiles);
     this.avengersTileOwner = null;
@@ -26,16 +26,17 @@ export default class Game {
       getNullArray(4).map(() => this.decks[1].pop()),
       getNullArray(4).map(() => this.decks[2].pop()),
     ];
-    this.locations = getNullArray(playerNames.length).map(() => {
+    this.locations = getNullArray(players.length).map(() => {
       return shuffledLocations.pop();
     });
-    this.players = playerNames.map((name) => {
+    this.players = players.map(({ computer, name }) => {
       const tokens = colors.reduce((tokens, color) => {
         tokens[color] = 0;
         return tokens;
       }, {});
       tokens.gray = 0;
       return {
+        computer,
         name,
         recruits: [],
         reserves: [],
@@ -45,7 +46,7 @@ export default class Game {
     this.round = 1;
     this.whoseTurn = 0;
     this.bankChips = colors.reduce((chips, color) => {
-      chips[color] = numPlayersToTokenMap[playerNames.length];
+      chips[color] = numPlayersToTokenMap[players.length];
       return chips;
     }, {});
     this.bankChips.gray = 5;
@@ -211,7 +212,6 @@ export default class Game {
       option.score = this.getOptionScore(currPlayer, option);
       return option;
     });
-    scoredOptions.sort((a, b) => (a.score > b.score ? -1 : 1));
     return scoredOptions;
   }
 

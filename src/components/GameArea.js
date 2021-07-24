@@ -12,7 +12,17 @@ export default function GameArea(props) {
 
   function makeMove(selectedOption, player) {
     props.game.makeMove(selectedOption, player).then((newGameState) => {
-      setGameState(newGameState);
+      const newPlayer = newGameState.players[newGameState.whoseTurn].computer;
+      if (newPlayer.computer) {
+        makeMove(
+          newGameState.options
+            .reduce((opts, set) => opts.concat(set), [])
+            .sort((a, b) => (a.score > b.score ? -1 : 1))[0],
+          newPlayer
+        );
+      } else {
+        setGameState(newGameState);
+      }
     });
   }
 
