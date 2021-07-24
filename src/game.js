@@ -368,9 +368,6 @@ export default class Game {
       });
     });
 
-    console.log(option);
-    console.log(`affordaScore: ${affordaScore}`);
-
     score += affordaScore;
 
     return score;
