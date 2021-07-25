@@ -17,26 +17,39 @@ export default function PlayerArea(props) {
       {Object.keys(props.player.tokens).map((color, i) => (
         <Token key={i} color={color} num={props.player.tokens[color]} />
       ))}
-      <h4>{props.player.recruits.length > 0 ? "Recruits" : ""}</h4>
-      <div className="cards-container">
-        {props.player.recruits.map((card, i) => (
-          <Card card={card} key={i} />
-        ))}
-      </div>
-      <h4>{props.player.reserves.length > 0 ? "Reserves" : ""}</h4>
-      <div className="cards-container">
-        {props.player.reserves.map((card, i) => (
-          <Card card={card} key={i} />
-        ))}
-      </div>
-      <h4>
-        {props.gameState.players[props.gameState.whoseTurn] === props.player
-          ? "Select A Move"
-          : ""}
-      </h4>
-      <div className="option-columns">
-        {props.gameState.players[props.gameState.whoseTurn] === props.player ? (
-          Object.keys(props.gameState.options).map((optGroup) => {
+      {props.player.recruits.length > 0 ? (
+        <div>
+          <h4>Recruits</h4>
+          <div className="cards-container">
+            {props.player.recruits.map((card, i) => (
+              <Card card={card} key={i} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+      {props.player.reserves.length > 0 ? (
+        <div>
+          <h4>Reserves</h4>
+          <div className="cards-container">
+            {props.player.reserves.map((card, i) => (
+              <Card card={card} key={i} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
+      {props.gameState.players[props.gameState.whoseTurn] === props.player &&
+      !props.gameState.gameOver ? (
+        <h2>Select A Move</h2>
+      ) : (
+        ""
+      )}
+      {props.gameState.players[props.gameState.whoseTurn] === props.player ? (
+        <div className="option-columns">
+          {Object.keys(props.gameState.options).map((optGroup) => {
             if (!props.gameState.options[optGroup].length) {
               return <div key={optGroup}></div>;
             }
@@ -93,11 +106,11 @@ export default function PlayerArea(props) {
                 })}
               </div>
             );
-          })
-        ) : (
-          <p>&nbsp;</p>
-        )}
-      </div>
+          })}
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
