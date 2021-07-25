@@ -1,38 +1,11 @@
 import characterCards from "./data/characterCards.js";
 import locationTiles from "./data/locationTiles.js";
 
-const colors = ["blue", "orange", "purple", "red", "yellow"];
+import canAfford from "./util/canAfford.js";
+import getBonuses from "./util/getBonuses.js";
+import getPPD from "./util/getPPD.js";
 
-function canAfford(player, cost, wallet) {
-  let graysLeft = wallet ? wallet.gray : player.tokens.gray;
-  return !Object.keys(cost).some((color) => {
-    if (wallet) {
-      if (cost[color] > wallet[color]) {
-        if (graysLeft >= cost[color] - wallet[color]) {
-          graysLeft -= cost[color] - wallet[color];
-          return false;
-        }
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      const bonusesOfColor = getBonuses(player)[color] || 0;
-      if (cost[color] > player.tokens[color] + bonusesOfColor) {
-        if (
-          graysLeft >=
-          cost[color] - (player.tokens[color] + bonusesOfColor)
-        ) {
-          graysLeft -= cost[color] - (player.tokens[color] + bonusesOfColor);
-          return false;
-        }
-        return true;
-      } else {
-        return false;
-      }
-    }
-  });
-}
+const colors = ["blue", "orange", "purple", "red", "yellow"];
 
 function count(n) {
   return Array(n).fill(null);
@@ -40,24 +13,6 @@ function count(n) {
 
 function getAvengersTags(recruits) {
   return recruits.reduce((t, r) => t + r.avengersTags, 0);
-}
-
-function getBonuses(player, recruits) {
-  return Object.assign(
-    colors.reduce((tokens, color) => {
-      tokens[color] = 0;
-      return tokens;
-    }, {}),
-    (recruits || player.recruits).reduce((bonuses, cc) => {
-      const bonus = cc.bonus;
-      if (!bonuses[bonus]) {
-        bonuses[bonus] = 1;
-      } else {
-        bonuses[bonus]++;
-      }
-      return bonuses;
-    }, {})
-  );
 }
 
 function getShuffled(items) {
@@ -323,56 +278,14 @@ export default class Game {
           if (!card) {
             return;
           }
-          // TODO: DRY this up with below
-          let afterPurchasingPower = 0;
-          let currentPurchasingPower = 0;
-          Object.keys(card.cost).forEach((color) => {
-            const afterBonus = afterBonuses[color];
-            const afterTokens = card.cost[color] - afterBonus;
-            const currentBonus = currentBonuses[color];
-            const currentTokens = card.cost[color] - currentBonus;
-            afterPurchasingPower += Math.min(afterBonus, card.cost[color]);
-            if (afterTokens > 0) {
-              const afterGrays = Math.min(
-                afterState.tokens[color],
-                afterTokens
-              );
-              afterPurchasingPower += afterGrays;
-              if (
-                card.cost[color] -
-                  (Math.min(afterBonus, card.cost[color]) + afterGrays) >
-                0
-              ) {
-                afterPurchasingPower += Math.min(
-                  card.cost[color] -
-                    (Math.min(afterBonus, card.cost[color]) + afterGrays),
-                  afterState.tokens.gray
-                );
-              }
-            }
-            currentPurchasingPower += Math.min(currentBonus, card.cost[color]);
-            if (currentTokens > 0) {
-              const currentGrays = Math.min(
-                player.tokens[color],
-                currentTokens
-              );
-              currentPurchasingPower += currentGrays;
-              if (
-                card.cost[color] -
-                  (Math.min(currentBonus, card.cost[color]) + currentGrays) >
-                0
-              ) {
-                afterPurchasingPower += Math.min(
-                  card.cost[color] -
-                    (Math.min(currentBonus, card.cost[color]) + currentGrays),
-                  player.tokens.gray
-                );
-              }
-            }
-          });
           closerToTimeStoneScore +=
-            (afterPurchasingPower - currentPurchasingPower) /
-            Object.values(card.cost).reduce((s, c) => s + c, 0);
+            getPPD({
+              afterBonuses,
+              afterState,
+              card,
+              currentBonuses,
+              player,
+            }) / Object.values(card.cost).reduce((s, c) => s + c, 0);
         });
         if (closerToTimeStoneScore > 0) {
           score += closerToTimeStoneScore * 4;
@@ -414,61 +327,14 @@ export default class Game {
         ) {
           affordaScore += agentScore;
         } else {
-          // TODO: DRY this up with above
-          let afterPurchasingPower = 0;
-          let currentPurchasingPower = 0;
-          Object.keys(freeAgent.cost).forEach((color) => {
-            const afterBonus = afterBonuses[color];
-            const afterTokens = freeAgent.cost[color] - afterBonus;
-            const currentBonus = currentBonuses[color];
-            const currentTokens = freeAgent.cost[color] - currentBonus;
-            afterPurchasingPower += Math.min(afterBonus, freeAgent.cost[color]);
-            if (afterTokens > 0) {
-              const afterGrays = Math.min(
-                afterState.tokens[color],
-                afterTokens
-              );
-              afterPurchasingPower += afterGrays;
-              if (
-                freeAgent.cost[color] -
-                  (Math.min(afterBonus, freeAgent.cost[color]) + afterGrays) >
-                0
-              ) {
-                afterPurchasingPower += Math.min(
-                  freeAgent.cost[color] -
-                    (Math.min(afterBonus, freeAgent.cost[color]) + afterGrays),
-                  afterState.tokens.gray
-                );
-              }
-            }
-            currentPurchasingPower += Math.min(
-              currentBonus,
-              freeAgent.cost[color]
-            );
-            if (currentTokens > 0) {
-              const currentGrays = Math.min(
-                player.tokens[color],
-                currentTokens
-              );
-              currentPurchasingPower += currentGrays;
-              if (
-                freeAgent.cost[color] -
-                  (Math.min(currentBonus, freeAgent.cost[color]) +
-                    currentGrays) >
-                0
-              ) {
-                afterPurchasingPower += Math.min(
-                  freeAgent.cost[color] -
-                    (Math.min(currentBonus, freeAgent.cost[color]) +
-                      currentGrays),
-                  player.tokens.gray
-                );
-              }
-            }
-          });
           const ratio =
-            (afterPurchasingPower - currentPurchasingPower) /
-            Object.values(freeAgent.cost).reduce((s, c) => s + c, 0);
+            getPPD({
+              afterBonuses,
+              afterState,
+              card: freeAgent,
+              currentBonuses,
+              player,
+            }) / Object.values(freeAgent.cost).reduce((s, c) => s + c, 0);
           if (ratio > 0) {
             affordaScore += agentScore * ratio;
           }
