@@ -35,7 +35,7 @@ export default class Game {
     this.locations = count(players.length).map(() => {
       return shuffledLocations.pop();
     });
-    this.players = players.map(({ computer, name }) => {
+    this.players = players.map(({ computer, name, weights }) => {
       const tokens = [...colors, "gray"].reduce((tokens, color) => {
         tokens[color] = 0;
         return tokens;
@@ -46,6 +46,7 @@ export default class Game {
         recruits: [],
         reserves: [],
         tokens,
+        weights,
       };
     });
     this.round = 1;
