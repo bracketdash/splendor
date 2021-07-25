@@ -101,6 +101,7 @@ export default class Game {
           allOptions.push({ type: "2same", tokens: [color, color] });
         }
       });
+      allOptions.sort((a, b) => (a.tokens.length > b.tokens.length ? -1 : 1));
     }
 
     this.freeAgents.forEach((row, rowIndex) => {
