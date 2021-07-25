@@ -235,7 +235,6 @@ export default class Game {
   }
 
   getOptionScore(player, option) {
-    // TODO: DRY this shit up
     const afterState = {
       recruits: [...player.recruits],
       tokens: Object.assign({}, player.tokens),
@@ -324,6 +323,7 @@ export default class Game {
           if (!card) {
             return;
           }
+          // TODO: DRY this up with below
           let afterPurchasingPower = 0;
           let currentPurchasingPower = 0;
           Object.keys(card.cost).forEach((color) => {
@@ -414,6 +414,7 @@ export default class Game {
         ) {
           affordaScore += agentScore;
         } else {
+          // TODO: DRY this up with above
           let afterPurchasingPower = 0;
           let currentPurchasingPower = 0;
           Object.keys(freeAgent.cost).forEach((color) => {
