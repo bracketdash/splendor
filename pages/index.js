@@ -13,25 +13,26 @@ export default function Home() {
   const [gameState, setGameState] = useState(null);
 
   function makeMove(selectedOption, player, firstGame) {
-    const game = firstGame || game;
-    game.makeMove(selectedOption, player, firstGame).then((newGameState) => {
-      if (newGameState.gameOver) {
-        setGameState(newGameState);
-        return;
-      }
-      const newPlayer = newGameState.players[newGameState.whoseTurn];
-      if (newPlayer.computer) {
-        makeMove(
-          Object.keys(newGameState.options)
-            .reduce((opts, key) => opts.concat(newGameState.options[key]), [])
-            .sort((a, b) => (a.score > b.score ? -1 : 1))[0],
-          newPlayer,
-          firstGame
-        );
-      } else {
-        setGameState(newGameState);
-      }
-    });
+    (firstGame || game)
+      .makeMove(selectedOption, player, firstGame)
+      .then((newGameState) => {
+        if (newGameState.gameOver) {
+          setGameState(newGameState);
+          return;
+        }
+        const newPlayer = newGameState.players[newGameState.whoseTurn];
+        if (newPlayer.computer) {
+          makeMove(
+            Object.keys(newGameState.options)
+              .reduce((opts, key) => opts.concat(newGameState.options[key]), [])
+              .sort((a, b) => (a.score > b.score ? -1 : 1))[0],
+            newPlayer,
+            firstGame
+          );
+        } else {
+          setGameState(newGameState);
+        }
+      });
   }
 
   function startGame(playerData) {
