@@ -3,8 +3,61 @@ import locationTiles from "./data/locationTiles.js";
 
 const colors = ["blue", "orange", "purple", "red", "yellow"];
 
-function getNullArray(n) {
+function canAfford(player, cost, wallet) {
+  let graysLeft = wallet ? wallet.gray : player.tokens.gray;
+  return !Object.keys(cost).some((color) => {
+    if (wallet) {
+      if (cost[color] > wallet[color]) {
+        if (graysLeft >= cost[color] - wallet[color]) {
+          graysLeft -= cost[color] - wallet[color];
+          return false;
+        }
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      const bonusesOfColor = getBonuses(player)[color] || 0;
+      if (cost[color] > player.tokens[color] + bonusesOfColor) {
+        if (
+          graysLeft >=
+          cost[color] - (player.tokens[color] + bonusesOfColor)
+        ) {
+          graysLeft -= cost[color] - (player.tokens[color] + bonusesOfColor);
+          return false;
+        }
+        return true;
+      } else {
+        return false;
+      }
+    }
+  });
+}
+
+function count(n) {
   return Array(n).fill(null);
+}
+
+function getAvengersTags(recruits) {
+  return recruits.reduce((t, r) => t + r.avengersTags, 0);
+}
+
+function getBonuses(player, recruits) {
+  return Object.assign(
+    colors.reduce((tokens, color) => {
+      tokens[color] = 0;
+      return tokens;
+    }, {}),
+    (recruits || player.recruits).reduce((bonuses, cc) => {
+      const bonus = cc.bonus;
+      if (!bonuses[bonus]) {
+        bonuses[bonus] = 1;
+      } else {
+        bonuses[bonus]++;
+      }
+      return bonuses;
+    }, {})
+  );
 }
 
 function getShuffled(items) {
@@ -16,25 +69,22 @@ export default class Game {
     const numPlayersToTokenMap = [null, null, 4, 5, 7];
     const shuffledLocations = getShuffled(locationTiles);
     this.avengersTileOwner = null;
-    this.decks = [
-      getShuffled(characterCards.filter((cc) => cc.level === 1)),
-      getShuffled(characterCards.filter((cc) => cc.level === 2)),
-      getShuffled(characterCards.filter((cc) => cc.level === 3)),
-    ];
-    this.freeAgents = [
-      getNullArray(4).map(() => this.decks[0].pop()),
-      getNullArray(4).map(() => this.decks[1].pop()),
-      getNullArray(4).map(() => this.decks[2].pop()),
-    ];
-    this.locations = getNullArray(players.length).map(() => {
+    this.decks = [];
+    this.freeAgents = [];
+    count(3).forEach((_, i) => {
+      this.decks.push(
+        getShuffled(characterCards.filter((cc) => cc.level === i + 1))
+      );
+      this.freeAgents.push(count(4).map(() => this.decks[i].pop()));
+    });
+    this.locations = count(players.length).map(() => {
       return shuffledLocations.pop();
     });
     this.players = players.map(({ computer, name }) => {
-      const tokens = colors.reduce((tokens, color) => {
+      const tokens = [...colors, "gray"].reduce((tokens, color) => {
         tokens[color] = 0;
         return tokens;
       }, {});
-      tokens.gray = 0;
       return {
         computer,
         name,
@@ -52,63 +102,10 @@ export default class Game {
     this.bankChips.gray = 5;
   }
 
-  canAfford(player, cost, wallet) {
-    let graysLeft = wallet ? wallet.gray : player.tokens.gray;
-    return !Object.keys(cost).some((color) => {
-      if (wallet) {
-        if (cost[color] > wallet[color]) {
-          if (graysLeft >= cost[color] - wallet[color]) {
-            graysLeft -= cost[color] - wallet[color];
-            return false;
-          }
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        const bonusesOfColor = this.getBonuses(player)[color] || 0;
-        if (cost[color] > player.tokens[color] + bonusesOfColor) {
-          if (
-            graysLeft >=
-            cost[color] - (player.tokens[color] + bonusesOfColor)
-          ) {
-            graysLeft -= cost[color] - (player.tokens[color] + bonusesOfColor);
-            return false;
-          }
-          return true;
-        } else {
-          return false;
-        }
-      }
-    });
-  }
-
-  getAvengersTags(recruits) {
-    return recruits.reduce((t, r) => t + r.avengersTags, 0);
-  }
-
-  getBonuses(player, recruits) {
-    return Object.assign(
-      colors.reduce((tokens, color) => {
-        tokens[color] = 0;
-        return tokens;
-      }, {}),
-      (recruits || player.recruits).reduce((bonuses, cc) => {
-        const bonus = cc.bonus;
-        if (!bonuses[bonus]) {
-          bonuses[bonus] = 1;
-        } else {
-          bonuses[bonus]++;
-        }
-        return bonuses;
-      }, {})
-    );
-  }
-
   getOptions() {
     const allOptions = [];
     const currPlayer = this.players[this.whoseTurn];
-    const bonuses = this.getBonuses(currPlayer);
+    const bonuses = getBonuses(currPlayer);
     const numTokens = Object.values(currPlayer.tokens).reduce(
       (a, b) => a + b,
       0
@@ -137,9 +134,9 @@ export default class Game {
         }
         return;
       };
-      threeDiffLoop(3, colors, []);
-      threeDiffLoop(2, colors, []);
-      threeDiffLoop(1, colors, []);
+      count(3).forEach((_, i) => {
+        threeDiffLoop(i + 1, colors, []);
+      });
       Object.keys(this.bankChips).forEach((color) => {
         if (color === "gray") {
           return;
@@ -165,20 +162,20 @@ export default class Game {
             }
             allOptions.push(reserveOption);
           }
-          if (this.canAfford(currPlayer, cost)) {
+          if (canAfford(currPlayer, cost)) {
             const tokensToRemove = Object.keys(cost).reduce((arr, color) => {
               const needed = cost[color] - bonuses[color];
               if (needed > 0) {
                 if (needed <= currPlayer.tokens[color]) {
-                  getNullArray(needed).forEach(() => {
+                  count(needed).forEach(() => {
                     arr.push(color);
                   });
                 } else {
                   const graysNeeded = needed - currPlayer.tokens[color];
-                  getNullArray(graysNeeded).forEach(() => {
+                  count(graysNeeded).forEach(() => {
                     arr.push("gray");
                   });
-                  getNullArray(needed - graysNeeded).forEach(() => {
+                  count(needed - graysNeeded).forEach(() => {
                     arr.push(color);
                   });
                 }
@@ -197,20 +194,20 @@ export default class Game {
     });
     currPlayer.reserves.forEach((characterCard, index) => {
       const cost = characterCard.cost;
-      if (this.canAfford(currPlayer, cost)) {
+      if (canAfford(currPlayer, cost)) {
         const tokensToRemove = Object.keys(cost).reduce((arr, color) => {
           const needed = cost[color] - bonuses[color];
           if (needed > 0) {
             if (needed <= currPlayer.tokens[color]) {
-              getNullArray(needed).forEach(() => {
+              count(needed).forEach(() => {
                 arr.push(color);
               });
             } else {
               const graysNeeded = needed - currPlayer.tokens[color];
-              getNullArray(graysNeeded).forEach(() => {
+              count(graysNeeded).forEach(() => {
                 arr.push("gray");
               });
-              getNullArray(needed - graysNeeded).forEach(() => {
+              count(needed - graysNeeded).forEach(() => {
                 arr.push(color);
               });
             }
@@ -237,20 +234,8 @@ export default class Game {
     return scoredOptions;
   }
 
-  getPoints(player) {
-    let points = player.recruits.reduce((p, r) => p + r.points, 0);
-    if (player === this.avengersTileOwner) {
-      points += 3;
-    }
-    this.locations.forEach((location) => {
-      if (player === location.owner) {
-        points += 3;
-      }
-    });
-    return points;
-  }
-
   getOptionScore(player, option) {
+    // TODO: DRY this shit up
     const afterState = {
       recruits: [...player.recruits],
       tokens: Object.assign({}, player.tokens),
@@ -285,12 +270,12 @@ export default class Game {
     if (this.avengersTileOwner !== player) {
       if (this.avengersTileOwner) {
         if (
-          this.getAvengersTags(afterState.recruits) >
-          this.getAvengersTags(this.avengersTileOwner.recruits)
+          getAvengersTags(afterState.recruits) >
+          getAvengersTags(this.avengersTileOwner.recruits)
         ) {
           score += 3;
         }
-      } else if (this.getAvengersTags(afterState.recruits) > 2) {
+      } else if (getAvengersTags(afterState.recruits) > 2) {
         score += 3;
       }
     }
@@ -298,13 +283,13 @@ export default class Game {
     const afterWallet = Object.assign(
       {},
       afterState.tokens,
-      this.getBonuses(player, afterState.recruits)
+      getBonuses(player, afterState.recruits)
     );
 
     this.locations
       .filter((l) => !l.owner)
       .forEach((location) => {
-        if (this.canAfford(player, location.cost, afterWallet)) {
+        if (canAfford(player, location.cost, afterWallet)) {
           score += 3;
         }
       });
@@ -327,8 +312,8 @@ export default class Game {
       score += 1;
     }
 
-    const afterBonuses = this.getBonuses(player, afterState.recruits);
-    const currentBonuses = this.getBonuses(player);
+    const afterBonuses = getBonuses(player, afterState.recruits);
+    const currentBonuses = getBonuses(player);
 
     if (!player.recruits.some(({ level }) => level === 3)) {
       if (afterState.recruits.some(({ level }) => level === 3)) {
@@ -419,13 +404,13 @@ export default class Game {
         this.locations
           .filter((l) => !l.owner)
           .forEach((location) => {
-            if (this.canAfford(player, location.cost, afterWalletPlusBonus)) {
+            if (canAfford(player, location.cost, afterWalletPlusBonus)) {
               agentScore += 2;
             }
           });
         if (
-          !this.canAfford(player, freeAgent.cost) &&
-          this.canAfford(player, freeAgent.cost, afterWalletPlusBonus)
+          !canAfford(player, freeAgent.cost) &&
+          canAfford(player, freeAgent.cost, afterWalletPlusBonus)
         ) {
           affordaScore += agentScore;
         } else {
@@ -498,6 +483,19 @@ export default class Game {
     }
 
     return score;
+  }
+
+  getPoints(player) {
+    let points = player.recruits.reduce((p, r) => p + r.points, 0);
+    if (player === this.avengersTileOwner) {
+      points += 3;
+    }
+    this.locations.forEach((location) => {
+      if (player === location.owner) {
+        points += 3;
+      }
+    });
+    return points;
   }
 
   getState(skipOptions) {
@@ -574,9 +572,9 @@ export default class Game {
         this.bankChips[color]++;
       });
     }
-    if (this.getAvengersTags(currPlayer.recruits) > 2) {
+    if (getAvengersTags(currPlayer.recruits) > 2) {
       const playerTags = this.players
-        .map((p) => ({ p, tags: this.getAvengersTags(p.recruits) }))
+        .map((p) => ({ p, tags: getAvengersTags(p.recruits) }))
         .filter((pt) => pt.tags > 2)
         .sort((a, b) => (a.tags > b.tags ? -1 : 1));
       if (playerTags.length > 1 && playerTags[0] > playerTags[1]) {
@@ -588,7 +586,7 @@ export default class Game {
     this.locations.forEach((location) => {
       if (
         !location.owner &&
-        this.canAfford(currPlayer, location.cost, this.getBonuses(currPlayer))
+        canAfford(currPlayer, location.cost, getBonuses(currPlayer))
       ) {
         location.owner = currPlayer;
       }

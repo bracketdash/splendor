@@ -1,8 +1,6 @@
 import Card from "./Card.js";
 import Token from "./Token.js";
 
-const colors = ["gray", "yellow", "red", "orange", "blue", "purple"];
-
 export default function MiddleArea(props) {
   return (
     <div>
@@ -62,7 +60,7 @@ export default function MiddleArea(props) {
         );
       })}
       <div className="the-bank">
-        {colors.map((color, i) => (
+        {Object.keys(props.gameState.bankChips).map((color, i) => (
           <Token key={i} color={color} num={props.gameState.bankChips[color]} />
         ))}
       </div>

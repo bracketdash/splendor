@@ -1,8 +1,6 @@
 import Card from "./Card.js";
 import Token from "./Token.js";
 
-const colors = ["gray", "yellow", "red", "orange", "blue", "purple"];
-
 export default function PlayerArea(props) {
   return (
     <div
@@ -16,7 +14,7 @@ export default function PlayerArea(props) {
       <h2>
         {props.player.name} - {props.player.points} Points
       </h2>
-      {colors.map((color, i) => (
+      {Object.keys(props.player.tokens).map((color, i) => (
         <Token key={i} color={color} num={props.player.tokens[color]} />
       ))}
       <h4>{props.player.recruits.length > 0 ? "Recruits" : ""}</h4>
