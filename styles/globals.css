@@ -108,6 +108,11 @@ main h3 {
   padding: 5px;
 }
 
+.card.null-card {
+  background-color: #eee;
+  border-color: #ddd;
+}
+
 .card .card-banner {
   display: flex;
   margin: -6px;

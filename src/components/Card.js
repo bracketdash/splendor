@@ -1,4 +1,7 @@
 export default function Card(props) {
+  if (!props.card) {
+    return <div className="card null-card"></div>;
+  }
   return (
     <div className={`card ${props.card.bonus}`}>
       <div className="card-banner">

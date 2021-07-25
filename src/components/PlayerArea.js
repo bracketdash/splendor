@@ -7,7 +7,8 @@ export default function PlayerArea(props) {
   return (
     <div
       className={
-        props.gameState.players[props.gameState.whoseTurn] === props.player
+        props.gameState.players[props.gameState.whoseTurn] === props.player &&
+        !props.gameState.gameOver
           ? "player-area-container active-player"
           : "player-area-container"
       }
@@ -79,6 +80,14 @@ export default function PlayerArea(props) {
                             }`
                           : ""}
                         {option.location ? ` + ${option.location.name}` : ""}
+                        {option.tokensToRemove
+                          ? option.tokensToRemove.map((token, ii) => (
+                              <span
+                                className={`option-token ${token}`}
+                                key={ii}
+                              ></span>
+                            ))
+                          : ""}
                       </div>
                       <div className="ai-score">{option.score.toFixed(2)}</div>
                     </button>

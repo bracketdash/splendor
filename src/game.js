@@ -154,22 +154,34 @@ export default class Game {
       row.forEach((characterCard, index) => {
         if (characterCard !== null) {
           const cost = characterCard.cost;
-          const reserveOption = {
-            type: "reserve",
-            level: rowIndex + 1,
-            index,
-          };
-          if (this.bankChips.gray > 0) {
-            reserveOption.tokens = ["gray"];
+          if (currPlayer.reserves.length < 3) {
+            const reserveOption = {
+              type: "reserve",
+              level: rowIndex + 1,
+              index,
+            };
+            if (this.bankChips.gray > 0) {
+              reserveOption.tokens = ["gray"];
+            }
+            allOptions.push(reserveOption);
           }
-          allOptions.push(reserveOption);
           if (this.canAfford(currPlayer, cost)) {
             const tokensToRemove = Object.keys(cost).reduce((arr, color) => {
-              const needed = cost[color] - (bonuses[color] || 0);
+              const needed = cost[color] - bonuses[color];
               if (needed > 0) {
-                getNullArray(needed).forEach(() => {
-                  arr.push(color);
-                });
+                if (needed <= currPlayer.tokens[color]) {
+                  getNullArray(needed).forEach(() => {
+                    arr.push(color);
+                  });
+                } else {
+                  const graysNeeded = needed - currPlayer.tokens[color];
+                  getNullArray(graysNeeded).forEach(() => {
+                    arr.push("gray");
+                  });
+                  getNullArray(needed - graysNeeded).forEach(() => {
+                    arr.push(color);
+                  });
+                }
               }
               return arr;
             }, []);
@@ -187,11 +199,21 @@ export default class Game {
       const cost = characterCard.cost;
       if (this.canAfford(currPlayer, cost)) {
         const tokensToRemove = Object.keys(cost).reduce((arr, color) => {
-          const needed = cost[color] - (bonuses[color] || 0);
+          const needed = cost[color] - bonuses[color];
           if (needed > 0) {
-            getNullArray(needed).forEach(() => {
-              arr.push(color);
-            });
+            if (needed <= currPlayer.tokens[color]) {
+              getNullArray(needed).forEach(() => {
+                arr.push(color);
+              });
+            } else {
+              const graysNeeded = needed - currPlayer.tokens[color];
+              getNullArray(graysNeeded).forEach(() => {
+                arr.push("gray");
+              });
+              getNullArray(needed - graysNeeded).forEach(() => {
+                arr.push(color);
+              });
+            }
           }
           return arr;
         }, []);
@@ -235,7 +257,7 @@ export default class Game {
     };
     if (option.type === "recruit") {
       if (option.level === "reserves") {
-        afterState.recruits.push(this.reserves[option.index]);
+        afterState.recruits.push(player.reserves[option.index]);
       } else {
         afterState.recruits.push(
           this.freeAgents[option.level - 1][option.index]
