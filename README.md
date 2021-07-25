@@ -1,6 +1,6 @@
 # Splendorbot
 
-[Visit the live demo](https://TODO) or follow the below steps.
+[Visit the live demo](https://bracketdash.github.io/splendor/) or follow the below steps.
 
 Install some stuff:
 
