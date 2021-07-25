@@ -1,15 +1,18 @@
 # Splendorbot
 
-[Visit the live demo](https://bracketdash.github.io/splendor/) or follow the below steps.
+## UI
 
-Install some stuff:
+[Visit the live demo](https://bracketdash.github.io/splendor/), or:
 
 ```bash
 npm install
+npm run dev
 ```
 
-Run the development server:
+## Trainer
 
 ```bash
-npm run dev
+npm run modulize
+npm run trainer
+npm run demodulize
 ```

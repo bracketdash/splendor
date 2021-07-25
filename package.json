@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
+    "modulize": "node src/trainer/prep",
+    "trainer": "node src/trainer/trainer",
+    "demodulize": "node src/trainer/deprep",
     "build": "next build",
-    "export": "next export",
     "start": "next start",
-    "lint": "next lint",
-    "trainer": "node src/scripts/trainer"
+    "export": "next build && next export"
   },
   "dependencies": {
     "next": "11.0.1",
