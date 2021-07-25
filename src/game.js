@@ -228,10 +228,10 @@ export default class Game {
           getAvengersTags(afterState.recruits) >
           getAvengersTags(this.avengersTileOwner.recruits)
         ) {
-          score += 3;
+          score += player.weights ? player.weights[0] : 3;
         }
       } else if (getAvengersTags(afterState.recruits) > 2) {
-        score += 3;
+        score += player.weights ? player.weights[1] : 3;
       }
     }
 
@@ -245,7 +245,7 @@ export default class Game {
       .filter((l) => !l.owner)
       .forEach((location) => {
         if (canAfford(player, location.cost, afterWallet)) {
-          score += 3;
+          score += player.weights ? player.weights[2] : 3;
         }
       });
 
@@ -257,14 +257,14 @@ export default class Game {
         (c) => !!afterState.recruits.filter((cc) => cc.bonus === c).length
       )
     ) {
-      score += 2;
+      score += player.weights ? player.weights[3] : 2;
     } else if (
       !player.recruits.some(
         (r) =>
           r.bonus === afterState.recruits[afterState.recruits.length - 1].bonus
       )
     ) {
-      score += 1;
+      score += player.weights ? player.weights[4] : 1;
     }
 
     const afterBonuses = getBonuses(player, afterState.recruits);
@@ -272,7 +272,7 @@ export default class Game {
 
     if (!player.recruits.some(({ level }) => level === 3)) {
       if (afterState.recruits.some(({ level }) => level === 3)) {
-        score += 5;
+        score += player.weights ? player.weights[5] : 5;
       } else {
         let closerToTimeStoneScore = 0;
         this.freeAgents[2].forEach((card) => {
@@ -289,7 +289,8 @@ export default class Game {
             }) / Object.values(card.cost).reduce((s, c) => s + c, 0);
         });
         if (closerToTimeStoneScore > 0) {
-          score += closerToTimeStoneScore * 4;
+          score +=
+            closerToTimeStoneScore * (player.weights ? player.weights[6] : 4);
         }
       }
     }
@@ -305,13 +306,13 @@ export default class Game {
         }
         let agentScore = freeAgent.points + freeAgent.avengersTags;
         if (!afterState.recruits.some((c) => freeAgent.bonus === c.bonus)) {
-          agentScore += 2;
+          agentScore += player.weights ? player.weights[7] : 2;
         }
         if (
           freeAgent.level === 3 &&
           !afterState.recruits.some((c) => c.level === 3)
         ) {
-          agentScore += 3;
+          agentScore += player.weights ? player.weights[8] : 3;
         }
         const afterWalletPlusBonus = Object.assign({}, afterWallet);
         afterWalletPlusBonus[freeAgent.bonus] += 1;
@@ -319,7 +320,7 @@ export default class Game {
           .filter((l) => !l.owner)
           .forEach((location) => {
             if (canAfford(player, location.cost, afterWalletPlusBonus)) {
-              agentScore += 2;
+              agentScore += player.weights ? player.weights[9] : 2;
             }
           });
         if (
@@ -345,9 +346,9 @@ export default class Game {
     score += affordaScore;
 
     if (option.type === "recruit") {
-      score *= 8;
+      score *= player.weights ? player.weights[10] : 8;
     } else if (option.type === "reserve") {
-      score *= 0.5;
+      score *= player.weights ? player.weights[11] : 0.5;
     }
 
     return score;
