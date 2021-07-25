@@ -14,7 +14,7 @@ export default function Home() {
 
   function makeMove(selectedOption, player, firstGame) {
     const game = firstGame || game;
-    game.makeMove(selectedOption, player).then((newGameState) => {
+    game.makeMove(selectedOption, player, firstGame).then((newGameState) => {
       if (newGameState.gameOver) {
         setGameState(newGameState);
         return;
