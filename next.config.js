@@ -1,5 +1,4 @@
 module.exports = {
-  assetPrefix: "/splendor",
-  basePath: "/splendor",
+  assetPrefix: "/splendor/",
   reactStrictMode: true,
 };
