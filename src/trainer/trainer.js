@@ -25,7 +25,7 @@ const players = [1, 2].map((playerNum, playerIndex) => ({
   }),
 }));
 
-const bestStreak = false;
+const bestStreak = { streak: 0 };
 
 const weightIndexes = POSSIBLE_WEIGHTS.map((_, i) => {
   return i === POSSIBLE_WEIGHTS.length - 1 ? 1 : 0;
