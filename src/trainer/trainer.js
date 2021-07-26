@@ -35,6 +35,8 @@ const weightMaxIndexes = POSSIBLE_WEIGHTS.map((vals, indx) => {
 let game = new Game(players);
 let outOf = 1;
 
+looper();
+
 function iterateWeights(loserIndex) {
   const findPlace = (place) => {
     if (place < 0) {
@@ -65,7 +67,7 @@ function startNewGame(reset) {
   looper();
 }
 
-(function looper(newState) {
+function looper(newState) {
   const state = newState || game.getState(false, true);
 
   process.stdout.clearLine();
@@ -112,4 +114,4 @@ function startNewGame(reset) {
     console.log(state.options);
     throw new Error("Fin.");
   }
-})();
+}
