@@ -10,7 +10,7 @@ const POSSIBLE_WEIGHTS = [
   [3, 4, 5, 6], // if move would get them the time stone
   [2, 3, 4, 5], // the "closer to time stone" multiplier
   [7, 8, 9], // recruit multiplier
-  [2, 3], // reserve divisor
+  [0.01, 2, 3], // reserve divisor
 ];
 
 const players = [1, 2].map((playerNum, playerIndex) => ({
@@ -93,7 +93,7 @@ function looper(newState) {
       outOf++;
       startNewGame();
     } else {
-      const loserIndex = players[0].wins > players[1].wins ? 0 : 1;
+      const loserIndex = players[0].wins > players[1].wins ? 1 : 0;
       if (iterateWeights(loserIndex)) {
         startNewGame(true);
       } else {
