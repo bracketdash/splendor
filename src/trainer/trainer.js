@@ -10,7 +10,7 @@ const POSSIBLE_WEIGHTS = [
   [3, 4, 5, 6], // if move would get them the time stone
   [2, 3, 4, 5], // the "closer to time stone" multiplier
   [7, 8, 9], // recruit multiplier
-  [0.01, 2, 3], // reserve divisor
+  [1, 2, 3], // reserve divisor
 ];
 
 const players = [1, 2].map((playerNum, playerIndex) => ({

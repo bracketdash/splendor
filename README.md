@@ -12,7 +12,5 @@ npm run dev
 ## Trainer
 
 ```bash
-npm run modulize
 npm run trainer
-npm run demodulize
 ```
