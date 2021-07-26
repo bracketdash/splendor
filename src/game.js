@@ -22,19 +22,20 @@ function getShuffled(items) {
 export default class Game {
   constructor(players) {
     const numPlayersToTokenMap = [null, null, 4, 5, 7];
-    const shuffledLocations = getShuffled(locationTiles);
+    const shuffledLocations = getShuffled([...locationTiles]);
     this.avengersTileOwner = null;
     this.decks = [];
     this.freeAgents = [];
     count(3).forEach((_, i) => {
       this.decks.push(
-        getShuffled(characterCards.filter((cc) => cc.level === i + 1))
+        getShuffled([...characterCards].filter((cc) => cc.level === i + 1))
       );
       this.freeAgents.push(count(4).map(() => this.decks[i].pop()));
     });
     this.locations = count(players.length).map(() => {
       return shuffledLocations.pop();
     });
+    console.log(this.locations);
     this.players = players.map(({ computer, name, weights }) => {
       const tokens = [...colors, "gray"].reduce((tokens, color) => {
         tokens[color] = 0;
