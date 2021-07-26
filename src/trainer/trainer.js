@@ -33,10 +33,14 @@ const weightMaxIndexes = POSSIBLE_WEIGHTS.map((v) => v.length);
 let game = new Game(players);
 let outOf = 1;
 
-looper();
+console.log(`weightIndexes`);
+console.log(weightIndexes);
+console.log(`weightMaxIndexes`);
+console.log(weightMaxIndexes);
+
+// looper();
 
 function iterateWeights(loserIndex) {
-  console.log(weightIndexes);
   const findPlace = (place) => {
     if (place < 0) {
       return false;
