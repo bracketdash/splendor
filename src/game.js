@@ -368,7 +368,7 @@ export default class Game {
     return points;
   }
 
-  getState(skipOptions) {
+  getState(skipOptions, skipCats) {
     const players = this.players.map((p) => {
       p.points = this.getPoints(p);
       return p;
@@ -379,30 +379,33 @@ export default class Game {
       decks: this.decks,
       freeAgents: this.freeAgents,
       locations: this.locations,
-      options: [],
+      options: {},
       players,
       round: this.round,
       whoseTurn: this.whoseTurn,
     };
     if (!skipOptions) {
-      state.options = this.getOptions().reduce(
-        (obj, opt) => {
-          const key =
-            opt.type === "3diff" || opt.type === "2same" ? "chips" : opt.type;
-          obj[key].push(opt);
-          return obj;
-        },
-        {
-          chips: [],
-          recruit: [],
-          reserve: [],
-        }
-      );
+      state.options = this.getOptions();
+      if (!skipCats) {
+        state.options = state.options.reduce(
+          (obj, opt) => {
+            const key =
+              opt.type === "3diff" || opt.type === "2same" ? "chips" : opt.type;
+            obj[key].push(opt);
+            return obj;
+          },
+          {
+            chips: [],
+            recruit: [],
+            reserve: [],
+          }
+        );
+      }
     }
     return state;
   }
 
-  makeMove(decision) {
+  makeMove(decision, skipCats) {
     const currPlayer = this.players[this.whoseTurn];
     const row =
       decision.level && typeof decision.level === "number"
@@ -475,7 +478,7 @@ export default class Game {
         this.whoseTurn = 0;
       }
       return new Promise((resolve) => {
-        resolve(this.getState());
+        resolve(this.getState(false, skipCats));
       });
     }
   }

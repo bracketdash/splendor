@@ -64,8 +64,8 @@ function startNewGame(reset) {
   game = new Game(players);
 }
 
-(function looper() {
-  const state = game.getState();
+(function looper(newState) {
+  const state = newState || game.getState(false, true);
 
   process.stdout.clearLine();
   process.stdout.cursorTo(0);
@@ -101,12 +101,13 @@ function startNewGame(reset) {
       .makeMove(
         Object.keys(state.options)
           .reduce((arr, key) => arr.concat(state.options[key]), [])
-          .sort((a, b) => (a.score > b.score ? -1 : 1))[0]
+          .sort((a, b) => (a.score > b.score ? -1 : 1))[0],
+        true
       )
-      .then(looper);
+      .then((newState) => looper(newState));
   } else {
-    console.log("state.options[0]:");
-    console.log(state.options[0]);
+    console.log("state.options:");
+    console.log(state.options);
     throw new Error("Fin.");
   }
 })();
