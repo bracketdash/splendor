@@ -76,21 +76,21 @@ function startNewGame(reset) {
 function looper(newState) {
   const state = newState || game.getState(false, true);
   if (state.gameOver) {
+    let winnerIndex = 0;
+    if (
+      state.players[0].meetsWinCriteria &&
+      state.players[1].meetsWinCriteria
+    ) {
+      winnerIndex =
+        game.getPoints(state.players[1]) >= game.getPoints(state.players[0])
+          ? 1
+          : 0;
+    } else if (state.players[1].meetsWinCriteria) {
+      winnerIndex = 1;
+    }
+    players[winnerIndex].wins++;
     if (outOf < BEST_OUT_OF) {
-      let winnerIndex = 0;
-      if (
-        state.players[0].meetsWinCriteria &&
-        state.players[1].meetsWinCriteria
-      ) {
-        winnerIndex =
-          game.getPoints(state.players[1]) >= game.getPoints(state.players[0])
-            ? 1
-            : 0;
-      } else if (state.players[1].meetsWinCriteria) {
-        winnerIndex = 1;
-      }
       outOf++;
-      players[winnerIndex].wins++;
       startNewGame();
     } else {
       const loserIndex = players[0].wins > players[1].wins ? 0 : 1;
