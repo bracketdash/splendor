@@ -15,6 +15,7 @@ const POSSIBLE_WEIGHTS = [
 
 const players = [1, 2].map((playerNum, playerIndex) => ({
   name: `P${playerNum}`,
+  streak: 0,
   wins: 0,
   weights: POSSIBLE_WEIGHTS.map((vals, indx) => {
     if (indx === POSSIBLE_WEIGHTS.length - 1 && playerIndex) {
@@ -54,6 +55,8 @@ function iterateWeights(loserIndex) {
   players[loserIndex].weights = weightIndexes.map(
     (valIndex, weightIndex) => POSSIBLE_WEIGHTS[weightIndex][valIndex]
   );
+  players[loserIndex].streak = 0;
+  players[loserIndex ? 0 : 1].streak++;
   return true;
 }
 
@@ -73,7 +76,9 @@ function looper(newState) {
   process.stdout.clearLine();
   process.stdout.cursorTo(0);
   process.stdout.write(
-    `${players[0].weights.join(",")} v ${players[1].weights.join(",")}`
+    `${game.players[0].weights.join(",")} (${
+      players[0].streak
+    }) v ${game.players[1].weights.join(",")} (${players[1].streak})`
   );
 
   if (state.gameOver) {
@@ -106,14 +111,10 @@ function looper(newState) {
       }
     }
   } else if (state.options.length && state.options[0].type !== "skip") {
-    game
-      .makeMove(
-        Object.keys(state.options)
-          .reduce((arr, key) => arr.concat(state.options[key]), [])
-          .sort((a, b) => (a.score > b.score ? -1 : 1))[0],
-        true
-      )
-      .then((newState) => looper(newState));
+    const bestMove = Object.keys(state.options)
+      .reduce((arr, key) => arr.concat(state.options[key]), [])
+      .sort((a, b) => (a.score > b.score ? -1 : 1))[0];
+    game.makeMove(bestMove, true).then((newState) => looper(newState));
   } else {
     console.log("\n\nstate.options:");
     console.log(state.options);
