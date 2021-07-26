@@ -1,21 +1,17 @@
 import Game from "../game.js";
 
-// BEGIN CONFIG
-
 const BEST_OUT_OF = 3; // must be an odd number
 
 const POSSIBLE_WEIGHTS = [
-  [0, 1, 2, 3], // avengers tile points
-  [0, 1, 2, 3], // location tile points
-  [0, 1, 2, 3], // if move would complete "one of each color"
-  [0, 1, 2, 3], // if move would get them closer to "one of each color"
+  [1, 2, 3], // avengers tile points
+  [1, 2, 3], // location tile points
+  [1, 2, 3], // if move would complete "one of each color"
+  [1, 2, 3], // if move would get them closer to "one of each color"
   [3, 4, 5, 6], // if move would get them the time stone
   [2, 3, 4, 5], // the "closer to time stone" multiplier
   [7, 8, 9], // recruit multiplier
   [2, 3], // reserve divisor
 ];
-
-// END CONFIG
 
 const players = [1, 2].map((playerNum, playerIndex) => ({
   name: `P${playerNum}`,
@@ -40,10 +36,23 @@ let game = new Game(players);
 let outOf = 1;
 
 function iterateWeights(loserIndex) {
-  // TODO: iterate the loser's weights
-  // (starting from whichever of the two players have the most advanced weights)
-  // TODO: return true if weights were able to be iterated
-  // TODO: return false if we can't iterate the weights anymore (i.e. training is over)
+  const findPlace = (place) => {
+    if (place < 0) {
+      return false;
+    }
+    return weightIndexes[place] < weightMaxIndexes[place]
+      ? place
+      : findPlace(place - 1);
+  };
+  const place = findPlace(POSSIBLE_WEIGHTS.length - 1);
+  if (!place) {
+    return false;
+  }
+  weightIndexes[place]++;
+  players[loserIndex].weights = weightIndexes.map(
+    (valIndex, weightIndex) => POSSIBLE_WEIGHTS[weightIndex][valIndex]
+  );
+  return true;
 }
 
 function startNewGame(reset) {
