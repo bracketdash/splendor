@@ -48,7 +48,7 @@ function iterateWeights(loserIndex) {
     return findPlace(place - 1);
   };
   const place = findPlace(POSSIBLE_WEIGHTS.length - 1);
-  if (!place) {
+  if (place === false) {
     return false;
   }
   weightIndexes[place]++;
@@ -57,6 +57,9 @@ function iterateWeights(loserIndex) {
   );
   players[loserIndex].streak = 0;
   players[loserIndex ? 0 : 1].streak++;
+  const firstPlayer = players[0];
+  players[0] = players[1];
+  players[1] = firstPlayer;
   return true;
 }
 
@@ -108,7 +111,7 @@ function looper(newState) {
         players[0].streak
       }) v ${game.players[1].weights.join(",")} (${players[1].streak})`
     );
-  } else if (state.options.length && state.options[0].type !== "skip") {
+  } else if (state.options.length) {
     const bestMove = Object.keys(state.options)
       .reduce((arr, key) => arr.concat(state.options[key]), [])
       .sort((a, b) => (a.score > b.score ? -1 : 1))[0];
