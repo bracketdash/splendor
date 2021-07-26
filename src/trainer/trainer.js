@@ -1,23 +1,19 @@
 import Game from "../game.js";
 
-const BEST_OUT_OF = 5; // must be an odd number
+const BEST_OUT_OF = 21; // must be an odd number
 
 const POSSIBLE_WEIGHTS = [
-  [9, 10, 11, 12, 13, 14, 15, 16], // recruit multiplier
-  [2, 3, 4, 5, 6], // reserve divisor
+  [13.85, 13.9], // recruit multiplier
+  [3.34, 3.35, 3.36, 3.37, 3.38, 3.39, 3.4], // reserve divisor
 ];
 
-const players = [1, 2].map((playerNum, playerIndex) => ({
-  name: `P${playerNum}`,
+const players = [1, 2].map((n) => ({
+  name: `P${n}`,
   wins: 0,
 }));
 
-players[1].weights = POSSIBLE_WEIGHTS.map((vals, indx) => {
-  if (indx === POSSIBLE_WEIGHTS.length - 1 && playerIndex) {
-    return vals[1];
-  }
-  return vals[0];
-});
+players[0].weights = [13.9, 3.34];
+players[1].weights = POSSIBLE_WEIGHTS.map((v) => v[0]);
 
 const results = {};
 

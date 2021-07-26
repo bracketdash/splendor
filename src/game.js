@@ -337,9 +337,9 @@ export default class Game {
     score += affordaScore;
 
     if (option.type === "recruit") {
-      score *= player.weights ? player.weights[0] : 10;
+      score *= player.weights ? player.weights[0] : 13.9;
     } else if (option.type === "reserve") {
-      score *= 1 / (player.weights ? player.weights[0] : 4);
+      score *= 1 / (player.weights ? player.weights[1] : 3.34);
     }
 
     return score;
