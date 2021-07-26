@@ -25,6 +25,8 @@ const players = [1, 2].map((playerNum, playerIndex) => ({
   }),
 }));
 
+const bestStreak = false;
+
 const weightIndexes = POSSIBLE_WEIGHTS.map((_, i) => {
   return i === POSSIBLE_WEIGHTS.length - 1 ? 1 : 0;
 });
@@ -57,6 +59,10 @@ function iterateWeights(loserIndex) {
   );
   players[loserIndex].streak = 0;
   players[loserIndex ? 0 : 1].streak++;
+  if (players[loserIndex ? 0 : 1].streak > bestStreak.streak) {
+    bestStreak.streak = players[loserIndex ? 0 : 1].streak;
+    bestStreak.weights = players[loserIndex ? 0 : 1].weights.join(",");
+  }
   const firstPlayer = players[0];
   players[0] = players[1];
   players[1] = firstPlayer;
@@ -109,7 +115,9 @@ function looper(newState) {
     process.stdout.write(
       `${game.players[0].weights.join(",")} (${
         players[0].streak
-      }) v ${game.players[1].weights.join(",")} (${players[1].streak})`
+      }) v ${game.players[1].weights.join(",")} (${
+        players[1].streak
+      }) -- Best streak so far: ${bestStreak.weights} (${bestStreak.streak})`
     );
   } else if (state.options.length) {
     const bestMove = Object.keys(state.options)
