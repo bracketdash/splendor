@@ -1,28 +1,25 @@
 import Game from "../game.js";
 
-const BEST_OUT_OF = 3; // must be an odd number
+const BEST_OUT_OF = 5; // must be an odd number
 
 const POSSIBLE_WEIGHTS = [
-  [1, 2, 3], // avengers tile points
-  [5, 6, 7, 8], // if move would get them the time stone
-  [3, 4, 5, 6], // the "closer to time stone" multiplier
-  [10, 11], // recruit multiplier
-  [4, 5], // reserve divisor
+  [9, 10, 11, 12, 13, 14, 15, 16], // recruit multiplier
+  [2, 3, 4, 5, 6], // reserve divisor
 ];
 
 const players = [1, 2].map((playerNum, playerIndex) => ({
   name: `P${playerNum}`,
-  streak: 0,
   wins: 0,
-  weights: POSSIBLE_WEIGHTS.map((vals, indx) => {
-    if (indx === POSSIBLE_WEIGHTS.length - 1 && playerIndex) {
-      return vals[1];
-    }
-    return vals[0];
-  }),
 }));
 
-const bestStreak = { streak: 0 };
+players[1].weights = POSSIBLE_WEIGHTS.map((vals, indx) => {
+  if (indx === POSSIBLE_WEIGHTS.length - 1 && playerIndex) {
+    return vals[1];
+  }
+  return vals[0];
+});
+
+const results = {};
 
 const weightIndexes = POSSIBLE_WEIGHTS.map((_, i) => {
   return i === POSSIBLE_WEIGHTS.length - 1 ? 1 : 0;
@@ -35,7 +32,7 @@ let outOf = 1;
 
 looper();
 
-function iterateWeights(loserIndex) {
+function iterateWeights() {
   const findPlace = (place) => {
     if (place < 0) {
       return false;
@@ -51,18 +48,9 @@ function iterateWeights(loserIndex) {
     return false;
   }
   weightIndexes[place]++;
-  players[loserIndex].weights = weightIndexes.map(
+  players[1].weights = weightIndexes.map(
     (valIndex, weightIndex) => POSSIBLE_WEIGHTS[weightIndex][valIndex]
   );
-  players[loserIndex].streak = 0;
-  players[loserIndex ? 0 : 1].streak++;
-  if (players[loserIndex ? 0 : 1].streak > bestStreak.streak) {
-    bestStreak.streak = players[loserIndex ? 0 : 1].streak;
-    bestStreak.weights = players[loserIndex ? 0 : 1].weights.join(",");
-  }
-  const firstPlayer = players[0];
-  players[0] = players[1];
-  players[1] = firstPlayer;
   return true;
 }
 
@@ -96,25 +84,20 @@ function looper(newState) {
       outOf++;
       startNewGame();
     } else {
-      const loserIndex = players[0].wins > players[1].wins ? 1 : 0;
-      if (iterateWeights(loserIndex)) {
+      results[players[1].weights] = players[1].wins;
+      if (iterateWeights()) {
         startNewGame(true);
       } else {
-        console.log(
-          `\n\nTraining complete. Best weights: ${players[
-            loserIndex ? 0 : 1
-          ].weights.join(",")}`
-        );
+        console.log("\n\nTraining complete.");
+        console.log(JSON.stringify(results));
       }
     }
     process.stdout.clearLine();
     process.stdout.cursorTo(0);
     process.stdout.write(
       `${game.players[0].weights.join(",")} (${
-        players[0].streak
-      }) v ${game.players[1].weights.join(",")} (${
-        players[1].streak
-      }) -- Best streak so far: ${bestStreak.weights} (${bestStreak.streak})`
+        players[0].wins
+      }) v ${game.players[1].weights.join(",")} (${players[1].wins})`
     );
   } else if (state.options.length) {
     const bestMove = Object.keys(state.options)

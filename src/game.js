@@ -35,7 +35,7 @@ export default class Game {
     this.locations = count(players.length).map(() => {
       return shuffledLocations.pop();
     });
-    this.players = players.map(({ computer, name }) => {
+    this.players = players.map(({ computer, name, weights }) => {
       const tokens = [...colors, "gray"].reduce((tokens, color) => {
         tokens[color] = 0;
         return tokens;
@@ -46,6 +46,7 @@ export default class Game {
         recruits: [],
         reserves: [],
         tokens,
+        weights,
       };
     });
     this.round = 1;
@@ -336,9 +337,9 @@ export default class Game {
     score += affordaScore;
 
     if (option.type === "recruit") {
-      score *= 10;
+      score *= player.weights ? player.weights[0] : 10;
     } else if (option.type === "reserve") {
-      score *= 0.25;
+      score *= 1 / (player.weights ? player.weights[0] : 4);
     }
 
     return score;
