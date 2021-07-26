@@ -1,6 +1,6 @@
 import Game from "../game.js";
 
-const BEST_OUT_OF = 3; // must be an odd number
+const BEST_OUT_OF = 5; // must be an odd number
 
 const POSSIBLE_WEIGHTS = [
   [1, 2, 3], // avengers tile points
@@ -72,15 +72,6 @@ function startNewGame(reset) {
 
 function looper(newState) {
   const state = newState || game.getState(false, true);
-
-  process.stdout.clearLine();
-  process.stdout.cursorTo(0);
-  process.stdout.write(
-    `${game.players[0].weights.join(",")} (${
-      players[0].streak
-    }) v ${game.players[1].weights.join(",")} (${players[1].streak})`
-  );
-
   if (state.gameOver) {
     if (outOf < BEST_OUT_OF) {
       let winnerIndex = 0;
@@ -104,12 +95,19 @@ function looper(newState) {
         startNewGame(true);
       } else {
         console.log(
-          `Training complete. Best weights: ${players[
+          `\n\nTraining complete. Best weights: ${players[
             loserIndex ? 0 : 1
           ].weights.join(",")}`
         );
       }
     }
+    process.stdout.clearLine();
+    process.stdout.cursorTo(0);
+    process.stdout.write(
+      `${game.players[0].weights.join(",")} (${
+        players[0].streak
+      }) v ${game.players[1].weights.join(",")} (${players[1].streak})`
+    );
   } else if (state.options.length && state.options[0].type !== "skip") {
     const bestMove = Object.keys(state.options)
       .reduce((arr, key) => arr.concat(state.options[key]), [])
