@@ -1,16 +1,13 @@
 import Game from "../game.js";
 
-const BEST_OUT_OF = 5; // must be an odd number
+const BEST_OUT_OF = 3; // must be an odd number
 
 const POSSIBLE_WEIGHTS = [
   [1, 2, 3], // avengers tile points
-  [1, 2, 3], // location tile points
-  [1, 2, 3], // if move would complete "one of each color"
-  [1, 2, 3], // if move would get them closer to "one of each color"
-  [3, 4, 5, 6], // if move would get them the time stone
-  [2, 3, 4, 5], // the "closer to time stone" multiplier
-  [7, 8, 9], // recruit multiplier
-  [1, 2, 3], // reserve divisor
+  [5, 6, 7, 8], // if move would get them the time stone
+  [3, 4, 5, 6], // the "closer to time stone" multiplier
+  [10, 11], // recruit multiplier
+  [4, 5], // reserve divisor
 ];
 
 const players = [1, 2].map((playerNum, playerIndex) => ({
