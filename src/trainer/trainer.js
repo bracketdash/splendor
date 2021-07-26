@@ -62,6 +62,7 @@ function startNewGame(reset) {
     players[1].wins = 0;
   }
   game = new Game(players);
+  looper();
 }
 
 (function looper(newState) {
@@ -82,6 +83,7 @@ function startNewGame(reset) {
       } else if (players[1].meetsWinCriteria) {
         winnerIndex = 1;
       }
+      outOf++;
       players[winnerIndex].wins++;
       startNewGame();
     } else {
