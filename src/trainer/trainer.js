@@ -28,17 +28,12 @@ const weightIndexes = POSSIBLE_WEIGHTS.map((_, i) => {
   return i === POSSIBLE_WEIGHTS.length - 1 ? 1 : 0;
 });
 
-const weightMaxIndexes = POSSIBLE_WEIGHTS.map((v) => v.length);
+const weightMaxIndexes = POSSIBLE_WEIGHTS.map((v) => v.length - 1);
 
 let game = new Game(players);
 let outOf = 1;
 
-console.log(`weightIndexes`);
-console.log(weightIndexes);
-console.log(`weightMaxIndexes`);
-console.log(weightMaxIndexes);
-
-// looper();
+looper();
 
 function iterateWeights(loserIndex) {
   const findPlace = (place) => {
@@ -84,10 +79,15 @@ function looper(newState) {
   if (state.gameOver) {
     if (outOf < BEST_OUT_OF) {
       let winnerIndex = 0;
-      if (players[0].meetsWinCriteria && players[1].meetsWinCriteria) {
+      if (
+        state.players[0].meetsWinCriteria &&
+        state.players[1].meetsWinCriteria
+      ) {
         winnerIndex =
-          game.getPoints(players[1]) >= game.getPoints(players[0]) ? 1 : 0;
-      } else if (players[1].meetsWinCriteria) {
+          game.getPoints(state.players[1]) >= game.getPoints(state.players[0])
+            ? 1
+            : 0;
+      } else if (state.players[1].meetsWinCriteria) {
         winnerIndex = 1;
       }
       outOf++;
