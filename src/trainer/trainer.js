@@ -66,10 +66,22 @@ function startNewGame(reset) {
 
 (function looper() {
   const state = game.getState();
+
+  process.stdout.clearLine();
+  process.stdout.cursorTo(0);
+  process.stdout.write(
+    `${players[0].weights.join(",")} v ${players[1].weights.join(",")}`
+  );
+
   if (state.gameOver) {
     if (outOf < BEST_OUT_OF) {
-      // TODO: determine the winner (set winnerIndex)
-      // TODO: if both are winners, make them play an extra game (don't count this one)
+      let winnerIndex = 0;
+      if (players[0].meetsWinCriteria && players[1].meetsWinCriteria) {
+        winnerIndex =
+          game.getPoints(players[1]) >= game.getPoints(players[0]) ? 1 : 0;
+      } else if (players[1].meetsWinCriteria) {
+        winnerIndex = 1;
+      }
       players[winnerIndex].wins++;
       startNewGame();
     } else {

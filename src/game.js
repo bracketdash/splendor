@@ -462,6 +462,7 @@ export default class Game {
       }
     });
     if (this.meetsWinCriteria(currPlayer)) {
+      // TODO: if this isn't the last player, we need to finish out the round
       return new Promise((resolve) => {
         const results = this.getState(true);
         results.gameOver = true;
@@ -480,12 +481,12 @@ export default class Game {
   }
 
   meetsWinCriteria(player) {
-    return (
+    player.meetsWinCriteria =
       this.getPoints(player) > 15 &&
       colors.every(
         (c) => !!player.recruits.filter((cc) => cc.bonus === c).length
       ) &&
-      player.recruits.some(({ level }) => level === 3)
-    );
+      player.recruits.some(({ level }) => level === 3);
+    return player.meetsWinCriteria;
   }
 }
