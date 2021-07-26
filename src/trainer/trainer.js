@@ -106,7 +106,7 @@ function startNewGame(reset) {
       )
       .then((newState) => looper(newState));
   } else {
-    console.log("state.options:");
+    console.log("\n\nstate.options:");
     console.log(state.options);
     throw new Error("Fin.");
   }
