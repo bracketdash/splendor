@@ -42,9 +42,11 @@ function iterateWeights(loserIndex) {
     if (place < 0) {
       return false;
     }
-    return weightIndexes[place] < weightMaxIndexes[place]
-      ? place
-      : findPlace(place - 1);
+    if (weightIndexes[place] < weightMaxIndexes[place]) {
+      return place;
+    }
+    weightIndexes[place] = 0;
+    return findPlace(place - 1);
   };
   const place = findPlace(POSSIBLE_WEIGHTS.length - 1);
   if (!place) {
