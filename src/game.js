@@ -35,7 +35,7 @@ export default class Game {
     this.locations = count(players.length).map(() => {
       return shuffledLocations.pop();
     });
-    this.players = players.map(({ computer, name, weights }) => {
+    this.players = players.map(({ computer, name }) => {
       const tokens = [...colors, "gray"].reduce((tokens, color) => {
         tokens[color] = 0;
         return tokens;
@@ -46,7 +46,6 @@ export default class Game {
         recruits: [],
         reserves: [],
         tokens,
-        weights,
       };
     });
     this.round = 1;
@@ -229,10 +228,10 @@ export default class Game {
           getAvengersTags(afterState.recruits) >
           getAvengersTags(this.avengersTileOwner.recruits)
         ) {
-          score += player.weights ? player.weights[0] : 3;
+          score += 3;
         }
       } else if (getAvengersTags(afterState.recruits) > 2) {
-        score += player.weights ? player.weights[0] : 3;
+        score += 3;
       }
     }
 
@@ -264,7 +263,7 @@ export default class Game {
 
     if (!player.recruits.some(({ level }) => level === 3)) {
       if (afterState.recruits.some(({ level }) => level === 3)) {
-        score += player.weights ? player.weights[1] : 5;
+        score += 5;
       } else {
         let closerToTimeStoneScore = 0;
         this.freeAgents[2].forEach((card) => {
@@ -281,8 +280,7 @@ export default class Game {
             }) / Object.values(card.cost).reduce((s, c) => s + c, 0);
         });
         if (closerToTimeStoneScore > 0) {
-          score +=
-            closerToTimeStoneScore * (player.weights ? player.weights[2] : 4);
+          score += closerToTimeStoneScore * 6;
         }
       }
     }
@@ -304,7 +302,7 @@ export default class Game {
           freeAgent.level === 3 &&
           !afterState.recruits.some((c) => c.level === 3)
         ) {
-          agentScore += player.weights ? player.weights[1] : 3;
+          agentScore += 5;
         }
         const afterWalletPlusBonus = Object.assign({}, afterWallet);
         afterWalletPlusBonus[freeAgent.bonus] += 1;
@@ -338,9 +336,9 @@ export default class Game {
     score += affordaScore;
 
     if (option.type === "recruit") {
-      score *= player.weights ? player.weights[3] : 8;
+      score *= 10;
     } else if (option.type === "reserve") {
-      score *= 1 / (player.weights ? player.weights[4] : 2);
+      score *= 0.25;
     }
 
     return score;
