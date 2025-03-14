@@ -1,8 +1,9 @@
 # Splendorbot
 
-[Visit the live demo](https://bracketdash.github.io/splendor/), or:
+Live: https://bracketdash.github.io/splendor/
 
-```bash
-npm install
-npm run dev
-```
+## Run locally
+
+1. Run `npm install`
+2. Run `npm run dev`
+3. Go here: http://localhost:3000/splendor/
